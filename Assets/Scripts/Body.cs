@@ -19,8 +19,13 @@ public class Body : MonoBehaviour {
 	
 	// Leg Movement script to retrieve INCONTROL inputs
 	private LegMovement legScript;
+	private Vector3 prevLoc;
+	private Vector3 curVel;
+	public MeshRenderer mr;
 
 	void Start () {
+		prevLoc = Vector3.zero;
+		
 		text.SetActive(false);
 		initHealth = health;
 		
@@ -43,6 +48,21 @@ public class Body : MonoBehaviour {
 		if(legScript.joystick.Action1){
 			Restart();
 		}
+		
+		curVel = (transform.position - prevLoc) / Time.deltaTime;
+		//Debug.Log(curVel);
+		if(curVel.y > 0.02){
+			gameObject.layer = 9;
+			Debug.Log("UP");
+			Debug.Log(curVel.y);
+			mr.enabled = false;
+		}
+		else{
+			Debug.Log("DOWN");
+			gameObject.layer = 0;
+			mr.enabled = true;;
+		}
+		prevLoc = transform.position;
 	}
 	
 	void ApplyDamage (int damage){
@@ -65,7 +85,23 @@ public class Body : MonoBehaviour {
 		}
 	}
 	
+	void passesThroughTerrain(){
+		curVel = (transform.position - prevLoc) / Time.deltaTime;
+		//Debug.Log(curVel);
+		if(curVel.y > 0){
+			gameObject.layer = 9;
+			Debug.Log("UP");
+		}
+		if(curVel.y < 0){
+			gameObject.layer = 0;
+		}
+		prevLoc = transform.position;
+	
+	}
+	
 	void Restart(){
 		 SceneManager.LoadScene( SceneManager.GetActiveScene().name );
 	}
+	
+	
 }
