@@ -19,8 +19,10 @@ public class Body : MonoBehaviour {
 	
 	// Leg Movement script to retrieve INCONTROL inputs
 	private LegMovement legScript;
+	public MeshRenderer mr;
 
 	void Start () {
+		
 		text.SetActive(false);
 		initHealth = health;
 		
@@ -43,6 +45,7 @@ public class Body : MonoBehaviour {
 		if(legScript.joystick.Action1){
 			Restart();
 		}
+
 	}
 	
 	void ApplyDamage (int damage){
@@ -64,8 +67,11 @@ public class Body : MonoBehaviour {
 			text.SetActive(true);
 		}
 	}
+
 	
 	void Restart(){
 		 SceneManager.LoadScene( SceneManager.GetActiveScene().name );
 	}
+	
+	
 }
