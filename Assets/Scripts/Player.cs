@@ -12,20 +12,23 @@ public class Player : MonoBehaviour
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public InputDevice Controller;
 
-	public float LegSpeedMax = 3000;
-	public float LegTorqueMax = 1000;
+	public float HeadTorqueMax;
+	public float HeadStabilizerCurve;
+	
+	public float LegSpeedMax;
+	public float LegTorqueMax;
 	
 	public Leg LegRight;
 	public Leg LegLeft;
-	public Transform Body	// exposing this to improve future flexibility; ie changing player structure
+	public Rigidbody2D Head	// exposing this to improve future flexibility; ie changing player structure
 	{
-		get { return this.transform; }
+		get { return this.GetComponent<Rigidbody2D>(); }
 	}
-
+	
 	private void Start ()
-	{
+	{	
 		{	// ignore self collisions
-			var collider = GetComponent<Collider2D>();	// TODO: make into Body's collider
+			var collider = Head.GetComponent<Collider2D>();
 			Physics2D.IgnoreCollision(collider, LegLeft.Collider);
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
@@ -47,20 +50,38 @@ public class Player : MonoBehaviour
 	
 	private void FixedUpdate () 
 	{
-		if (Controller != null)
-		{
-			UpdateLeg(LegLeft,  Controller.LeftStick);
-			UpdateLeg(LegRight, Controller.RightStick);
+		if (Controller == null) return;
+		
+		UpdateLeg(LegLeft, Controller.LeftStick);
+		UpdateLeg(LegRight, Controller.RightStick);
+
+		{	// head stabilization
+			// angular velocity (omega)
+			var omega	    = Head.angularVelocity;
+			var omegaTarget = 0;
+
+			var omegaStabilizer = Mathf.Sign(omegaTarget - omega);
+			
+			// orientation (theta)
+			var thetaDelta = Vector2.SignedAngle(Head.transform.up, Vector2.up);
+
+			var thetaStabilizer = thetaDelta / 180;
+			
+			// interpolate between stabilizers to create dynamic equilibrium
+			omega = Mathf.Abs(omega);
+			omega *= HeadStabilizerCurve;
+			Head.AddTorque(HeadTorqueMax * Mathf.Lerp(thetaStabilizer, omegaStabilizer, omega / (omega + 1)));
 		}
 	}
 
 	private void UpdateLeg(Leg leg, TwoAxisInputControl input)
 	{
+		// leg movement
 		var inputDir = input.Vector;
-		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Body.up;
-
+		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
+		
 		var motor = leg.Hinge.motor;
-		motor.motorSpeed = LegSpeedMax / 360 * Vector2.SignedAngle(inputDir, legDirWorldSpace);
+		motor.motorSpeed = LegSpeedMax * Vector2.SignedAngle(inputDir, legDirWorldSpace) / 360;
 		motor.maxMotorTorque = LegTorqueMax * inputDir.magnitude;
 		
 		leg.Hinge.motor = motor;

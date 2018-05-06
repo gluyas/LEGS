@@ -1018,7 +1018,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: f5f42414b28629143a47eed47ed8f2a4, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &888283352
 SpriteRenderer:
@@ -1677,7 +1677,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: f5f42414b28629143a47eed47ed8f2a4, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &1263921327
 SpriteRenderer:
@@ -1743,10 +1743,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1316255210}
+  - component: {fileID: 1316255211}
   - component: {fileID: 1316255209}
   - component: {fileID: 1316255208}
   - component: {fileID: 1316255207}
-  - component: {fileID: 1316255211}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -1798,7 +1798,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!212 &1316255209
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1867,6 +1867,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a905bd478549e3940b4bb4a9093979c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeadTorqueMax: 200
+  HeadStabilizerCurve: 0.002
   LegSpeedMax: 3000
   LegTorqueMax: 300
   LegRight: {fileID: 1263921328}
