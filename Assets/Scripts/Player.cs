@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
 
 	public float HeadTorqueMax;
 	public float HeadStabilizerCurve;
+	public Vector2 HeadMassOffset;
 	
 	public float LegSpeedMax;
 	public float LegTorqueMax;
@@ -26,7 +27,9 @@ public class Player : MonoBehaviour
 	}
 	
 	private void Start ()
-	{	
+	{
+		Head.centerOfMass += HeadMassOffset;
+		
 		{	// ignore self collisions
 			var collider = Head.GetComponent<Collider2D>();
 			Physics2D.IgnoreCollision(collider, LegLeft.Collider);
@@ -72,6 +75,8 @@ public class Player : MonoBehaviour
 			omega *= HeadStabilizerCurve;
 			Head.AddTorque(HeadTorqueMax * Mathf.Lerp(thetaStabilizer, omegaStabilizer, omega / (omega + 1)));
 		}
+		
+		Debug.DrawLine(Head.transform.position, Head.worldCenterOfMass, Color.magenta);
 	}
 
 	private void UpdateLeg(Leg leg, TwoAxisInputControl input)
@@ -86,6 +91,7 @@ public class Player : MonoBehaviour
 		
 		leg.Hinge.motor = motor;
 		
+#if false
 		{	// debug stuff
 			Color color;
 			if (leg == LegLeft) color = Color.red;
@@ -94,5 +100,6 @@ public class Player : MonoBehaviour
 			Debug.DrawRay(transform.position, inputDir, Color.Lerp(color, Color.grey, 0.5f));
 			Debug.DrawRay(transform.position, legDirWorldSpace, color);
 		}
+#endif
 	}
 }
