@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
 
 	public float HeadTorqueMax;
 	public float HeadStabilizerCurve;
+	public float HeadTiltThetaMax;
 	public Vector2 HeadMassOffset;
 	
 	public float LegSpeedMax;
@@ -66,9 +67,16 @@ public class Player : MonoBehaviour
 			var omegaStabilizer = Mathf.Sign(omegaTarget - omega);
 			
 			// orientation (theta)
-			var thetaDelta = Vector2.SignedAngle(Head.transform.up, Vector2.up);
-
-			var thetaStabilizer = thetaDelta / 180;
+			var dirFacing  = Head.transform.up;
+			var dirUpright = Vector2.up;
+			
+			if (Controller.LeftTrigger || Controller.RightTrigger)	// user head tilt
+			{
+				var rollDir = Controller.LeftTrigger.Value - Controller.RightTrigger.Value;
+				dirUpright = Quaternion.Euler(0, 0, rollDir * HeadTiltThetaMax) * dirUpright;
+			}
+		
+			var thetaStabilizer = Vector2.SignedAngle(dirFacing, dirUpright) / 180;
 			
 			// interpolate between stabilizers to create dynamic equilibrium
 			omega = Mathf.Abs(omega);
