@@ -7,18 +7,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+	private const float LegDeadzoneMagnitude = 0.05f;
+	
 	private static int _playerCount = 0;
 	
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public InputDevice Controller;
 
+#if false
 	public float HeadTorqueMax;
 	public float HeadStabilizerCurve;
 	public float HeadTiltThetaMax;
 	public Vector2 HeadMassOffset;
+#endif
 	
 	public float LegSpeedMax;
 	public float LegTorqueMax;
+	public float LegTorqueMin;
+	public float LegSmoothAngle = 1;
 	
 	public Leg LegRight;
 	public Leg LegLeft;
@@ -29,7 +35,7 @@ public class Player : MonoBehaviour
 	
 	private void Start ()
 	{
-		Head.centerOfMass += HeadMassOffset;
+		//Head.centerOfMass += HeadMassOffset;
 		
 		{	// ignore self collisions
 			var collider = Head.GetComponent<Collider2D>();
@@ -59,6 +65,7 @@ public class Player : MonoBehaviour
 		UpdateLeg(LegLeft, Controller.LeftStick);
 		UpdateLeg(LegRight, Controller.RightStick);
 
+#if false
 		{	// head stabilization
 			// angular velocity (omega)
 			var omega	    = Head.angularVelocity;
@@ -83,23 +90,34 @@ public class Player : MonoBehaviour
 			omega *= HeadStabilizerCurve;
 			Head.AddTorque(HeadTorqueMax * Mathf.Lerp(thetaStabilizer, omegaStabilizer, omega / (omega + 1)));
 		}
-		
-		Debug.DrawLine(Head.transform.position, Head.worldCenterOfMass, Color.magenta);
+#endif
 	}
 
+	private Vector2 wishDirLeft;
+	private Vector2 wishDirRight;
+	
 	private void UpdateLeg(Leg leg, TwoAxisInputControl input)
 	{
 		// leg movement
 		var inputDir = input.Vector;
+		if (inputDir.magnitude > LegDeadzoneMagnitude)
+		{
+			leg.CurrentInputDir = inputDir.normalized;
+		}
+		inputDir = leg.CurrentInputDir;
+
 		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
 		
 		var motor = leg.Hinge.motor;
-		motor.motorSpeed = LegSpeedMax * Vector2.SignedAngle(inputDir, legDirWorldSpace) / 360;
-		motor.maxMotorTorque = LegTorqueMax * inputDir.magnitude;
+
+		var theta = Vector2.SignedAngle(inputDir, legDirWorldSpace);
+		var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
+		
+		motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
+		motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
 		
 		leg.Hinge.motor = motor;
-		
-#if false
+#if true
 		{	// debug stuff
 			Color color;
 			if (leg == LegLeft) color = Color.red;
