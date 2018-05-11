@@ -8,6 +8,8 @@ public class Leg : MonoBehaviour
 {
 	[NonSerialized] public HingeJoint2D Hinge;
 	[NonSerialized] public Collider2D Collider;
+
+	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
 	
 	// Use this for initialization
 	private void Start ()
