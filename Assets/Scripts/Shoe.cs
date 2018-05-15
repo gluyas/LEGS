@@ -8,7 +8,9 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class Shoe : MonoBehaviour
-{	
+{
+	public ShoeType Type;
+	
 	[NonSerialized] private bool _isEquipped;
 	public bool IsEquipped
 	{
@@ -25,4 +27,10 @@ public class Shoe : MonoBehaviour
 			}
 		}
 	}
+}
+
+[Serializable]
+public enum ShoeType
+{
+	Debug,
 }

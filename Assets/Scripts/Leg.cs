@@ -12,6 +12,11 @@ public class Leg : MonoBehaviour
 {
 	public Vector2 ShoePosOffset;
 	public Shoe CurrentShoe;
+
+	public bool HasShoe
+	{
+		get { return CurrentShoe != null; }
+	}
 	
 	[NonSerialized] public HingeJoint2D Hinge;
 	[NonSerialized] public Collider2D Collider;

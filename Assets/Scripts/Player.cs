@@ -62,8 +62,9 @@ public class Player : MonoBehaviour
 	{
 		if (Controller == null) return;
 		
-		UpdateLeg(LegLeft, Controller.LeftStick);
-		UpdateLeg(LegRight, Controller.RightStick);
+		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
+		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);
+		
 
 #if false
 		{	// head stabilization
@@ -92,32 +93,31 @@ public class Player : MonoBehaviour
 		}
 #endif
 	}
-
-	private Vector2 wishDirLeft;
-	private Vector2 wishDirRight;
 	
-	private void UpdateLeg(Leg leg, TwoAxisInputControl input)
+	private void UpdateLeg(Leg leg, Vector2 joystick, float trigger)
 	{
-		// leg movement
-		var inputDir = input.Vector;
-		if (inputDir.magnitude > LegDeadzoneMagnitude)
 		{
-			leg.CurrentInputDir = inputDir.normalized;
-		}
-		inputDir = leg.CurrentInputDir;
+			// leg movement
+			if (joystick.magnitude > LegDeadzoneMagnitude)
+			{
+				leg.CurrentInputDir = joystick.normalized;
+			}
 
-		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
-		
-		var motor = leg.Hinge.motor;
+			joystick = leg.CurrentInputDir;
+			
+			var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
 
-		var theta = Vector2.SignedAngle(inputDir, legDirWorldSpace);
-		var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
-		
-		motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
-		motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
-		
-		leg.Hinge.motor = motor;
-#if true
+			var motor = leg.Hinge.motor;
+
+			var theta = Vector2.SignedAngle(joystick, legDirWorldSpace);
+			var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
+
+			motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
+			motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
+
+			leg.Hinge.motor = motor;
+	
+#if false
 		{	// debug stuff
 			Color color;
 			if (leg == LegLeft) color = Color.red;
@@ -127,5 +127,15 @@ public class Player : MonoBehaviour
 			Debug.DrawRay(transform.position, legDirWorldSpace, color);
 		}
 #endif
+		}
+
+		if (leg.HasShoe) {	// shoe abilities
+			switch (leg.CurrentShoe.Type)
+			{
+				case ShoeType.Debug:
+					leg.CurrentShoe.GetComponent<Renderer>().material.color = new Color(1, 1-trigger, 1-trigger);
+					break;
+			}
+		}
 	}
 }
