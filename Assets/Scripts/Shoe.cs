@@ -11,7 +11,7 @@ public class Shoe : MonoBehaviour
 {
 	public ShoeType Type;
 	
-	[NonSerialized] private bool _isEquipped;
+	[NonSerialized] private bool _isEquipped = false;
 	public bool IsEquipped
 	{
 		get { return _isEquipped; }
@@ -25,6 +25,7 @@ public class Shoe : MonoBehaviour
 			{
 				GetComponent<Rigidbody2D>().simulated = true;
 			}
+			_isEquipped = value;
 		}
 	}
 }
