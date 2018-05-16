@@ -62,9 +62,8 @@ public class Player : MonoBehaviour
 	{
 		if (Controller == null) return;
 		
-		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
-		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);
-		
+		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger.Value);
+		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger.Value);	
 
 #if false
 		{	// head stabilization
