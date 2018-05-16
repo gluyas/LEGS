@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InControl;
+using NUnit.Framework;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -95,17 +96,15 @@ public class Player : MonoBehaviour
 	
 	private void UpdateLeg(Leg leg, Vector2 joystick, float trigger)
 	{
+		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
+		
+		if (joystick.magnitude > LegDeadzoneMagnitude)
 		{
-			// leg movement
-			if (joystick.magnitude > LegDeadzoneMagnitude)
-			{
-				leg.CurrentInputDir = joystick.normalized;
-			}
-
-			joystick = leg.CurrentInputDir;
-			
-			var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
-
+			leg.CurrentInputDir = joystick.normalized;
+		}
+		joystick = leg.CurrentInputDir;
+		
+		{ 	// leg movement
 			var motor = leg.Hinge.motor;
 
 			var theta = Vector2.SignedAngle(joystick, legDirWorldSpace);
@@ -128,7 +127,12 @@ public class Player : MonoBehaviour
 #endif
 		}
 
-		if (leg.HasShoe) {	// shoe abilities
+		var triggerHeld = trigger > 0;							// trigger down 
+		var triggerDown = triggerHeld && !leg.IsTriggerHeld;	// trigger down on on this frame
+		var triggerUp  = !triggerHeld && leg.IsTriggerHeld;		// trigger up   on this frame
+		leg.IsTriggerHeld = triggerHeld;
+		
+		if (leg.HasShoe) {	// shoe abilities		
 			switch (leg.CurrentShoe.Type)
 			{
 				case ShoeType.Debug:

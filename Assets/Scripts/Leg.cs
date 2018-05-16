@@ -22,6 +22,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Collider2D Collider;
 
 	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
+	[NonSerialized] public bool IsTriggerHeld = true;
 
 	public void EquipShoe(Shoe newShoe)
 	{
@@ -40,10 +41,13 @@ public class Leg : MonoBehaviour
 		}
 
 		CurrentShoe = newShoe;
-		CurrentShoe.transform.parent = this.transform;
-		CurrentShoe.transform.localPosition = ShoePosOffset;
-		CurrentShoe.transform.localRotation = Quaternion.identity;
-		CurrentShoe.IsEquipped = true;
+		if (CurrentShoe != null)
+		{
+			CurrentShoe.transform.parent = this.transform;
+			CurrentShoe.transform.localPosition = ShoePosOffset;
+			CurrentShoe.transform.localRotation = Quaternion.identity;
+			CurrentShoe.IsEquipped = true;
+		}
 	}
 	
 	// Use this for initialization
