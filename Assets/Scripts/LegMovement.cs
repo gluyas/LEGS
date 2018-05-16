@@ -22,7 +22,6 @@ public class LegMovement : MonoBehaviour
 	public HingeJoint2D hj;
 	JointMotor2D motor;
 
-	Vector3 inputDirection;
 	float z;
 
 	void Start ()
@@ -32,8 +31,7 @@ public class LegMovement : MonoBehaviour
 		motor = new JointMotor2D();
 		motor.maxMotorTorque = 1000;
 		rb = GetComponent<Rigidbody2D> ();
-		inputDirection = Vector3.zero;
-		
+
 		//INCONTROL
 		if(InputManager.Devices[playerNum] != null){
 			joystick = InputManager.Devices[playerNum];
@@ -45,6 +43,7 @@ public class LegMovement : MonoBehaviour
 	void Update ()
 	{
 		Debug.DrawRay (this.transform.position, -transform.up, Color.red);
+		Vector3 inputDirection;
 		if (leftLeg)
 			inputDirection = new Vector3 (joystick.LeftStickX, joystick.LeftStickY, 0);
 		else
@@ -52,7 +51,7 @@ public class LegMovement : MonoBehaviour
 
 		float angle = Vector3.Angle (-transform.up, inputDirection);
 		//angle = angle * Mathf.Rad2Deg;
-		//Debug.Log (angle);
+		//Debug.Log (angle)
 
 		float dot = Vector3.Dot (-transform.right, inputDirection);
 		//Debug.Log (dot);
