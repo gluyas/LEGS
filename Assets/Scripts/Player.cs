@@ -95,20 +95,19 @@ public class Player : MonoBehaviour
 
 				if (availableItems.Count > 0)
 				{
+					Leg targetLeg;
+					if (tryEquipLeft) targetLeg = LegLeft;
+					else              targetLeg = LegRight;
+
+					var targetPos = (Vector2) 
+						(targetLeg.transform.position + targetLeg.transform.rotation * targetLeg.ShoePosOffset);
+					
 					var closest = availableItems
-						.OrderBy(s => Vector2.Distance(s.transform.position, Head.transform.position))
+						.OrderBy(shoe => Vector2.Distance(shoe.transform.position, targetPos))
 						.First();
 					
-					if (tryEquipLeft)	// only set hold status to true once they actually got an item
-					{
-						LegLeft.EquipShoe(closest);
-						LegLeft.IsBumperHeld = true;
-					}
-					else
-					{
-						LegRight.EquipShoe(closest);
-						LegRight.IsBumperHeld = true;
-					}
+					targetLeg.EquipShoe(closest);
+					targetLeg.IsBumperHeld = true;
 				}
 			}
 			// only reset hold status to false here: allow player to pre-emptively hold equip button
