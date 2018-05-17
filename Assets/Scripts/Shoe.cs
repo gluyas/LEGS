@@ -19,14 +19,19 @@ public class Shoe : MonoBehaviour
 		{
 			if (value)	// set equipped
 			{
-				GetComponent<Rigidbody2D>().simulated = false;
+				Rigidbody.simulated = false;
 			}
 			else  		// set unequipped
 			{
-				GetComponent<Rigidbody2D>().simulated = true;
+				Rigidbody.simulated = true;
 			}
 			_isEquipped = value;
 		}
+	}
+
+	public Rigidbody2D Rigidbody
+	{
+		get { return GetComponent<Rigidbody2D>(); }
 	}
 }
 
@@ -34,4 +39,5 @@ public class Shoe : MonoBehaviour
 public enum ShoeType
 {
 	Debug,
+	Gun,
 }
