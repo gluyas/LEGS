@@ -24,7 +24,8 @@ public class Leg : MonoBehaviour
 
 	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
 	[NonSerialized] public bool IsTriggerHeld;
-
+	[NonSerialized] public bool IsBumperHeld;
+	
 	public void EquipShoe(Shoe newShoe)
 	{
 		if (CurrentShoe == newShoe) return;
