@@ -145,7 +145,8 @@ public class Player : MonoBehaviour
 	
 	private void UpdateLeg(Leg leg, Vector2 joystick, InputControl trigger)
 	{
-		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
+		var legDirWorldSpace = (Vector2)
+			(Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up);
 		
 		if (joystick.magnitude > LegDeadzoneMagnitude)
 		{
@@ -185,6 +186,41 @@ public class Player : MonoBehaviour
 			{
 				case ShoeType.Debug:
 					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, trigger * 180);
+					break;
+				
+				
+				case ShoeType.Gun:
+					Debug.Assert(leg.CurrentShoe is GunShoe);
+					var gun = leg.CurrentShoe as GunShoe;
+
+					if (triggerHeld)
+					{
+						gun.Charge += Time.deltaTime / Mathf.Lerp(gun.ChargeTimeMax, gun.ChargeTimeMin, trigger);
+					}
+					if (triggerUp || gun.Charge >= 1)
+					{
+						gun.Charge = Mathf.Clamp01(gun.Charge);
+						if (gun.Charge < gun.ChargeThreshold)
+						{
+							// fizzle
+						}
+						else
+						{
+							var power = Mathf.Pow(
+								(gun.Charge - gun.ChargeThreshold) / (1 - gun.ChargeThreshold), gun.ChargeExponent);
+							
+							leg.EquipShoe(null);	// drop the shoe: send it flying
+							leg.GetComponent<Rigidbody2D>();
+							
+							leg.Rigidbody.AddForce(-legDirWorldSpace *
+								Mathf.Lerp(gun.KnockbackForceMin, gun.KnockbackForceMax, power), ForceMode2D.Impulse);
+
+							gun.Rigidbody.velocity += legDirWorldSpace *
+								Mathf.Lerp(gun.ProjectileSpeedMin, gun.ProjectileSpeedMax, power);
+						}
+						gun.Charge = 0;
+					}
+					gun.GetComponent<Renderer>().material.color = gun.ChargeColor.Evaluate(gun.Charge);
 					break;
 			}
 		}
