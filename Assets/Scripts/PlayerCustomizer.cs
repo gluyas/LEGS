@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using InControl;
 
-public class CharController : MonoBehaviour {
+public class PlayerCustomizer : MonoBehaviour {
 
 	private static int elementLength = 5;
 

@@ -37,7 +37,7 @@ public class GameplayManager : MonoBehaviour {
 
 		foreach (var playerInfo in Players) {
 			var charController = Instantiate (CharacterControllerPrefab);
-			charController.GetComponent<CharController>().Init(playerInfo);
+			charController.GetComponent<PlayerCustomizer>().Init(playerInfo);
 		}
 	}
 	
