@@ -21,6 +21,7 @@ public class GameplayManager : MonoBehaviour {
 	public int stageSelector;
 
 
+
 	// Use this for initialization
 	void Start () {
 		amountShoes = 2;
@@ -42,7 +43,6 @@ public class GameplayManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
 	}
 
 
