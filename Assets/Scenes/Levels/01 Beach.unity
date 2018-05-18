@@ -640,10 +640,10 @@ GameObject:
   - component: {fileID: 484486055}
   - component: {fileID: 484486054}
   - component: {fileID: 484486053}
-  - component: {fileID: 484486052}
   - component: {fileID: 484486051}
+  - component: {fileID: 484486052}
   m_Layer: 9
-  m_Name: Shoe Blue
+  m_Name: Rocket Shoe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -682,10 +682,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 484486050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4742bdede5c104e409226c9220561ffe, type: 3}
+  m_Script: {fileID: 11500000, guid: ae339fe102354dc380d0cf1c190b2c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 2
+  ForceMax: 150
+  ForceMin: 0
 --- !u!50 &484486053
 Rigidbody2D:
   serializedVersion: 4
@@ -1313,10 +1315,10 @@ GameObject:
   - component: {fileID: 707468714}
   - component: {fileID: 707468713}
   - component: {fileID: 707468712}
-  - component: {fileID: 707468711}
   - component: {fileID: 707468710}
+  - component: {fileID: 707468711}
   m_Layer: 9
-  m_Name: Shoe Red
+  m_Name: Rocket shoe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1355,10 +1357,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 707468709}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4742bdede5c104e409226c9220561ffe, type: 3}
+  m_Script: {fileID: 11500000, guid: ae339fe102354dc380d0cf1c190b2c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 2
+  ForceMax: 150
+  ForceMin: 0
 --- !u!50 &707468712
 Rigidbody2D:
   serializedVersion: 4
@@ -1414,7 +1418,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 16fb7ad3356f64cf3a32eb5456df2c37, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 0
@@ -2118,7 +2122,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1303151632}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.57, y: 0.19999999, z: -12.57}
+  m_LocalPosition: {x: 0.57, y: 0.19999999, z: -12.7}
   m_LocalScale: {x: 1.0503999, y: 1.0503999, z: 1.0503999}
   m_Children: []
   m_Father: {fileID: 585687550}

@@ -5,6 +5,7 @@ public class RocketShoe : Shoe
 {
 	public float ForceMax;
 	public float ForceMin;
+	//[NonSerialized] public float fuel;
 	
 	public float BurnTimeMax;
 	public float BurnTimeMin;
