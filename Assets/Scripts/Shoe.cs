@@ -33,6 +33,18 @@ public class Shoe : MonoBehaviour
 	{
 		get { return GetComponent<Rigidbody2D>(); }
 	}
+
+	public static ShoeType NextType(ShoeType prev)
+	{
+		var count = Enum.GetValues(typeof(ShoeType)).Length;
+		return (ShoeType) (((int) prev + 1) % count);
+	}
+	
+	public static ShoeType PrevType(ShoeType succ)
+	{
+		var count = Enum.GetValues(typeof(ShoeType)).Length;
+		return (ShoeType) (((int) succ + count - 1) % count);
+	}
 }
 
 [Serializable]
@@ -40,4 +52,5 @@ public enum ShoeType
 {
 	Debug,
 	Gun,
+	Rocket,
 }
