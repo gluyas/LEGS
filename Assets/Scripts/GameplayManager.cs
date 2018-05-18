@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using InControl;
 
 public class GameplayManager : MonoBehaviour {
@@ -8,6 +9,10 @@ public class GameplayManager : MonoBehaviour {
 	public GameObject CharacterControllerPrefab;
 
 	public GameObject[] CharacterSelectionUISlots;
+
+	[SerializeField]
+	public GameObject MainMenu;
+	public GameObject CharacterMenu;
 
 	public List<PlayerInfo> Players = new List<PlayerInfo> ();
 
@@ -38,5 +43,18 @@ public class GameplayManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+
+
+	// UI BUTTONS
+	public void PlayButton() {
+		MainMenu.SetActive (false);
+		CharacterMenu.SetActive (true);
+	}
+
+	public void QuitButton() {
+		if (InputManager.ActiveDevice.Action2)
+			Application.Quit();
 	}
 }
