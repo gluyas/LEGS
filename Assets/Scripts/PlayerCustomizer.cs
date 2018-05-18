@@ -1,57 +1,51 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using InControl;
+using UnityEngine.UI;
 
-public class PlayerCustomizer : MonoBehaviour {
-
-	private static int elementLength = 5;
-
-	// player config instance that this script sets the values of
-
-
-	// Player's selection for the stage
-
-
-	private bool isButtonPressed;
-
-	public PlayerInfo CurrentPlayerInfo;
-
-	public void Init(PlayerInfo playerInfo) {
-		this.CurrentPlayerInfo = playerInfo;
-		Debug.Log ("akjshf");
+public class PlayerCustomizer : MonoBehaviour
+{
+	public Text ShoeSelectionText;
+	
+	[NonSerialized] public PlayerInfo CurrentPlayerInfo;
+	private InputDevice Controller
+	{
+		get { return CurrentPlayerInfo.Controller; }
 	}
+	
+	private bool _isLeftButtonHeld, _isRightButtonHeld;
+	private ShoeType _selectedShoe;
+	
+	private void Update ()
+	{
+		if (CurrentPlayerInfo == null) return;
 
-	void Update () {
-		//Debug.Log (CurrentPlayerInfo.LeftShoeType);
+		ShoeSelectionText.text = _selectedShoe.ToString();
 
-		if (!isButtonPressed) {
-			if (CurrentPlayerInfo.Controller.LeftTrigger) {
-				CurrentPlayerInfo.LeftShoeType--;
-				isButtonPressed = true;
-				Debug.Log (CurrentPlayerInfo.LeftShoeType);
+		if (!_isLeftButtonHeld)
+		{
+			if (Controller.LeftBumper)
+			{
+				_selectedShoe = Shoe.PrevType(_selectedShoe);
+				_isLeftButtonHeld = true;
 			}
-			else if (CurrentPlayerInfo.Controller.RightTrigger) {
-				CurrentPlayerInfo.LeftShoeType++;
-				isButtonPressed = true;
-				Debug.Log (CurrentPlayerInfo.LeftShoeType);
-			}
-
-			CurrentPlayerInfo.LeftShoeType = (elementLength + CurrentPlayerInfo.LeftShoeType) % elementLength;
-
-		} else if (!CurrentPlayerInfo.Controller.LeftTrigger && !CurrentPlayerInfo.Controller.RightTrigger) {
-			isButtonPressed = false;
-			//Debug.Log ("Foo");
 		}
-
-		//Debug.LogFormat ("{0}, {1}", CurrentPlayerInfo.Controller.LeftTrigger.Value, CurrentPlayerInfo.Controller.RightTrigger.Value);
+		else _isLeftButtonHeld = Controller.LeftBumper;
+		
+		if (!_isRightButtonHeld)
+		{
+			if (Controller.RightBumper)
+			{
+				_selectedShoe = Shoe.NextType(_selectedShoe);
+				_isRightButtonHeld = true;
+			}
+		}
+		else _isRightButtonHeld = Controller.RightBumper;
+		
+		// update the player info
+		CurrentPlayerInfo.ShoeLeft  = _selectedShoe;
+		CurrentPlayerInfo.ShoeRight = _selectedShoe;
 	}
 }
-
-public class PlayerInfo {
-	public int PlayerNum;
-	public InputDevice Controller;
-	public int LeftShoeType, RightShoeType;
-	public Color TeamColor;
-}
-
