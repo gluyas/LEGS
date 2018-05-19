@@ -10,6 +10,7 @@ public class GameplayManager : MonoBehaviour
 	
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
+	public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs; 
 	
 	public GameObject MainMenu;
@@ -34,6 +35,41 @@ public class GameplayManager : MonoBehaviour
 			n++;
 		}
 	}
+	
+	// GAMEPLAY FUNCTIONS
+
+	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position)
+	{	
+		var instance = Instantiate(PlayerPrefab, position, Quaternion.identity);
+		var player = instance.GetComponentInChildren<Player>();
+
+		player.Controller = playerInfo.Controller;
+
+		foreach (var renderer in instance.GetComponentsInChildren<SpriteRenderer>())
+		{
+			renderer.color = playerInfo.TeamColor;
+		}
+
+		player.LegLeft.EquipShoe(InstantiateShoe(playerInfo.ShoeLeft));
+		player.LegRight.EquipShoe(InstantiateShoe(playerInfo.ShoeRight));
+		
+		return player;
+	}
+
+	public Shoe InstantiateShoe(ShoeType type, Vector2 position = default(Vector2))
+	{
+		foreach (var prefab in ShoePrefabs)
+		{
+			var prefabShoe = prefab.GetComponent<Shoe>();
+			if (prefabShoe.Type == type)
+			{
+				var instance = Instantiate(prefab, position, Quaternion.identity);
+				return instance.GetComponent<Shoe>();
+			}
+		}
+		Debug.LogAssertionFormat("No Shoe prefab for shoe type {0}", type);
+		return null;
+	}
 
 	// UI BUTTONS
 	public void PlayButton() {
@@ -53,11 +89,21 @@ public class GameplayManager : MonoBehaviour
 	}
 
 	private void OnValidate()
-	{
+	{	
+		Debug.AssertFormat(PlayerPrefab.GetComponentInChildren<Player>() != null, 
+			"Player prefab {0} does not have a Player component", PlayerPrefab);
+		
 		foreach (var shoe in ShoePrefabs)
 		{
 			Debug.AssertFormat(shoe.GetComponent<Shoe>() != null, 
 				"Shoe prefab {0} does not have a Shoe component", shoe);
+		}
+
+		for (int i = 0; i < PlayerColorsDefault.Length; i++)
+		{
+			var color = PlayerColorsDefault[i];
+			color.a = 1f;
+			PlayerColorsDefault[i] = color;
 		}
 	}
 }

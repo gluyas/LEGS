@@ -46,17 +46,21 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
-		
-		PlayerId = _playerCount++;
-		{	// set the controller. currently only works the first time when loaded in a scene
-			var controllers = InputManager.Devices.ToList();
-			if (PlayerId < controllers.Count)
+
+		if (GameplayManager.Instance == null)
+		{
+			PlayerId = _playerCount++;
 			{
-				Controller = controllers[PlayerId];
-			}
-			else
-			{
-				Debug.LogFormat("Player{0} missing controller", PlayerId);
+				// set the controller. currently only works the first time when loaded in a scene
+				var controllers = InputManager.Devices.ToList();
+				if (PlayerId < controllers.Count)
+				{
+					Controller = controllers[PlayerId];
+				}
+				else
+				{
+					Debug.LogFormat("Player{0} missing controller", PlayerId);
+				}
 			}
 		}
 	}
