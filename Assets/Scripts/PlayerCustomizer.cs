@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class PlayerCustomizer : MonoBehaviour
 {
+	public GameObject NoControllerMenu;
+	
+	public GameObject ShoeSelectionMenu;
 	public Text ShoeSelectionText;
 	
 	[NonSerialized] public PlayerInfo CurrentPlayerInfo;
@@ -22,7 +25,17 @@ public class PlayerCustomizer : MonoBehaviour
 	
 	private void Update ()
 	{
-		if (CurrentPlayerInfo == null) return;
+		if (CurrentPlayerInfo == null)
+		{
+			NoControllerMenu.SetActive(true);	
+			ShoeSelectionMenu.SetActive(false);	
+			return;
+		}
+		else
+		{
+			NoControllerMenu.SetActive(false);	
+			ShoeSelectionMenu.SetActive(true);	
+		}
 
 		ShoeSelectionText.text = _selectedShoe.ToString();
 
