@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using InControl;
@@ -22,6 +24,7 @@ public class GameplayManager : MonoBehaviour
 	private void Start()
 	{
 		Instance = this;
+		DontDestroyOnLoad(this);
 		
 		var n = 0;
 		foreach (var device in InputManager.Devices) {	// set up default player configs
@@ -34,11 +37,41 @@ public class GameplayManager : MonoBehaviour
 			Players.Add(playerInfo);
 			n++;
 		}
+		
+		for (var i = 0; i < Mathf.Min(Players.Count, PlayerCustomizers.Length); i++)
+		{
+			PlayerCustomizers[i].CurrentPlayerInfo = Players[i];
+		}
 	}
-	
-	// GAMEPLAY FUNCTIONS
 
-	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position)
+	private void Update()
+	{
+		if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
+		{
+			foreach (var c in PlayerCustomizers) c.IsReady = false;
+
+			PlayerCustomizationMenu.SetActive(false);
+			StartCoroutine(LoadStage());
+		}
+	}
+
+	// GAMEPLAY FUNCTIONS
+		
+	public IEnumerator LoadStage()
+	{
+		var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
+		while (!load.isDone)
+		{
+			yield return null;
+		}
+
+		foreach (var playerInfo in Players)
+		{
+			InstantiatePlayer(playerInfo);
+		}
+	}
+
+	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
 		var instance = Instantiate(PlayerPrefab, position, Quaternion.identity);
 		var player = instance.GetComponentInChildren<Player>();
@@ -72,20 +105,12 @@ public class GameplayManager : MonoBehaviour
 	}
 
 	// UI BUTTONS
-	public void PlayButton() {
-		MainMenu.SetActive(false);
-		
-		// enable player customisation and set up customizers.
-		PlayerCustomizationMenu.SetActive(true);
-		for (var i = 0; i < Mathf.Min(Players.Count, PlayerCustomizers.Length); i++)
-		{
-			PlayerCustomizers[i].CurrentPlayerInfo = Players[i];
-		}
-	}
-
-	public void QuitButton() {
-		if (InputManager.ActiveDevice.Action2)
-			Application.Quit();
+	public void Quit() {
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit ();
+#endif
 	}
 
 	private void OnValidate()
