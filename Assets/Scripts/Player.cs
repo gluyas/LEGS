@@ -63,8 +63,8 @@ public class Player : MonoBehaviour
 	{
 		if (Controller == null) return;
 		
-		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger.Value);
-		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger.Value);	
+		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
+		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);	
 
 #if false
 		{	// head stabilization
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
 #endif
 	}
 	
-	private void UpdateLeg(Leg leg, Vector2 joystick, float trigger)
+	private void UpdateLeg(Leg leg, Vector2 joystick, InputControl trigger)
 	{
 		var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
 		
@@ -127,10 +127,9 @@ public class Player : MonoBehaviour
 #endif
 		}
 
-		var triggerHeld = trigger > 0;							// trigger down 
-		var triggerDown = triggerHeld && !leg.IsTriggerHeld;	// trigger down on on this frame
-		var triggerUp  = !triggerHeld && leg.IsTriggerHeld;		// trigger up   on this frame
-		leg.IsTriggerHeld = triggerHeld;
+		var triggerHeld = trigger.IsPressed;
+		var triggerDown = trigger.WasPressed;
+		var triggerUp   = trigger.WasReleased;
 		
 		if (leg.HasShoe) {	// shoe abilities		
 			switch (leg.CurrentShoe.Type)

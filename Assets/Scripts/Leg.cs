@@ -23,7 +23,6 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Rigidbody2D Rigidbody;
 
 	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
-	[NonSerialized] public bool IsTriggerHeld;
 
 	public void EquipShoe(Shoe newShoe)
 	{
