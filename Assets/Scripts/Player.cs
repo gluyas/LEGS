@@ -227,9 +227,32 @@ public class Player : MonoBehaviour
 				case ShoeType.Rocket:
 					Debug.Assert(leg.CurrentShoe is RocketShoe);
 					var rocket = leg.CurrentShoe as RocketShoe;
-					
-					leg.Rigidbody.AddForce(-legDirWorldSpace * Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, trigger));
-					
+
+					if (triggerHeld)
+					{
+						if (rocket.Fuel > 0)
+						{
+							rocket.Delay = rocket.RegenerationDelay;
+
+							var rate = Mathf.Pow(trigger, rocket.BurnRateExponent);
+							
+							rocket.Fuel -= Time.deltaTime /
+								Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, rate);
+							
+							leg.Rigidbody.AddForce(-legDirWorldSpace *
+								Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, rate));
+						}
+					}
+					else
+					{
+						rocket.Delay -= Time.deltaTime;
+						if (rocket.Delay <= 0)
+						{
+							rocket.Fuel += Time.deltaTime / rocket.RegenerationTime;
+						}
+					}
+					rocket.Fuel = Mathf.Clamp01(rocket.Fuel);
+					rocket.GetComponent<Renderer>().material.color = rocket.FuelLevelColor.Evaluate(rocket.Fuel);
 					break;
 			}
 		}
