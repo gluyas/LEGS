@@ -35,6 +35,25 @@ public class Player : MonoBehaviour
 	{
 		get { return this.GetComponent<Rigidbody2D>(); }
 	}
+
+	public void SetPlayerInfo(PlayerInfo playerInfo)
+	{
+		Controller = playerInfo.Controller;
+
+		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+
+		Shoe oldShoe;
+		
+		oldShoe = LegLeft.CurrentShoe;
+		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
+		if (oldShoe != null) Destroy(oldShoe.gameObject);
+
+		oldShoe = LegRight.CurrentShoe;
+		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
+		if (oldShoe != null) Destroy(oldShoe.gameObject);
+	}
 	
 	private void Start ()
 	{

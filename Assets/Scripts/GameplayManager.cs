@@ -73,18 +73,8 @@ public class GameplayManager : MonoBehaviour
 
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
-		var instance = Instantiate(PlayerPrefab, position, Quaternion.identity);
-		var player = instance.GetComponentInChildren<Player>();
-
-		player.Controller = playerInfo.Controller;
-
-		foreach (var renderer in instance.GetComponentsInChildren<SpriteRenderer>())
-		{
-			renderer.color = playerInfo.TeamColor;
-		}
-
-		player.LegLeft.EquipShoe(InstantiateShoe(playerInfo.ShoeLeft));
-		player.LegRight.EquipShoe(InstantiateShoe(playerInfo.ShoeRight));
+		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
+		player.SetPlayerInfo(playerInfo);
 		
 		return player;
 	}

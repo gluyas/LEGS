@@ -12,8 +12,20 @@ public class PlayerCustomizer : MonoBehaviour
 	
 	public GameObject ShoeSelectionMenu;
 	public Text ShoeSelectionText;
+
+	public Player PlayerModel;
+
+	[NonSerialized] private PlayerInfo _currentPlayerInfo;
+	public PlayerInfo CurrentPlayerInfo
+	{
+		get { return _currentPlayerInfo; }
+		set
+		{
+			_currentPlayerInfo = value;
+			PlayerModel.SetPlayerInfo(value);
+		}
+	}
 	
-	[NonSerialized] public PlayerInfo CurrentPlayerInfo;
 	private InputDevice Controller
 	{
 		get { return CurrentPlayerInfo.Controller; }
@@ -37,21 +49,30 @@ public class PlayerCustomizer : MonoBehaviour
 			ShoeSelectionMenu.SetActive(true);	
 		}
 
-		ShoeSelectionText.text = _selectedShoe.ToString();
+		if (!IsReady) ShoeSelectionText.text = _selectedShoe.ToString();
+		else ShoeSelectionText.text = "READY";
 
+		var changed = false;
+		
 		if (Controller.LeftBumper.WasPressed)
 		{
 			_selectedShoe = Shoe.PrevType(_selectedShoe);
+			changed = true;
 		}
 		
 		if (Controller.RightBumper.WasPressed)
 		{
 			_selectedShoe = Shoe.NextType(_selectedShoe);
+			changed = true;
 		}
 
 		// update the player info
-		CurrentPlayerInfo.ShoeLeft  = _selectedShoe;
-		CurrentPlayerInfo.ShoeRight = _selectedShoe;
+		if (changed)
+		{
+			CurrentPlayerInfo.ShoeLeft = _selectedShoe;
+			CurrentPlayerInfo.ShoeRight = _selectedShoe;
+			PlayerModel.SetPlayerInfo(CurrentPlayerInfo);
+		}
 
 		if (Controller.Action1.WasPressed)
 		{
