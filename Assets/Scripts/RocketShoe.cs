@@ -17,10 +17,19 @@ public class RocketShoe : Shoe
 	
 	[NonSerialized] public float Fuel = 1;
 
+	private void FixedUpdate()
+	{
+		if (!IsEquipped)
+		{
+			Fuel += Time.deltaTime / RegenerationTime;
+			Fuel = Mathf.Clamp01(Fuel);
+			GetComponent<Renderer>().material.color = FuelLevelColor.Evaluate(Fuel);
+		}
+	}
+
 	private void OnValidate()
 	{
 		Type = ShoeType.Rocket;
-		//ForceMin = ForceMax * BurnTimeMin / BurnTimeMax * ForceMinEfficiencyFactor;
 	}
 
 }
