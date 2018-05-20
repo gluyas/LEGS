@@ -230,26 +230,18 @@ public class Player : MonoBehaviour
 
 					if (triggerHeld)
 					{
-						if (rocket.Fuel > 0)
-						{
-							rocket.Delay = rocket.RegenerationDelay;
+						if (rocket.Fuel <= 0) break;
+						
+						rocket.Fuel -= Time.deltaTime /
+						    Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, trigger);
 
-							var rate = Mathf.Pow(trigger, rocket.BurnRateExponent);
-							
-							rocket.Fuel -= Time.deltaTime /
-								Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, rate);
-							
-							leg.Rigidbody.AddForce(-legDirWorldSpace *
-								Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, rate));
-						}
+						var efficiency = Mathf.Clamp01(rocket.Fuel / rocket.FuelEfficiencyFalloff);
+						leg.Rigidbody.AddForce(-legDirWorldSpace * efficiency *
+							Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, trigger));
 					}
 					else
 					{
-						rocket.Delay -= Time.deltaTime;
-						if (rocket.Delay <= 0)
-						{
-							rocket.Fuel += Time.deltaTime / rocket.RegenerationTime;
-						}
+						rocket.Fuel += Time.deltaTime / rocket.RegenerationTime;
 					}
 					rocket.Fuel = Mathf.Clamp01(rocket.Fuel);
 					rocket.GetComponent<Renderer>().material.color = rocket.FuelLevelColor.Evaluate(rocket.Fuel);
