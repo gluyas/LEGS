@@ -1001,7 +1001,7 @@ MonoBehaviour:
     type: 2}
   ShoePrefabs:
   - {fileID: 1834130666136274, guid: 4345c0c2a4875d6428f24e46f5d2b338, type: 2}
-  - {fileID: 1216925003650530, guid: 16047af841fa93146a7c6424eeae5936, type: 2}
+  - {fileID: 1516549127332670, guid: 9c447f5419376f347baee9050c1b81df, type: 2}
   - {fileID: 1971190169493354, guid: d576a9860db7bbd418a0a7f27e4e070d, type: 2}
   MainMenu: {fileID: 981316383}
   PlayerCustomizationMenu: {fileID: 2071111199}
