@@ -104,8 +104,8 @@ MonoBehaviour:
   ForceMin: 100
   BurnTimeMax: 5
   BurnTimeMin: 2
-  RegenerationTime: 8
-  FuelEfficiencyFalloff: 0.4
+  RegenerationTime: 16
+  FuelEfficiencyFalloff: 0.3
   FuelLevelColor:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0, a: 1}
@@ -117,7 +117,7 @@ MonoBehaviour:
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 16384
+    ctime1: 19661
     ctime2: 65535
     ctime3: 65535
     ctime4: 0
