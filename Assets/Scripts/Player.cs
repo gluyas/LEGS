@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InControl;
+using NUnit.Framework;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
 	public float HeadTiltThetaMax;
 	public Vector2 HeadMassOffset;
 #endif
+
+	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
 	public float LegTorqueMax;
@@ -62,8 +65,55 @@ public class Player : MonoBehaviour
 	{
 		if (Controller == null) return;
 		
-		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger.Value);
-		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger.Value);	
+		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
+		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);	
+
+		{	// pick up items
+			var tryEquipLeft  = Controller.LeftBumper && !LegLeft.IsBumperHeld;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightBumper && !LegRight.IsBumperHeld;
+
+			if (tryEquipLeft || tryEquipRight)
+			{
+				var availableItems = new List<Shoe>();
+
+				var itemFilter = new ContactFilter2D();
+				itemFilter.SetLayerMask(LayerMask.GetMask("Pickups"));
+
+				foreach (var zone in ItemPickupZones) // query pickup zones
+				{
+					var colliders = new Collider2D[5];
+					var count = zone.OverlapCollider(itemFilter, colliders);
+
+					for (int i = 0; i < count; i++)
+					{
+						var shoe = colliders[i].GetComponent<Shoe>();
+						if (shoe.IsEquipped) continue;	// skip already equipped shoes
+
+						availableItems.Add(shoe); // accumulate into list
+					}
+				}
+
+				if (availableItems.Count > 0)
+				{
+					Leg targetLeg;
+					if (tryEquipLeft) targetLeg = LegLeft;
+					else              targetLeg = LegRight;
+
+					var targetPos = (Vector2) 
+						(targetLeg.transform.position + targetLeg.transform.rotation * targetLeg.ShoePosOffset);
+					
+					var closest = availableItems
+						.OrderBy(shoe => Vector2.Distance(shoe.transform.position, targetPos))
+						.First();
+					
+					targetLeg.EquipShoe(closest);
+					targetLeg.IsBumperHeld = true;
+				}
+			}
+			// only reset hold status to false here: allow player to pre-emptively hold equip button
+			if (!Controller.LeftBumper)  LegLeft.IsBumperHeld  = false;
+			if (!Controller.RightBumper) LegRight.IsBumperHeld = false;
+		}
 
 #if false
 		{	// head stabilization
@@ -93,19 +143,18 @@ public class Player : MonoBehaviour
 #endif
 	}
 	
-	private void UpdateLeg(Leg leg, Vector2 joystick, float trigger)
+	private void UpdateLeg(Leg leg, Vector2 joystick, InputControl trigger)
 	{
+		var legDirWorldSpace = (Vector2)
+			(Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up);
+		
+		if (joystick.magnitude > LegDeadzoneMagnitude)
 		{
-			// leg movement
-			if (joystick.magnitude > LegDeadzoneMagnitude)
-			{
-				leg.CurrentInputDir = joystick.normalized;
-			}
-
-			joystick = leg.CurrentInputDir;
-			
-			var legDirWorldSpace = Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up;
-
+			leg.CurrentInputDir = joystick.normalized;
+		}
+		joystick = leg.CurrentInputDir;
+		
+		{ 	// leg movement
 			var motor = leg.Hinge.motor;
 
 			var theta = Vector2.SignedAngle(joystick, legDirWorldSpace);
@@ -128,11 +177,74 @@ public class Player : MonoBehaviour
 #endif
 		}
 
-		if (leg.HasShoe) {	// shoe abilities
+		var triggerHeld = trigger.IsPressed;
+		var triggerDown = trigger.WasPressed;
+		var triggerUp   = trigger.WasReleased;
+		
+		if (leg.HasShoe) {	// shoe abilities		
 			switch (leg.CurrentShoe.Type)
 			{
 				case ShoeType.Debug:
-					leg.CurrentShoe.GetComponent<Renderer>().material.color = new Color(1, 1-trigger, 1-trigger);
+					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, trigger * 180);
+					break;
+				
+				
+				case ShoeType.Gun:
+					Debug.Assert(leg.CurrentShoe is GunShoe);
+					var gun = leg.CurrentShoe as GunShoe;
+
+					if (triggerHeld)
+					{
+						gun.Charge += Time.deltaTime / Mathf.Lerp(gun.ChargeTimeMax, gun.ChargeTimeMin, trigger);
+					}
+					if (triggerUp || gun.Charge >= 1)
+					{
+						gun.Charge = Mathf.Clamp01(gun.Charge);
+						if (gun.Charge < gun.ChargeThreshold)
+						{
+							// fizzle
+						}
+						else
+						{
+							var power = Mathf.Pow(
+								(gun.Charge - gun.ChargeThreshold) / (1 - gun.ChargeThreshold), gun.ChargeExponent);
+							
+							leg.EquipShoe(null);	// drop the shoe: send it flying
+							leg.GetComponent<Rigidbody2D>();
+							
+							leg.Rigidbody.AddForce(-legDirWorldSpace *
+								Mathf.Lerp(gun.KnockbackForceMin, gun.KnockbackForceMax, power), ForceMode2D.Impulse);
+
+							gun.Rigidbody.velocity += legDirWorldSpace *
+								Mathf.Lerp(gun.ProjectileSpeedMin, gun.ProjectileSpeedMax, power);
+						}
+						gun.Charge = 0;
+					}
+					gun.GetComponent<Renderer>().material.color = gun.ChargeColor.Evaluate(gun.Charge);
+					break;
+				
+				
+				case ShoeType.Rocket:
+					Debug.Assert(leg.CurrentShoe is RocketShoe);
+					var rocket = leg.CurrentShoe as RocketShoe;
+
+					if (triggerHeld)
+					{
+						if (rocket.Fuel <= 0) break;
+						
+						rocket.Fuel -= Time.deltaTime /
+						    Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, trigger);
+
+						var efficiency = Mathf.Clamp01(rocket.Fuel / rocket.FuelEfficiencyFalloff);
+						leg.Rigidbody.AddForce(-legDirWorldSpace * efficiency *
+							Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, trigger));
+					}
+					else
+					{
+						rocket.Fuel += Time.deltaTime / rocket.RegenerationTime;
+					}
+					rocket.Fuel = Mathf.Clamp01(rocket.Fuel);
+					rocket.GetComponent<Renderer>().material.color = rocket.FuelLevelColor.Evaluate(rocket.Fuel);
 					break;
 			}
 		}

@@ -20,12 +20,15 @@ public class Leg : MonoBehaviour
 	
 	[NonSerialized] public HingeJoint2D Hinge;
 	[NonSerialized] public Collider2D Collider;
+	[NonSerialized] public Rigidbody2D Rigidbody;
 
 	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
+	[NonSerialized] public bool IsBumperHeld;
 
 	public void EquipShoe(Shoe newShoe)
 	{
-		if (newShoe.IsEquipped)
+		if (CurrentShoe == newShoe) return;
+		if (newShoe != null && newShoe.IsEquipped)
 		{
 			Debug.LogAssertion("attempted to equip already equipped shoe");
 			return;
@@ -34,16 +37,22 @@ public class Leg : MonoBehaviour
 		if (CurrentShoe != null)	// swap old shoe with new one
 		{
 			CurrentShoe.transform.parent = null;
-			CurrentShoe.transform.position = newShoe.transform.position;
-			CurrentShoe.transform.rotation = newShoe.transform.rotation;
+			if (newShoe != null)
+			{
+				CurrentShoe.transform.position = newShoe.transform.position;
+				CurrentShoe.transform.rotation = newShoe.transform.rotation;
+			}
 			CurrentShoe.IsEquipped = false;
 		}
 
 		CurrentShoe = newShoe;
-		CurrentShoe.transform.parent = this.transform;
-		CurrentShoe.transform.localPosition = ShoePosOffset;
-		CurrentShoe.transform.localRotation = Quaternion.identity;
-		CurrentShoe.IsEquipped = true;
+		if (CurrentShoe != null)
+		{
+			CurrentShoe.transform.parent = this.transform;
+			CurrentShoe.transform.localPosition = ShoePosOffset;
+			CurrentShoe.transform.localRotation = Quaternion.identity;
+			CurrentShoe.IsEquipped = true;
+		}
 	}
 	
 	// Use this for initialization
@@ -52,9 +61,8 @@ public class Leg : MonoBehaviour
 		if (CurrentShoe != null) EquipShoe(CurrentShoe);	// ensure attached shoe is correctly set up
 		
 		Collider = GetComponent<Collider2D>();
-		
 		Hinge = GetComponent<HingeJoint2D>();
-		//Hinge.useMotor = true;
+		Rigidbody = GetComponent<Rigidbody2D>();
 	}
 
 	private void OnValidate()
