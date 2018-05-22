@@ -222,6 +222,30 @@ public class Player : MonoBehaviour
 					}
 					gun.GetComponent<Renderer>().material.color = gun.ChargeColor.Evaluate(gun.Charge);
 					break;
+				
+				
+				case ShoeType.Rocket:
+					Debug.Assert(leg.CurrentShoe is RocketShoe);
+					var rocket = leg.CurrentShoe as RocketShoe;
+
+					if (triggerHeld)
+					{
+						if (rocket.Fuel <= 0) break;
+						
+						rocket.Fuel -= Time.deltaTime /
+						    Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, trigger);
+
+						var efficiency = Mathf.Clamp01(rocket.Fuel / rocket.FuelEfficiencyFalloff);
+						leg.Rigidbody.AddForce(-legDirWorldSpace * efficiency *
+							Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, trigger));
+					}
+					else
+					{
+						rocket.Fuel += Time.deltaTime / rocket.RegenerationTime;
+					}
+					rocket.Fuel = Mathf.Clamp01(rocket.Fuel);
+					rocket.GetComponent<Renderer>().material.color = rocket.FuelLevelColor.Evaluate(rocket.Fuel);
+					break;
 			}
 		}
 	}

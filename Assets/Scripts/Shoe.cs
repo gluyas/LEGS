@@ -40,4 +40,5 @@ public enum ShoeType
 {
 	Debug,
 	Gun,
+	Rocket,
 }
