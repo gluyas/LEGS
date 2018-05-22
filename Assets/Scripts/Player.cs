@@ -35,6 +35,25 @@ public class Player : MonoBehaviour
 	{
 		get { return this.GetComponent<Rigidbody2D>(); }
 	}
+
+	public void SetPlayerInfo(PlayerInfo playerInfo)
+	{
+		Controller = playerInfo.Controller;
+
+		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+
+		Shoe oldShoe;
+		
+		oldShoe = LegLeft.CurrentShoe;
+		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
+		if (oldShoe != null) Destroy(oldShoe.gameObject);
+
+		oldShoe = LegRight.CurrentShoe;
+		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
+		if (oldShoe != null) Destroy(oldShoe.gameObject);
+	}
 	
 	private void Start ()
 	{
@@ -46,17 +65,21 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
-		
-		PlayerId = _playerCount++;
-		{	// set the controller. currently only works the first time when loaded in a scene
-			var controllers = InputManager.Devices.ToList();
-			if (PlayerId < controllers.Count)
+
+		if (GameplayManager.Instance == null)
+		{
+			PlayerId = _playerCount++;
 			{
-				Controller = controllers[PlayerId];
-			}
-			else
-			{
-				Debug.LogFormat("Player{0} missing controller", PlayerId);
+				// set the controller. currently only works the first time when loaded in a scene
+				var controllers = InputManager.Devices.ToList();
+				if (PlayerId < controllers.Count)
+				{
+					Controller = controllers[PlayerId];
+				}
+				else
+				{
+					Debug.LogFormat("Player{0} missing controller", PlayerId);
+				}
 			}
 		}
 	}

@@ -56,17 +56,12 @@ public class Leg : MonoBehaviour
 	}
 	
 	// Use this for initialization
-	private void Start ()
+	private void Awake()
 	{
 		if (CurrentShoe != null) EquipShoe(CurrentShoe);	// ensure attached shoe is correctly set up
 		
 		Collider = GetComponent<Collider2D>();
 		Hinge = GetComponent<HingeJoint2D>();
 		Rigidbody = GetComponent<Rigidbody2D>();
-	}
-
-	private void OnValidate()
-	{
-		Start();
 	}
 }
