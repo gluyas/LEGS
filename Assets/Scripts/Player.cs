@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
 	public float HeadTiltThetaMax;
 	public Vector2 HeadMassOffset;
 #endif
+
+	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
 	public float LegTorqueMax;
@@ -65,6 +67,53 @@ public class Player : MonoBehaviour
 		
 		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);	
+
+		{	// pick up items
+			var tryEquipLeft  = Controller.LeftBumper && !LegLeft.IsBumperHeld;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightBumper && !LegRight.IsBumperHeld;
+
+			if (tryEquipLeft || tryEquipRight)
+			{
+				var availableItems = new List<Shoe>();
+
+				var itemFilter = new ContactFilter2D();
+				itemFilter.SetLayerMask(LayerMask.GetMask("Pickups"));
+
+				foreach (var zone in ItemPickupZones) // query pickup zones
+				{
+					var colliders = new Collider2D[5];
+					var count = zone.OverlapCollider(itemFilter, colliders);
+
+					for (int i = 0; i < count; i++)
+					{
+						var shoe = colliders[i].GetComponent<Shoe>();
+						if (shoe.IsEquipped) continue;	// skip already equipped shoes
+
+						availableItems.Add(shoe); // accumulate into list
+					}
+				}
+
+				if (availableItems.Count > 0)
+				{
+					Leg targetLeg;
+					if (tryEquipLeft) targetLeg = LegLeft;
+					else              targetLeg = LegRight;
+
+					var targetPos = (Vector2) 
+						(targetLeg.transform.position + targetLeg.transform.rotation * targetLeg.ShoePosOffset);
+					
+					var closest = availableItems
+						.OrderBy(shoe => Vector2.Distance(shoe.transform.position, targetPos))
+						.First();
+					
+					targetLeg.EquipShoe(closest);
+					targetLeg.IsBumperHeld = true;
+				}
+			}
+			// only reset hold status to false here: allow player to pre-emptively hold equip button
+			if (!Controller.LeftBumper)  LegLeft.IsBumperHeld  = false;
+			if (!Controller.RightBumper) LegRight.IsBumperHeld = false;
+		}
 
 #if false
 		{	// head stabilization
@@ -135,7 +184,7 @@ public class Player : MonoBehaviour
 			switch (leg.CurrentShoe.Type)
 			{
 				case ShoeType.Debug:
-					leg.CurrentShoe.GetComponent<Renderer>().material.color = new Color(1, 1-trigger, 1-trigger);
+					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, trigger * 180);
 					break;
 			}
 		}
