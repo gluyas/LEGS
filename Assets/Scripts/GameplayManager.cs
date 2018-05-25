@@ -12,12 +12,15 @@ public class GameplayManager : MonoBehaviour
 	
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
+	[SerializeField]  public String[] Levels;
+
 	public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs; 
 	
 	public GameObject MainMenu;
 
 	public GameObject PlayerCustomizationMenu;
+	public GameObject LevelSelectMenu;
 	public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCystomizationMenu
 	public Color[] PlayerColorsDefault;
 
@@ -44,6 +47,9 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 
+
+	//			StartCoroutine(LoadStage());
+
 	private void Update()
 	{
 		if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
@@ -51,7 +57,8 @@ public class GameplayManager : MonoBehaviour
 			foreach (var c in PlayerCustomizers) c.IsReady = false;
 
 			PlayerCustomizationMenu.SetActive(false);
-			StartCoroutine(LoadStage());
+			LevelSelectMenu.SetActive(true);
+
 		}
 	}
 
