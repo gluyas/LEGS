@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using InControl;
+
 
 public class GameplayManager : MonoBehaviour 
 {
@@ -12,16 +14,27 @@ public class GameplayManager : MonoBehaviour
 	
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
-	[SerializeField]  public String[] Levels;
+	[SerializeField]
+    [Header("Game Settings")]
+    public int LevelSelected;
+    public int ModeSelected;
 
-	public GameObject PlayerPrefab;
-	public GameObject[] ShoePrefabs; 
-	
-	public GameObject MainMenu;
+    [Header("Menu Variables")]
+    public String[] Levels;
+    public GameObject[] LevelModeMenus;
 
-	public GameObject PlayerCustomizationMenu;
-	public GameObject LevelSelectMenu;
-	public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCystomizationMenu
+    public GameObject MainMenu;
+    public GameObject firstSelected;
+    public GameObject ReadyMenu;
+
+    public GameObject LevelSelectMenu;
+
+    [Header("Player Variables")]
+    public GameObject PlayerPrefab;
+	public GameObject[] ShoePrefabs;
+
+    public GameObject PlayerCustomizationMenu;
+    public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCustomizationMenu
 	public Color[] PlayerColorsDefault;
 
 	private void Start()
@@ -60,7 +73,9 @@ public class GameplayManager : MonoBehaviour
 			LevelSelectMenu.SetActive(true);
 
 		}
-	}
+
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
+    }
 
 	// GAMEPLAY FUNCTIONS
 		
@@ -101,15 +116,6 @@ public class GameplayManager : MonoBehaviour
 		return null;
 	}
 
-	// UI BUTTONS
-	public void Quit() {
-#if UNITY_EDITOR
-		UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit ();
-#endif
-	}
-
 	private void OnValidate()
 	{	
 		Debug.AssertFormat(PlayerPrefab.GetComponentInChildren<Player>() != null, 
@@ -128,4 +134,79 @@ public class GameplayManager : MonoBehaviour
 			PlayerColorsDefault[i] = color;
 		}
 	}
+
+
+
+
+    // *********************** UI BUTTONS
+    public void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit ();
+#endif
+    }
+
+
+    // ********** LEVEL SELECT
+
+    public void SelectBeach()
+    {
+        LevelSelected = 0;
+        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        LevelModeMenus[LevelSelected].SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    public void SelectDojo()
+    {
+        LevelSelected = 1;
+        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        LevelModeMenus[LevelSelected].SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    public void SelectCity()
+    {
+        LevelSelected = 2;
+        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        LevelModeMenus[LevelSelected].SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    public void SelectMouth()
+    {
+        LevelSelected = 3;
+        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        LevelModeMenus[LevelSelected].SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    // ********** MODE SELECT
+
+    public void SelectMode1()
+    {
+        ModeSelected = 1;
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    public void SelectMode2()
+    {
+        ModeSelected = 2;
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
+    public void SelectMode3()
+    {
+        ModeSelected = 3;
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelected);
+    }
+
 }
