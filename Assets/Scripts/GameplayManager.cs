@@ -61,7 +61,7 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
-	//			StartCoroutine(LoadStage());
+
 
 	private void Update()
 	{
@@ -70,11 +70,13 @@ public class GameplayManager : MonoBehaviour
 			foreach (var c in PlayerCustomizers) c.IsReady = false;
 
 			PlayerCustomizationMenu.SetActive(false);
+			firstSelected = LevelSelectMenu.transform.Find("LEVEL1").gameObject;
 			LevelSelectMenu.SetActive(true);
+			EventSystem.current.SetSelectedGameObject(firstSelected);
 
 		}
 
-        Debug.Log(EventSystem.current.currentSelectedGameObject);
+        //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
 
 	// GAMEPLAY FUNCTIONS
@@ -138,14 +140,14 @@ public class GameplayManager : MonoBehaviour
 
 
 
-    // *********************** UI BUTTONS
-    public void Quit()
+    // *********************** UI BUTTONS **************************
+    
+
+
+
+	public void Quit()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit ();
-#endif
+		Application.Quit();
     }
 
 
@@ -208,5 +210,10 @@ public class GameplayManager : MonoBehaviour
         ReadyMenu.SetActive(true);
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
+
+	public void StartButton()
+	{
+		StartCoroutine(LoadStage());
+	}
 
 }

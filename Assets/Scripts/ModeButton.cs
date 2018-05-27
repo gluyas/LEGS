@@ -54,6 +54,14 @@ public class ModeButton : MonoBehaviour, ISelectHandler
             EventSystem.current.SetSelectedGameObject(GM.firstSelected);
             canBack = false;
         }
+		else if (InputManager.Devices[0].Action2 && canBack && this.gameObject.name == "Level Select")
+		{
+			GM.firstSelected = GM.MainMenu.transform.Find("PLAY").gameObject;
+			GM.LevelSelectMenu.SetActive(false);
+			GM.MainMenu.SetActive(true);
+			EventSystem.current.SetSelectedGameObject(GM.firstSelected);
+			canBack = false;
+		}
         
     }
 
