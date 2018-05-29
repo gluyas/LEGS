@@ -10,6 +10,8 @@ using UnityEngine;
 [RequireComponent(typeof(HingeJoint2D))]
 public class Leg : MonoBehaviour
 {
+	public float Damage;
+	
 	public Vector2 ShoePosOffset;
 	public Shoe CurrentShoe;
 
@@ -52,6 +54,14 @@ public class Leg : MonoBehaviour
 			CurrentShoe.transform.localPosition = ShoePosOffset;
 			CurrentShoe.transform.localRotation = Quaternion.identity;
 			CurrentShoe.IsEquipped = true;
+		}
+	}
+	
+	private void OnCollisionEnter2D(Collision2D other)
+	{
+		var player = other.gameObject.GetComponent<Player>();
+		if (player != null) {
+			player.Hp -= Damage;
 		}
 	}
 	

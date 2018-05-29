@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public InputDevice Controller;
 
+	[NonSerialized] public float Hp = 1;
+
 #if false
 	public float HeadTorqueMax;
 	public float HeadStabilizerCurve;
