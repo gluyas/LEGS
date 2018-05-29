@@ -254,8 +254,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1713435337620734}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 483.9999, y: -24.999998, z: -0.0000001627207}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 78.00004, y: -25, z: 0}
   m_LocalScale: {x: 0.999995, y: 0.999995, z: 0.999995}
   m_Children:
   - {fileID: 4515026284682130}
@@ -692,9 +692,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NoControllerMenu: {fileID: 1909463918104928}
-  ShoeSelectionMenu: {fileID: 1669607889889546}
-  ShoeSelectionText: {fileID: 114186549963203702}
+  TitleText: {fileID: 114731638262267574}
+  SelectionMenu: {fileID: 1669607889889546}
+  SelectionText: {fileID: 114186549963203702}
   PlayerModel: {fileID: 114564792565845970}
+  PlayerColors:
+  - {r: 1, g: 0.7941176, b: 0.7941176, a: 1}
+  - {r: 1, g: 0.83823526, b: 0.962069, a: 1}
+  - {r: 0.8308824, g: 0.84604466, b: 1, a: 1}
+  - {r: 0.83823526, g: 0.9732251, b: 1, a: 1}
+  - {r: 0.83691686, g: 1, b: 0.8235294, a: 1}
+  - {r: 0.9865112, g: 1, b: 0.8602941, a: 1}
+  - {r: 1, g: 0.80831647, b: 0.60294116, a: 1}
 --- !u!114 &114927828846935896
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -994,7 +1003,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.05, y: 2.32}
-  m_ConnectedAnchor: {x: 0.6297976, y: -0.60106885}
+  m_ConnectedAnchor: {x: 0.62979776, y: -0.60106903}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1017,7 +1026,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.05, y: 2.32}
-  m_ConnectedAnchor: {x: -0.59943193, y: -0.60106885}
+  m_ConnectedAnchor: {x: -0.5994316, y: -0.60106903}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0

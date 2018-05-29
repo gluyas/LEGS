@@ -39,7 +39,7 @@ public class ModeButton : MonoBehaviour, ISelectHandler
             canBack = true;
         }
 
-        if (InputManager.Devices[0].Action2 && canBack && this.gameObject.name == "Mode2")
+		if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name == "Mode2")
         {
             GM.firstSelected = GM.LevelModeMenus[GM.LevelSelected].transform.parent.gameObject;
             GM.LevelModeMenus[GM.LevelSelected].SetActive(false);
@@ -49,7 +49,7 @@ public class ModeButton : MonoBehaviour, ISelectHandler
             EventSystem.current.SetSelectedGameObject(GM.firstSelected);
             canBack = false;
         }
-        else if (InputManager.Devices[0].Action2 && canBack && this.gameObject.name == "Ready")
+		else if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name == "Ready")
         {
             GM.firstSelected = GM.LevelModeMenus[GM.LevelSelected].transform.Find("Mode1").gameObject;
             GM.ReadyMenu.SetActive(false);
@@ -60,7 +60,7 @@ public class ModeButton : MonoBehaviour, ISelectHandler
             EventSystem.current.SetSelectedGameObject(GM.firstSelected);
             canBack = false;
         }
-		else if (InputManager.Devices[0].Action2 && canBack && this.gameObject.name.Contains("LEVEL"))
+		else if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name.Contains("LEVEL"))
 		{
 			GM.firstSelected = GM.MainMenu.transform.Find("PLAY").gameObject;
 			GM.LevelSelectMenu.SetActive(false);
@@ -68,7 +68,7 @@ public class ModeButton : MonoBehaviour, ISelectHandler
 			EventSystem.current.SetSelectedGameObject(GM.firstSelected);
 			canBack = false;
 		}
-		else if (InputManager.Devices[0].Action2 && canBack && this.gameObject.name == "BACK")
+		else if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name == "BACK")
 		{
 			GM.firstSelected = GM.MainMenu.transform.Find("CREDITS").gameObject;
 			GM.MainMenu.transform.parent.Find("Credits").gameObject.SetActive(false);
@@ -76,6 +76,16 @@ public class ModeButton : MonoBehaviour, ISelectHandler
 			EventSystem.current.SetSelectedGameObject(GM.firstSelected);
 			canBack = false;
 		}
+
+//		else if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name.Contains("LEVEL"))
+//		{
+//			GM.firstSelected = GM.MainMenu.transform.Find("PLAY").gameObject;
+//			GM.LevelSelectMenu.SetActive(false);
+//			GM.LevelModeMenus[GM.LevelSelected].SetActive(false);
+//			GM.MainMenu.SetActive(true);
+//			EventSystem.current.SetSelectedGameObject(GM.firstSelected);
+//			canBack = false;
+//		}
         
     }
 

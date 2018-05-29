@@ -12,13 +12,14 @@ using InControl;
 public class GameplayManager : MonoBehaviour 
 {
 	public static GameplayManager Instance { get; private set; }
-	
+
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
 	[SerializeField]
     [Header("Game Settings")]
-    public int LevelSelected;
-    public int ModeSelected;
+    [NonSerialized] public int LevelSelected;
+	[NonSerialized] public String LevelName;
+	[NonSerialized] public int ModeSelected;
 
     [Header("Menu Variables")]
     public String[] Levels;
@@ -80,11 +81,16 @@ public class GameplayManager : MonoBehaviour
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
 
-	// GAMEPLAY FUNCTIONS
+
+
+	// *********************** GAMEPLAY FUNCTIONS **************************
+
+	// ********** LOAD LEVEL
 		
 	public IEnumerator LoadStage()
 	{
-		var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
+		var load = SceneManager.LoadSceneAsync(LevelName);
+		//var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
 		while (!load.isDone)
 		{
 			yield return null;
@@ -96,6 +102,9 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 
+
+
+
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
@@ -103,6 +112,10 @@ public class GameplayManager : MonoBehaviour
 		
 		return player;
 	}
+
+
+
+
 
 	public Shoe InstantiateShoe(ShoeType type, Vector2 position = default(Vector2))
 	{
@@ -118,6 +131,9 @@ public class GameplayManager : MonoBehaviour
 		Debug.LogAssertionFormat("No Shoe prefab for shoe type {0}", type);
 		return null;
 	}
+
+
+
 
 	private void OnValidate()
 	{	
@@ -153,6 +169,10 @@ public class GameplayManager : MonoBehaviour
 
 
     // ********** LEVEL SELECT
+
+	public void SetLevelName(String name) {
+		LevelName = name;
+	}
 
     public void SelectBeach()
     {
@@ -236,6 +256,12 @@ public class GameplayManager : MonoBehaviour
 	public void StartButton()
 	{
 		StartCoroutine(LoadStage());
+		LevelSelectMenu.SetActive(false);
 	}
+
+
+
+
+
 
 }
