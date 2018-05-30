@@ -24,8 +24,28 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Collider2D Collider;
 	[NonSerialized] public Rigidbody2D Rigidbody;
 
-	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
-	[NonSerialized] public bool IsBumperHeld;
+	[NonSerialized] public Vector2 WishDirection = Vector2.down;
+	[NonSerialized] public Vector2 LastInputDirection = Vector2.down;
+
+	[NonSerialized] public float AttackCharge;
+	[NonSerialized] public float AttackDamage;
+	[NonSerialized] public float AttackDirection;
+	public bool IsAttacking
+	{
+		get { return AttackDamage > 0; }
+	}
+	public bool IsAttackCharging
+	{
+		get { return AttackCharge > 0 && !IsAttacking; }
+	}
+	
+	[NonSerialized] public float AttackRecoveryTime;
+	public bool IsAttackRecovering
+	{
+		get { return AttackRecoveryTime > 0; }
+	}
+	
+	[NonSerialized] public bool TryEquip;
 
 	public void EquipShoe(Shoe newShoe)
 	{

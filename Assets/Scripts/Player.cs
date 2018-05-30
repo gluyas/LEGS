@@ -30,6 +30,17 @@ public class Player : MonoBehaviour
 	public float LegTorqueMax;
 	public float LegTorqueMin;
 	public float LegSmoothAngle = 1;
+
+	public float AttackChargeTime;
+	public float AttackChargeThreshold;
+	public float AttackAngleThreshold;
+	public float AttackSpeedMax;
+	public float AttackSpeedMin;
+	public float AttackTorqueMax;
+	public float AttackTorqueMin;
+	public float AttackDamageMax;
+	public float AttackDamageMin;
+	public float AttackRecoveryTime;
 	
 	public Leg LegRight;
 	public Leg LegLeft;
@@ -90,12 +101,12 @@ public class Player : MonoBehaviour
 	{
 		if (Controller == null) return;
 		
-		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger);
-		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger);	
+		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger,  Controller.LeftBumper);
+		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
 
 		{	// pick up items
-			var tryEquipLeft  = Controller.LeftBumper && !LegLeft.IsBumperHeld;	// disallow simultaneous equip
-			var tryEquipRight = !tryEquipLeft && Controller.RightBumper && !LegRight.IsBumperHeld;
+			var tryEquipLeft  = Controller.LeftBumper && !LegLeft.TryEquip;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightBumper && !LegRight.TryEquip;
 
 			if (tryEquipLeft || tryEquipRight)
 			{
@@ -132,12 +143,12 @@ public class Player : MonoBehaviour
 						.First();
 					
 					targetLeg.EquipShoe(closest);
-					targetLeg.IsBumperHeld = true;
+					targetLeg.TryEquip = true;
 				}
 			}
 			// only reset hold status to false here: allow player to pre-emptively hold equip button
-			if (!Controller.LeftBumper)  LegLeft.IsBumperHeld  = false;
-			if (!Controller.RightBumper) LegRight.IsBumperHeld = false;
+			if (!Controller.LeftBumper)  LegLeft.TryEquip  = false;
+			if (!Controller.RightBumper) LegRight.TryEquip = false;
 		}
 
 #if false
@@ -168,37 +179,69 @@ public class Player : MonoBehaviour
 #endif
 	}
 	
-	private void UpdateLeg(Leg leg, Vector2 joystick, InputControl trigger)
+	private void UpdateLeg(Leg leg, Vector2 joystick, InputControl trigger, InputControl bumper)
 	{
 		var legDirWorldSpace = (Vector2)
 			(Quaternion.AngleAxis(-leg.Hinge.jointAngle, new Vector3(0, 0, 1)) * -Head.transform.up);
 		
 		if (joystick.magnitude > LegDeadzoneMagnitude)
 		{
-			leg.CurrentInputDir = joystick.normalized;
+			leg.LastInputDirection = joystick.normalized;
 		}
-		joystick = leg.CurrentInputDir;
+		joystick = leg.LastInputDirection;
 		
-		{ 	// leg movement
-			var motor = leg.Hinge.motor;
-
-			var theta = Vector2.SignedAngle(joystick, legDirWorldSpace);
-			var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
-
-			motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
-			motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
-
-			leg.Hinge.motor = motor;
-	
-#if false
-		{	// debug stuff
-			Color color;
-			if (leg == LegLeft) color = Color.red;
-			else 				color = Color.green;
+		{   // leg movement
+			// only change leg direction when outside of, entering, or releasing an attack
+			if (!leg.IsAttacking && !leg.IsAttackCharging || bumper.WasPressed || bumper.WasReleased)
+			{
+				leg.WishDirection = joystick;
+			}
 			
-			Debug.DrawRay(transform.position, inputDir, Color.Lerp(color, Color.grey, 0.5f));
-			Debug.DrawRay(transform.position, legDirWorldSpace, color);
-		}
+			var theta = Vector2.SignedAngle(leg.WishDirection, legDirWorldSpace);
+			
+			if (bumper.IsPressed)
+			{
+				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
+			}
+			else if (bumper.WasReleased)
+			{
+				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
+				leg.AttackDirection = Mathf.Sign(theta);
+				leg.WishDirection = joystick;
+				
+				leg.AttackCharge = 0;
+			}
+			
+			var motor = leg.Hinge.motor;	
+			
+			if (leg.IsAttacking)			// continue attack
+			{			
+				motor.motorSpeed = Mathf.Lerp(AttackSpeedMin, AttackDamageMax, leg.AttackCharge) * leg.AttackDirection;
+				motor.maxMotorTorque = Mathf.Lerp(AttackTorqueMin, AttackTorqueMax, leg.AttackCharge);
+				
+				if (Mathf.Sign(theta) * leg.AttackDirection < 0)	// reached/overshot target: end attack
+				{
+					leg.AttackDamage = 0;
+					leg.AttackDirection = 0;
+				}
+			}
+			else  							// regular movement
+			{
+				var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
+
+				motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
+				motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
+			}
+			leg.Hinge.motor = motor;
+#if false
+			{	// debug stuff
+				Color color;
+				if (leg == LegLeft) color = Color.red;
+				else 				color = Color.green;
+				
+				Debug.DrawRay(transform.position, inputDir, Color.Lerp(color, Color.grey, 0.5f));
+				Debug.DrawRay(transform.position, legDirWorldSpace, color);
+			}
 #endif
 		}
 
