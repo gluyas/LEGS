@@ -30,7 +30,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public bool AttackButtonHeld;
 	[NonSerialized] public float AttackCharge;
 	[NonSerialized] public float AttackDamage;
-	[NonSerialized] public float AttackDirection;
+	[NonSerialized] public float AttackRotation;
 	public bool IsAttacking
 	{
 		get { return AttackDamage > 0; }
