@@ -191,31 +191,30 @@ public class Player : MonoBehaviour
 		joystick = leg.LastInputDirection;
 		
 		{   // leg movement
-			// only change leg direction when outside of, entering, or releasing an attack
-			if (!leg.IsAttacking && !leg.IsAttackCharging || bumper.WasPressed || bumper.WasReleased)
+			if (bumper.WasPressed)	// set the attack direction at beginning of attack charge
 			{
-				leg.WishDirection = joystick;
-			}
-			
-			var theta = Vector2.SignedAngle(leg.WishDirection, legDirWorldSpace);
-			
+				leg.AttackTargetDirection = joystick;
+			}		
 			if (bumper.IsPressed)
 			{
 				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
 			}
-			else if (bumper.WasReleased)
+			
+			if (bumper.WasReleased)
 			{
 				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
-				leg.AttackDirection = Mathf.Sign(theta);
-				leg.WishDirection = joystick;
+				leg.AttackDirection = Mathf.Sign(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
 				
 				leg.AttackCharge = 0;
 			}
-			
+
 			var motor = leg.Hinge.motor;	
 			
 			if (leg.IsAttacking)			// continue attack
-			{			
+			{				
+				var wishDir = leg.AttackTargetDirection;
+				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
+				
 				motor.motorSpeed = Mathf.Lerp(AttackSpeedMin, AttackDamageMax, leg.AttackCharge) * leg.AttackDirection;
 				motor.maxMotorTorque = Mathf.Lerp(AttackTorqueMin, AttackTorqueMax, leg.AttackCharge);
 				
@@ -227,6 +226,9 @@ public class Player : MonoBehaviour
 			}
 			else  							// regular movement
 			{
+				var wishDir = joystick;
+				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
+				
 				var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
 
 				motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
