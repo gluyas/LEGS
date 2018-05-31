@@ -39,10 +39,10 @@ public class Leg : MonoBehaviour
 		get { return AttackCharge > 0 && !IsAttacking; }
 	}
 	
-	[NonSerialized] public float AttackRecoveryTime;
+	[NonSerialized] public float AttackRecovery;
 	public bool IsAttackRecovering
 	{
-		get { return AttackRecoveryTime > 0; }
+		get { return AttackRecovery > 0; }
 	}
 	
 	[NonSerialized] public bool TryEquip;

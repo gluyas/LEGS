@@ -222,11 +222,19 @@ public class Player : MonoBehaviour
 				{
 					leg.AttackDamage = 0;
 					leg.AttackDirection = 0;
+					leg.AttackRecovery = AttackRecoveryTime;
 				}
 			}
 			else  							// regular movement
 			{
-				var wishDir = joystick;
+				Vector2 wishDir;
+				if (leg.IsAttackRecovering)
+				{
+					wishDir = leg.AttackTargetDirection;
+					leg.AttackRecovery -= Time.deltaTime;
+				} 
+				else wishDir = joystick;
+				
 				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
 				
 				var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);

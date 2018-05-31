@@ -296,132 +296,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!1001 &146226948
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 4.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233383985406826, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1835625097594294, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-      propertyPath: m_Name
-      value: Player (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackChargeTime
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackSpeedMax
-      value: 3500
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackSpeedMin
-      value: 3500
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackTorqueMin
-      value: 2200
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackTorqueMax
-      value: 2200
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackDamageMax
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: AttackDamageMin
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 212829707869538898, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.7843138
-      objectReference: {fileID: 0}
-    - target: {fileID: 212829707869538898, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.9215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 212829707869538898, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212235746955383250, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.7843138
-      objectReference: {fileID: 0}
-    - target: {fileID: 212235746955383250, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.9215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 212235746955383250, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212654563779291788, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.7843138
-      objectReference: {fileID: 0}
-    - target: {fileID: 212654563779291788, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.9215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 212654563779291788, guid: 87848bd9e39775c4cb19d7f6b9daab30,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &161882029
 GameObject:
   m_ObjectHideFlags: 0
@@ -945,6 +819,11 @@ Prefab:
         type: 2}
       propertyPath: AttackDamageMin
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
+        type: 2}
+      propertyPath: AttackRecoveryTime
+      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
