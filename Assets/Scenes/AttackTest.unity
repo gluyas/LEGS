@@ -788,7 +788,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackChargeTime
-      value: 2
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -823,7 +823,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackRecoveryTime
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}

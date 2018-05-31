@@ -190,18 +190,24 @@ public class Player : MonoBehaviour
 		}
 		joystick = leg.LastInputDirection;
 		
-		{   // leg movement
-			if (bumper.WasPressed)	// set the attack direction at beginning of attack charge
+		{   // leg movement		
+			if (leg.AttackButtonHeld)
 			{
-				leg.AttackTargetDirection = joystick;
-			}		
-			if (bumper.IsPressed)
+				leg.AttackButtonHeld = bumper.IsPressed;
+			}
+			else if (bumper.IsPressed && !leg.IsAttacking && !leg.IsAttackRecovering)
 			{
+				if (!leg.IsAttackCharging)	// if this is first frame of attack charge
+				{
+					leg.AttackTargetDirection = joystick;
+				}
 				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
 			}
 			
-			if (bumper.WasReleased)
+			if (!bumper.IsPressed && leg.IsAttackCharging || leg.AttackCharge >= 1)
 			{
+				leg.AttackCharge = Mathf.Clamp01(leg.AttackCharge);
+				
 				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
 				leg.AttackDirection = Mathf.Sign(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
 
@@ -209,9 +215,10 @@ public class Player : MonoBehaviour
 					Quaternion.AngleAxis(-leg.AttackDirection * AttackSweepAngle, Vector3.forward) * legDirWorldSpace;
 
 				leg.AttackCharge = 0;
+
+				leg.AttackButtonHeld = bumper.IsPressed;
 			}
 
-			Debug.Log(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
 			var motor = leg.Hinge.motor;	
 			
 			if (leg.IsAttacking)			// continue attack
@@ -219,7 +226,7 @@ public class Player : MonoBehaviour
 				var wishDir = leg.AttackTargetDirection;
 				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
 				
-				motor.motorSpeed = Mathf.Lerp(AttackSpeedMin, AttackDamageMax, leg.AttackCharge) * leg.AttackDirection;
+				motor.motorSpeed = Mathf.Lerp(AttackSpeedMin, AttackSpeedMax, leg.AttackCharge) * leg.AttackDirection;
 				motor.maxMotorTorque = Mathf.Lerp(AttackTorqueMin, AttackTorqueMax, leg.AttackCharge);
 				
 				if (Mathf.Sign(theta) * leg.AttackDirection < 0)	// reached/overshot target: end attack
@@ -247,6 +254,7 @@ public class Player : MonoBehaviour
 				motor.maxMotorTorque = Mathf.Lerp(LegTorqueMin, LegTorqueMax, smoothingFactor);
 			}
 			leg.Hinge.motor = motor;
+			
 #if false
 			{	// debug stuff
 				Color color;

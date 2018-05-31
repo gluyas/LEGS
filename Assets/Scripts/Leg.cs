@@ -27,6 +27,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Vector2 LastInputDirection = Vector2.down;
 	[NonSerialized] public Vector2 AttackTargetDirection = Vector2.down;
 
+	[NonSerialized] public bool AttackButtonHeld;
 	[NonSerialized] public float AttackCharge;
 	[NonSerialized] public float AttackDamage;
 	[NonSerialized] public float AttackDirection;
