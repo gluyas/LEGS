@@ -269,7 +269,6 @@ public class Player : MonoBehaviour
 				if (Mathf.Sign(theta) * leg.AttackRotation < 0)	// reached/overshot target: end attack
 				{
 					leg.AttackCharge = 0;
-					leg.AttackDamage = 0;
 				}
 			}
 			else  							// regular movement
@@ -279,6 +278,11 @@ public class Player : MonoBehaviour
 				{
 					wishDir = leg.AttackTargetDirection;
 					leg.AttackRecovery -= Time.deltaTime;
+
+					if (leg.AttackRecovery <= 0)
+					{
+						leg.AttackDamage = 0;
+					}
 				}
 				else
 				{
