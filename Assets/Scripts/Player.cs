@@ -309,11 +309,23 @@ public class Player : MonoBehaviour
 		var triggerDown = trigger.WasPressed;
 		var triggerUp   = trigger.WasReleased;
 		
+		var triggerVal  = trigger.Value;
+		
 		if (leg.HasShoe) {	// shoe abilities		
+
+			if (leg.IsAttacking || leg.IsAttackCharging)
+			{
+				triggerHeld = false;
+				triggerDown = false;
+				triggerUp   = bumper.WasPressed;
+
+				triggerVal = 0;
+			}
+
 			switch (leg.CurrentShoe.Type)
 			{
 				case ShoeType.Debug:
-					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, trigger * 180);
+					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, triggerVal * 180);
 					break;
 				
 				
@@ -323,7 +335,7 @@ public class Player : MonoBehaviour
 
 					if (triggerHeld)
 					{
-						gun.Charge += Time.deltaTime / Mathf.Lerp(gun.ChargeTimeMax, gun.ChargeTimeMin, trigger);
+						gun.Charge += Time.deltaTime / Mathf.Lerp(gun.ChargeTimeMax, gun.ChargeTimeMin, triggerVal);
 					}
 					if (triggerUp || gun.Charge >= 1)
 					{
@@ -361,11 +373,11 @@ public class Player : MonoBehaviour
 						if (rocket.Fuel <= 0) break;
 						
 						rocket.Fuel -= Time.deltaTime /
-						    Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, trigger);
+						    Mathf.Lerp(rocket.BurnTimeMax, rocket.BurnTimeMin, triggerVal);
 
 						var efficiency = Mathf.Clamp01(rocket.Fuel / rocket.FuelEfficiencyFalloff);
 						leg.Rigidbody.AddForce(-legDirWorldSpace * efficiency *
-							Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, trigger));
+							Mathf.Lerp(rocket.ForceMin, rocket.ForceMax, triggerVal));
 					}
 					else
 					{
