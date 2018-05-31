@@ -32,13 +32,14 @@ public class Player : MonoBehaviour
 	public float LegSmoothAngle = 1;
 
 	public float AttackChargeTime;
-	public float AttackChargeWindUpAngle;
+	public float AttackChargeWindUpArc;
 	public float AttackChargeThreshold;
-	public float AttackSpeedMax;
-	public float AttackSpeedMin;
-	public float AttackTorqueMax;
-	public float AttackTorqueMin;
-	public float AttackSweepAngle;
+	
+	public float AttackMovementFactorMax;
+	public float AttackMovementFactorMin;
+	
+	public float AttackArcMax;
+	public float AttackArcMin;
 	public float AttackDamageMax;
 	public float AttackDamageMin;
 	public float AttackRecoveryTime;
@@ -206,35 +207,35 @@ public class Player : MonoBehaviour
 				leg.AttackDirection = Mathf.Sign(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
 			}
 			
-			if (!bumper.IsPressed && leg.IsAttackCharging || leg.AttackCharge >= 1)
+			if (leg.IsAttackCharging && (!bumper.IsPressed || leg.AttackCharge >= 1))
 			{
 				leg.AttackCharge = Mathf.Clamp01(leg.AttackCharge);
+					
+				var arc = -leg.AttackDirection * Mathf.Lerp(AttackArcMin, AttackArcMax, leg.AttackCharge);
+				leg.AttackTargetDirection = Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace;
 				
 				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
-
-				leg.AttackTargetDirection = 
-					Quaternion.AngleAxis(-leg.AttackDirection * AttackSweepAngle, Vector3.forward) * legDirWorldSpace;
-
-				leg.AttackCharge = 0;
-
+				
 				leg.AttackButtonHeld = bumper.IsPressed;
+				leg.AttackRecovery = AttackRecoveryTime;
 			}
 
 			var motor = leg.Hinge.motor;	
 			
-			if (leg.IsAttacking)			// continue attack
+			if (leg.IsAttacking)			// attack movement
 			{				
-				var wishDir = leg.AttackTargetDirection;
-				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
-				
-				motor.motorSpeed = Mathf.Lerp(AttackSpeedMin, AttackSpeedMax, leg.AttackCharge) * leg.AttackDirection;
-				motor.maxMotorTorque = Mathf.Lerp(AttackTorqueMin, AttackTorqueMax, leg.AttackCharge);
-				
+				var wishDir        = leg.AttackTargetDirection;
+				var theta          = Vector2.SignedAngle(wishDir, legDirWorldSpace);
+				var movementFactor = Mathf.Lerp(AttackMovementFactorMin, AttackMovementFactorMax, leg.AttackCharge);
+
+				motor.motorSpeed     = LegSpeedMax * leg.AttackDirection * movementFactor;
+				motor.maxMotorTorque = LegTorqueMax * movementFactor;
+			
 				if (Mathf.Sign(theta) * leg.AttackDirection < 0)	// reached/overshot target: end attack
 				{
+					leg.AttackCharge = 0;
 					leg.AttackDamage = 0;
 					leg.AttackDirection = 0;
-					leg.AttackRecovery = AttackRecoveryTime;
 				}
 			}
 			else  							// regular movement
@@ -248,11 +249,9 @@ public class Player : MonoBehaviour
 				else
 				{
 					wishDir = Quaternion.AngleAxis(
-						leg.AttackDirection * leg.AttackCharge * AttackChargeWindUpAngle, Vector3.forward) * joystick;
-				}
-				
-				var theta = Vector2.SignedAngle(wishDir, legDirWorldSpace);
-				
+						leg.AttackDirection * leg.AttackCharge * AttackChargeWindUpArc, Vector3.forward) * joystick;
+				}				
+				var theta           = Vector2.SignedAngle(wishDir, legDirWorldSpace);		
 				var smoothingFactor = Mathf.Clamp01(Mathf.Abs(theta) / LegSmoothAngle);
 
 				motor.motorSpeed = LegSpeedMax * Mathf.Sign(theta) * smoothingFactor;
