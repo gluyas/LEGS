@@ -239,7 +239,6 @@ public class Player : MonoBehaviour
 				{
 					leg.AttackCharge = 0;
 					leg.AttackDamage = 0;
-					leg.AttackRotation = 0;
 				}
 				else
 				{
@@ -249,10 +248,10 @@ public class Player : MonoBehaviour
 					var arc = -leg.AttackRotation * Mathf.Lerp(AttackArcMin, AttackArcMax, leg.AttackCharge);
 					leg.AttackTargetDirection = Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace;
 				
-					leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
+					leg.AttackDamage = Mathf.Lerp(AttackDamageMin, AttackDamageMax, leg.AttackCharge);									
+					leg.AttackRecovery = AttackRecoveryTime;
 				
 					leg.AttackButtonHeld = bumper.IsPressed;
-					leg.AttackRecovery = AttackRecoveryTime;
 				}
 			}
 
@@ -271,7 +270,6 @@ public class Player : MonoBehaviour
 				{
 					leg.AttackCharge = 0;
 					leg.AttackDamage = 0;
-					leg.AttackRotation = 0;
 				}
 			}
 			else  							// regular movement

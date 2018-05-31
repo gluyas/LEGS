@@ -813,12 +813,12 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackDamageMax
-      value: 10
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackDamageMin
-      value: 5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -853,7 +853,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackArcMin
-      value: 45
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}

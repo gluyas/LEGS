@@ -10,8 +10,6 @@ using UnityEngine;
 [RequireComponent(typeof(HingeJoint2D))]
 public class Leg : MonoBehaviour
 {
-	public float Damage;
-	
 	public Vector2 ShoePosOffset;
 	public Shoe CurrentShoe;
 
@@ -30,10 +28,10 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public bool AttackButtonHeld;
 	[NonSerialized] public float AttackCharge;
 	[NonSerialized] public float AttackDamage;
-	[NonSerialized] public float AttackRotation;
+	[NonSerialized] public float AttackRotation = 1;
 	public bool IsAttacking
 	{
-		get { return AttackDamage > 0; }
+		get { return AttackDamage > 0 && AttackCharge > 0; }
 	}
 	public bool IsAttackCharging
 	{
@@ -43,7 +41,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public float AttackRecovery;
 	public bool IsAttackRecovering
 	{
-		get { return AttackRecovery > 0; }
+		get { return AttackRecovery > 0 && AttackCharge <= 0; }
 	}
 	
 	[NonSerialized] public bool TryEquip;
@@ -82,7 +80,8 @@ public class Leg : MonoBehaviour
 	{
 		var player = other.gameObject.GetComponent<Player>();
 		if (player != null) {
-			player.Hp -= Damage;
+			player.Hp -= AttackDamage;
+			AttackDamage = 0;
 		}
 	}
 	
