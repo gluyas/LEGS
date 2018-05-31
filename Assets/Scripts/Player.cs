@@ -33,11 +33,11 @@ public class Player : MonoBehaviour
 
 	public float AttackChargeTime;
 	public float AttackChargeThreshold;
-	public float AttackAngleThreshold;
 	public float AttackSpeedMax;
 	public float AttackSpeedMin;
 	public float AttackTorqueMax;
 	public float AttackTorqueMin;
+	public float AttackSweepAngle;
 	public float AttackDamageMax;
 	public float AttackDamageMin;
 	public float AttackRecoveryTime;
@@ -204,10 +204,14 @@ public class Player : MonoBehaviour
 			{
 				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
 				leg.AttackDirection = Mathf.Sign(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
-				
+
+				leg.AttackTargetDirection = 
+					Quaternion.AngleAxis(-leg.AttackDirection * AttackSweepAngle, Vector3.forward) * legDirWorldSpace;
+
 				leg.AttackCharge = 0;
 			}
 
+			Debug.Log(Vector2.SignedAngle(leg.AttackTargetDirection, legDirWorldSpace));
 			var motor = leg.Hinge.motor;	
 			
 			if (leg.IsAttacking)			// continue attack

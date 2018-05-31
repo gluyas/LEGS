@@ -823,7 +823,12 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackRecoveryTime
-      value: 0.25
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
+        type: 2}
+      propertyPath: AttackSweepAngle
+      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}
@@ -1074,7 +1079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logDebugInfo: 0
   invertYAxis: 0
-  useFixedUpdate: 0
+  useFixedUpdate: 1
   dontDestroyOnLoad: 0
   suspendInBackground: 0
   enableICade: 0
