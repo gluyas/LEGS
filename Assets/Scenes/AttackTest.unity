@@ -788,7 +788,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackChargeTime
-      value: 0.75
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -864,6 +864,11 @@ Prefab:
         type: 2}
       propertyPath: AttackDirectionSensitivity
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
+        type: 2}
+      propertyPath: AttackChargeThreshold
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}

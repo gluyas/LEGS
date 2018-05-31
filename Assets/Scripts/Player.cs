@@ -235,15 +235,25 @@ public class Player : MonoBehaviour
 			
 			if (leg.IsAttackCharging && (!bumper.IsPressed || leg.AttackCharge >= 1))
 			{
-				leg.AttackCharge = Mathf.Clamp01(leg.AttackCharge);
+				if (leg.AttackCharge < AttackChargeThreshold)
+				{
+					leg.AttackCharge = 0;
+					leg.AttackDamage = 0;
+					leg.AttackRotation = 0;
+				}
+				else
+				{
+					leg.AttackCharge = Mathf.Clamp01(
+						(leg.AttackCharge - AttackChargeThreshold) / (1 - AttackChargeThreshold));
 					
-				var arc = -leg.AttackRotation * Mathf.Lerp(AttackArcMin, AttackArcMax, leg.AttackCharge);
-				leg.AttackTargetDirection = Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace;
+					var arc = -leg.AttackRotation * Mathf.Lerp(AttackArcMin, AttackArcMax, leg.AttackCharge);
+					leg.AttackTargetDirection = Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace;
 				
-				leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
+					leg.AttackDamage = Mathf.Lerp(AttackDamageMax, AttackDamageMin, leg.AttackCharge);
 				
-				leg.AttackButtonHeld = bumper.IsPressed;
-				leg.AttackRecovery = AttackRecoveryTime;
+					leg.AttackButtonHeld = bumper.IsPressed;
+					leg.AttackRecovery = AttackRecoveryTime;
+				}
 			}
 
 			var motor = leg.Hinge.motor;	
