@@ -84,6 +84,9 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
 
+		LegLeft.Orientation = -1;
+		LegRight.Orientation = 1;
+
 		if (GameplayManager.Instance == null)
 		{
 			PlayerId = _playerCount++;
@@ -208,7 +211,12 @@ public class Player : MonoBehaviour
 					leg.AttackTargetDirection = joystick;
 				}				
 				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
-
+#if true
+				var theta = leg.Orientation * Vector2.SignedAngle(Vector2.up, joystick);
+				if (theta >= -90 && theta <= 45) leg.AttackRotation = leg.Orientation;
+				else 							 leg.AttackRotation = -leg.Orientation;
+#endif
+#if false
 				var theta = Vector2.SignedAngle(leg.AttackTargetDirection, joystick);
 				var buffer = -theta * leg.AttackRotation;
 
@@ -230,6 +238,7 @@ public class Player : MonoBehaviour
 					Debug.DrawRay(Head.transform.position,
 						Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace, Color.magenta);
 				}
+#endif
 #endif
 			}
 			

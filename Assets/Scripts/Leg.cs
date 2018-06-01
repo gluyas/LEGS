@@ -22,6 +22,8 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Collider2D Collider;
 	[NonSerialized] public Rigidbody2D Rigidbody;
 
+	[NonSerialized] public float Orientation;
+	
 	[NonSerialized] public Vector2 LastInputDirection = Vector2.down;
 	[NonSerialized] public Vector2 AttackTargetDirection = Vector2.down;
 
