@@ -5,13 +5,17 @@ using System.Linq;
 using InControl;
 //using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
 	private const float LegDeadzoneMagnitude = 0.05f;
 	
 	private static int _playerCount = 0;
-	
+
+	[NonSerialized] public PlayerDamageEvent OnDamage = new PlayerDamageEvent();
+	[NonSerialized] public PlayerDeathEvent  OnDeath = new PlayerDeathEvent();
+
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public InputDevice Controller;
 
@@ -55,6 +59,23 @@ public class Player : MonoBehaviour
 		oldShoe = LegRight.CurrentShoe;
 		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
 		if (oldShoe != null) Destroy(oldShoe.gameObject);
+	}
+
+	public void DealDamage(float damage)
+	{
+		Hp -= damage;
+		OnDamage.Invoke(this, damage);
+
+		if (Hp <= 0) Kill();
+	}
+
+	public void Kill()
+	{
+		LegLeft.EquipShoe(null);
+		LegRight.EquipShoe(null);
+		
+		OnDeath.Invoke(this);
+		Destroy(this.transform.root.gameObject);
 	}
 	
 	private void Start ()
@@ -275,3 +296,8 @@ public class Player : MonoBehaviour
 		}
 	}
 }
+
+// boilerplate classes
+public class PlayerDamageEvent : UnityEvent<Player, float> {}
+
+public class PlayerDeathEvent : UnityEvent<Player> {}
