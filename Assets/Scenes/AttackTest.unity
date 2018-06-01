@@ -818,7 +818,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackDamageMin
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -838,12 +838,12 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackMovementFactorMax
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackMovementFactorMin
-      value: 1
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -853,7 +853,7 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackArcMin
-      value: 60
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
@@ -868,7 +868,17 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackChargeThreshold
-      value: 0.3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
+        type: 2}
+      propertyPath: AttackRecoveryTimeMax
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
+        type: 2}
+      propertyPath: AttackRecoveryTimeMin
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87848bd9e39775c4cb19d7f6b9daab30, type: 2}

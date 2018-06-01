@@ -45,7 +45,8 @@ public class Player : MonoBehaviour
 	public float AttackDamageMax;
 	public float AttackDamageMin;
 	
-	public float AttackRecoveryTime;
+	public float AttackRecoveryTimeMax;
+	public float AttackRecoveryTimeMin;
 	
 	public Leg LegRight;
 	public Leg LegLeft;
@@ -258,7 +259,7 @@ public class Player : MonoBehaviour
 					leg.AttackTargetDirection = Quaternion.AngleAxis(arc, Vector3.forward) * legDirWorldSpace;
 				
 					leg.AttackDamage = Mathf.Lerp(AttackDamageMin, AttackDamageMax, leg.AttackCharge);									
-					leg.AttackRecovery = AttackRecoveryTime;
+					leg.AttackRecovery = Mathf.Lerp(AttackRecoveryTimeMin, AttackRecoveryTimeMax, leg.AttackCharge);
 				
 					leg.AttackButtonHeld = bumper.IsPressed;
 				}
