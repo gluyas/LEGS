@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 	[NonSerialized] public PlayerDeathEvent  OnDeath = new PlayerDeathEvent();
 
 	[NonSerialized] public int PlayerId;
+	[NonSerialized] public PlayerInfo PlayerInfo;
 	[NonSerialized] public InputDevice Controller;
 
 	[NonSerialized] public float Hp = 1;
@@ -44,7 +45,8 @@ public class Player : MonoBehaviour
 
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
-		Controller = playerInfo.Controller;
+		PlayerInfo = playerInfo;
+		Controller = PlayerInfo.Controller;
 
 		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
 		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
@@ -75,6 +77,9 @@ public class Player : MonoBehaviour
 		LegRight.EquipShoe(null);
 		
 		OnDeath.Invoke(this);
+		
+		OnDamage.RemoveAllListeners();
+		OnDeath.RemoveAllListeners();
 		Destroy(this.transform.root.gameObject);
 	}
 	

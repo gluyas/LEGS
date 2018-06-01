@@ -6210,6 +6210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8360d3d46dd13443785db7a3f0e47b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RespawnTime: 3
   Levels:
   - Scenes/Dojo
   - 
