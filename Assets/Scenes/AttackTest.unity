@@ -838,12 +838,12 @@ Prefab:
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackMovementFactorMax
-      value: 2.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}
       propertyPath: AttackMovementFactorMin
-      value: 1.1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114259729964211890, guid: 87848bd9e39775c4cb19d7f6b9daab30,
         type: 2}

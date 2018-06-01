@@ -214,7 +214,7 @@ public class Player : MonoBehaviour
 				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
 #if true
 				var theta = leg.Orientation * Vector2.SignedAngle(Vector2.up, joystick);
-				if (theta >= -90 && theta <= 45) leg.AttackRotation = leg.Orientation;
+				if (theta > -120 && theta <= 45) leg.AttackRotation = leg.Orientation;
 				else 							 leg.AttackRotation = -leg.Orientation;
 #endif
 #if false
