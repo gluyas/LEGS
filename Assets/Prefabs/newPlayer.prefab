@@ -111,7 +111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1935157495317332}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.4799997, y: -1.0249999, z: 0}
+  m_LocalPosition: {x: 0.4799997, y: -1.0249999, z: 0.03999996}
   m_LocalScale: {x: 0.23864, y: 0.23864, z: 0.23864}
   m_Children: []
   m_Father: {fileID: 4378953836362354}
@@ -137,7 +137,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1601080244607670}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.48599994, y: -1.0249999, z: 0}
+  m_LocalPosition: {x: -0.48599994, y: -1.0249999, z: 0.04}
   m_LocalScale: {x: 0.23864, y: 0.23864, z: 0.23864}
   m_Children: []
   m_Father: {fileID: 4378953836362354}
@@ -355,6 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Damage: 0
   ShoePosOffset: {x: 0.7, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!114 &114721919461055150
@@ -368,6 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Damage: 0
   ShoePosOffset: {x: 0.7, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!212 &212165705437665830
