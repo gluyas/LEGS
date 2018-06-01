@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using InControl;
+using Random = UnityEngine.Random;
 
 
 public class GameplayManager : MonoBehaviour 
@@ -96,9 +97,20 @@ public class GameplayManager : MonoBehaviour
 			yield return null;
 		}
 
+		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
+		
 		foreach (var playerInfo in Players)
 		{
-			InstantiatePlayer(playerInfo);
+			Vector2 pos;
+			if (spawns.Count > 0)
+			{
+				var i = Random.Range(0, spawns.Count);
+				pos = spawns[i].transform.position;
+				spawns.RemoveAt(i);
+			}
+			else pos = Vector2.zero;
+			
+			InstantiatePlayer(playerInfo, pos);
 		}
 	}
 
