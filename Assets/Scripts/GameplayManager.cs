@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using InControl;
+using Random = UnityEngine.Random;
 
 
 public class GameplayManager : MonoBehaviour 
@@ -15,8 +16,9 @@ public class GameplayManager : MonoBehaviour
 
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
-	[SerializeField]
-    [Header("Game Settings")]
+	[SerializeField] [Header("Game Settings")]
+	public float RespawnTime;
+	
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
 	[NonSerialized] public int ModeSelected;
@@ -96,25 +98,45 @@ public class GameplayManager : MonoBehaviour
 			yield return null;
 		}
 
+		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
+		
 		foreach (var playerInfo in Players)
 		{
-			InstantiatePlayer(playerInfo);
+			Vector2 pos;
+			if (spawns.Count > 0)
+			{
+				var i = Random.Range(0, spawns.Count);
+				pos = spawns[i].transform.position;
+				spawns.RemoveAt(i);
+			}
+			else pos = Vector2.zero;
+			
+			InstantiatePlayer(playerInfo, pos);
 		}
 	}
 
-
-
-
+	
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
 		
+		player.OnDeath.AddListener(p => StartCoroutine(RespawnPlayer(p.PlayerInfo, RespawnTime)));
+		
 		return player;
 	}
 
 
-
+	public IEnumerator RespawnPlayer(PlayerInfo player, float time)
+	{				
+		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
+		Vector2 pos;
+		if (spawns.Count == 0) pos = Vector2.zero;
+		else 				   pos = spawns[Random.Range(0, spawns.Count)].transform.position;
+		
+		yield return new WaitForSeconds(time);
+		InstantiatePlayer(player, pos);
+	}
 
 
 	public Shoe InstantiateShoe(ShoeType type, Vector2 position = default(Vector2))
@@ -135,24 +157,6 @@ public class GameplayManager : MonoBehaviour
 
 
 
-	private void OnValidate()
-	{	
-		Debug.AssertFormat(PlayerPrefab.GetComponentInChildren<Player>() != null, 
-			"Player prefab {0} does not have a Player component", PlayerPrefab);
-		
-		foreach (var shoe in ShoePrefabs)
-		{
-			Debug.AssertFormat(shoe.GetComponent<Shoe>() != null, 
-				"Shoe prefab {0} does not have a Shoe component", shoe);
-		}
-
-		for (int i = 0; i < PlayerColorsDefault.Length; i++)
-		{
-			var color = PlayerColorsDefault[i];
-			color.a = 1f;
-			PlayerColorsDefault[i] = color;
-		}
-	}
 
 
 
@@ -260,8 +264,24 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
+	// SCRIPT VALIDATION
 
+	private void OnValidate()
+	{	
+		Debug.AssertFormat(PlayerPrefab.GetComponentInChildren<Player>() != null, 
+			"Player prefab {0} does not have a Player component", PlayerPrefab);
+		
+		foreach (var shoe in ShoePrefabs)
+		{
+			Debug.AssertFormat(shoe.GetComponent<Shoe>() != null, 
+				"Shoe prefab {0} does not have a Shoe component", shoe);
+		}
 
-
-
+		for (int i = 0; i < PlayerColorsDefault.Length; i++)
+		{
+			var color = PlayerColorsDefault[i];
+			color.a = 1f;
+			PlayerColorsDefault[i] = color;
+		}
+	}
 }
