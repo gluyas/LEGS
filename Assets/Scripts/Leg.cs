@@ -10,8 +10,6 @@ using UnityEngine;
 [RequireComponent(typeof(HingeJoint2D))]
 public class Leg : MonoBehaviour
 {
-	public float Damage;
-	
 	public Vector2 ShoePosOffset;
 	public Shoe CurrentShoe;
 
@@ -25,8 +23,31 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public Rigidbody2D Rigidbody;
 	[NonSerialized] public Player Player;
 
-	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
-	[NonSerialized] public bool IsBumperHeld;
+	[NonSerialized] public float Orientation;
+	
+	[NonSerialized] public Vector2 LastInputDirection = Vector2.down;
+	[NonSerialized] public Vector2 AttackTargetDirection = Vector2.down;
+
+	[NonSerialized] public bool AttackButtonHeld;
+	[NonSerialized] public float AttackCharge;
+	[NonSerialized] public float AttackDamage;
+	[NonSerialized] public float AttackRotation = 1;
+	public bool IsAttacking
+	{
+		get { return AttackDamage > 0 && AttackCharge > 0; }
+	}
+	public bool IsAttackCharging
+	{
+		get { return AttackCharge > 0 && !IsAttacking; }
+	}
+	
+	[NonSerialized] public float AttackRecovery;
+	public bool IsAttackRecovering
+	{
+		get { return AttackRecovery > 0 && AttackCharge <= 0; }
+	}
+	
+	[NonSerialized] public bool TryEquip;
 
 	public void EquipShoe(Shoe newShoe)
 	{
@@ -65,7 +86,8 @@ public class Leg : MonoBehaviour
 		{
 			if (Player.PlayerInfo == null || player.PlayerInfo.Team != this.Player.PlayerInfo.Team)
 			{
-				player.DealDamage(Damage);
+				player.DealDamage(AttackDamage);
+        AttackDamage = 0;
 			}
 		}
 	}

@@ -430,8 +430,18 @@ MonoBehaviour:
   - {fileID: 58294487850034104}
   LegSpeedMax: 1700
   LegTorqueMax: 1000
-  LegTorqueMin: 100
+  LegTorqueMin: 300
   LegSmoothAngle: 10
+  AttackChargeTime: 0
+  AttackChargeThreshold: 0
+  AttackAngleThreshold: 0
+  AttackSpeedMax: 0
+  AttackSpeedMin: 0
+  AttackTorqueMax: 0
+  AttackTorqueMin: 0
+  AttackDamageMax: 0
+  AttackDamageMin: 0
+  AttackRecoveryTime: 0
   LegRight: {fileID: 114785925179879048}
   LegLeft: {fileID: 114955190690370290}
 --- !u!114 &114350133290094702
