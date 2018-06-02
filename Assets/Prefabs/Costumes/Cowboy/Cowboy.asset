@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Cowboy
+  m_EditorClassIdentifier: 
+  Name: WOODY
+  Head: {fileID: 1591669038754200, guid: fc12e67500cd24980a812c19bf15bd7e, type: 2}
+  LegLeft: {fileID: 1713269005902384, guid: 667c810c1d073441b8e9d8996ce07fa1, type: 2}
+  LegRight: {fileID: 1713269005902384, guid: 667c810c1d073441b8e9d8996ce07fa1, type: 2}

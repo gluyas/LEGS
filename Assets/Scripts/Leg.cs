@@ -23,6 +23,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public HingeJoint2D Hinge;
 	[NonSerialized] public Collider2D Collider;
 	[NonSerialized] public Rigidbody2D Rigidbody;
+	[NonSerialized] public Player Player;
 
 	[NonSerialized] public Vector2 CurrentInputDir = Vector2.down;
 	[NonSerialized] public bool IsBumperHeld;
@@ -60,8 +61,12 @@ public class Leg : MonoBehaviour
 	private void OnCollisionEnter2D(Collision2D other)
 	{
 		var player = other.gameObject.GetComponent<Player>();
-		if (player != null) {
-			player.DealDamage(Damage);
+		if (player != null)
+		{
+			if (Player.PlayerInfo == null || player.PlayerInfo.Team != this.Player.PlayerInfo.Team)
+			{
+				player.DealDamage(Damage);
+			}
 		}
 	}
 	
