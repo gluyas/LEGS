@@ -213,7 +213,9 @@ public class Player : MonoBehaviour
 				}				
 				leg.AttackCharge += Time.deltaTime / AttackChargeTime;
 #if true
-				var theta = leg.Orientation * Vector2.SignedAngle(Vector2.up, joystick);
+				var theta = leg.Orientation * Vector2.SignedAngle(Vector2.up, legDirWorldSpace);
+				theta -= leg.AttackRotation * leg.AttackCharge * AttackChargeWindUpArc;	// compensate for wind-up anim
+				
 				if (theta > -120 && theta <= 45) leg.AttackRotation = leg.Orientation;
 				else 							 leg.AttackRotation = -leg.Orientation;
 #endif
