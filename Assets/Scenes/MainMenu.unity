@@ -6216,7 +6216,13 @@ MonoBehaviour:
   - {fileID: 1971190169493354, guid: d576a9860db7bbd418a0a7f27e4e070d, type: 2}
   PlayerCostumes:
   - {fileID: 11400000, guid: 529aa3eb271038343bd783a97bb4887a, type: 2}
-  - {fileID: 11400000, guid: 549fcfd07c6519442b68d397317b985a, type: 2}
+  - {fileID: 11400000, guid: b287f000975995743b931d14f1d8e807, type: 2}
+  - {fileID: 11400000, guid: 735e1352459c92845add5fa9474f4e31, type: 2}
+  - {fileID: 11400000, guid: 976e57c0b24da674b8d6027f79f82384, type: 2}
+  - {fileID: 11400000, guid: dde60cda37c32eb408d28808cf627e78, type: 2}
+  - {fileID: 11400000, guid: c81992c1b8123944a9cbd0da319ce318, type: 2}
+  - {fileID: 11400000, guid: 1ca35f25b63522d41bed9cdfed3c4a57, type: 2}
+  - {fileID: 11400000, guid: e4660d5e33a70fe4383c3f2125b8adf5, type: 2}
   PlayerCustomizationMenu: {fileID: 2071111199}
   PlayerCustomizers:
   - {fileID: 314318460}

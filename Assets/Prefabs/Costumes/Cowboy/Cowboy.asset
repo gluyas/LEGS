@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
-  m_Name: Debug
+  m_Name: Cowboy
   m_EditorClassIdentifier: 
-  Name: LANTERN
-  Head: {fileID: 1170275846073894, guid: 19ce029262477d440af4f57131652d31, type: 2}
-  LegLeft: {fileID: 1170275846073894, guid: 19ce029262477d440af4f57131652d31, type: 2}
-  LegRight: {fileID: 1170275846073894, guid: 19ce029262477d440af4f57131652d31, type: 2}
+  Name: WOODY
+  Head: {fileID: 1591669038754200, guid: fc12e67500cd24980a812c19bf15bd7e, type: 2}
+  LegLeft: {fileID: 1713269005902384, guid: 667c810c1d073441b8e9d8996ce07fa1, type: 2}
+  LegRight: {fileID: 1713269005902384, guid: 667c810c1d073441b8e9d8996ce07fa1, type: 2}
