@@ -21,6 +21,7 @@ public class Leg : MonoBehaviour
 	[NonSerialized] public HingeJoint2D Hinge;
 	[NonSerialized] public Collider2D Collider;
 	[NonSerialized] public Rigidbody2D Rigidbody;
+	[NonSerialized] public Player Player;
 
 	[NonSerialized] public float Orientation;
 	
@@ -81,9 +82,13 @@ public class Leg : MonoBehaviour
 	private void OnCollisionEnter2D(Collision2D other)
 	{
 		var player = other.gameObject.GetComponent<Player>();
-		if (player != null) {
-			player.Hp -= AttackDamage;
-			AttackDamage = 0;
+		if (player != null)
+		{
+			if (Player.PlayerInfo == null || player.PlayerInfo.Team != this.Player.PlayerInfo.Team)
+			{
+				player.DealDamage(AttackDamage);
+        AttackDamage = 0;
+			}
 		}
 	}
 	

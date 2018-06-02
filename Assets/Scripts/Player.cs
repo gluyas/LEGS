@@ -3,16 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InControl;
-using NUnit.Framework;
+//using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
 	private const float LegDeadzoneMagnitude = 0.05f;
 	
 	private static int _playerCount = 0;
-	
+
+	[NonSerialized] public PlayerDamageEvent OnDamage = new PlayerDamageEvent();
+	[NonSerialized] public PlayerDeathEvent  OnDeath = new PlayerDeathEvent();
+
 	[NonSerialized] public int PlayerId;
+	[NonSerialized] public PlayerInfo PlayerInfo;
 	[NonSerialized] public InputDevice Controller;
 
 	[NonSerialized] public float Hp = 1;
@@ -57,21 +62,52 @@ public class Player : MonoBehaviour
 
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
-		Controller = playerInfo.Controller;
+		PlayerInfo = playerInfo;
+		Controller = PlayerInfo.Controller;
 
-		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		foreach (Transform child in Head.transform)     Destroy(child.gameObject);
+		foreach (Transform child in LegLeft.transform)  Destroy(child.gameObject);
+		foreach (Transform child in LegRight.transform) Destroy(child.gameObject);
 
-		Shoe oldShoe;
+		Head.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		
-		oldShoe = LegLeft.CurrentShoe;
+		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
+		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
+		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
+		
 		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
-
-		oldShoe = LegRight.CurrentShoe;
 		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
+	}
+
+	private void EquipCostumePart(Transform parent, GameObject costume)
+	{
+		if (costume == null) return;
+
+		var obj = Instantiate(costume, parent, true);
+		obj.transform.localPosition = Vector3.zero;
+		obj.transform.localRotation = Quaternion.identity;
+	}
+
+	public void DealDamage(float damage)
+	{
+		Hp -= damage;
+		OnDamage.Invoke(this, damage);
+
+		if (Hp <= 0) Kill();
+	}
+
+	public void Kill()
+	{
+		LegLeft.EquipShoe(null);
+		LegRight.EquipShoe(null);
+		
+		OnDeath.Invoke(this);
+		
+		OnDamage.RemoveAllListeners();
+		OnDeath.RemoveAllListeners();
+		Destroy(this.transform.root.gameObject);
 	}
 	
 	private void Start ()
@@ -84,9 +120,12 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
-
+    
 		LegLeft.Orientation = -1;
+    LegLeft.Player = this;
+    
 		LegRight.Orientation = 1;
+		LegRight.Player = this;
 
 		if (GameplayManager.Instance == null)
 		{
@@ -407,3 +446,8 @@ public class Player : MonoBehaviour
 		}
 	}
 }
+
+// boilerplate classes
+public class PlayerDamageEvent : UnityEvent<Player, float> {}
+
+public class PlayerDeathEvent : UnityEvent<Player> {}
