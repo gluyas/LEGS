@@ -10,23 +10,14 @@ public class PlayerCustomizer : MonoBehaviour
 {
 	[Header("Public GameObjects")]
 	public GameObject NoControllerMenu;
-	public Text TitleText;
+	
 	public GameObject SelectionMenu;
+	public Text TitleText;
 	public Text SelectionText;
+	
 	public Player PlayerModel;
 
-	[Header("To Customize")]
-	[NonSerialized] private ShoeType _selectedShoe;
-
-	[NonSerialized] private int _selectedTeam = 0;
-
-	[NonSerialized] public bool IsReady;
-
 	[NonSerialized] private PlayerInfo _currentPlayerInfo;
-
-	private int CustomizerStage = 1;
-
-
 	public PlayerInfo CurrentPlayerInfo
 	{
 		get { return _currentPlayerInfo; }
@@ -34,8 +25,25 @@ public class PlayerCustomizer : MonoBehaviour
 		{
 			_currentPlayerInfo = value;
 			_selectedTeam = FindIndex(value.Team, GameplayManager.Instance.PlayerTeams);
+			
+			NoControllerMenu.SetActive(false);	
+			SelectionMenu.SetActive(true);
+			
 			PlayerModel.SetPlayerInfo(value);
 		}
+	}
+
+	private InputDevice Controller
+	{
+		get { return CurrentPlayerInfo.Controller; }
+	}
+
+	private const int MenuIsReadyIndex = 2;
+	private int _selectionMenu;
+	public bool IsReady
+	{
+		get { return _selectionMenu >= MenuIsReadyIndex; }
+		set { _selectionMenu = value ? MenuIsReadyIndex : 0; }
 	}
 
 	private static int FindIndex<T>(T elem, IList<T> list)
@@ -43,104 +51,66 @@ public class PlayerCustomizer : MonoBehaviour
 		for (var i = 0; i < list.Count; i++) if (list[i].Equals(elem)) return i;
 		return 0;
 	}
-	
-	private InputDevice Controller
+
+	private static int Mod(int dividend, int divisor)
 	{
-		get { return CurrentPlayerInfo.Controller; }
+		return (divisor + dividend % divisor) % divisor;
 	}
-		
-
-
-
-
-	private void Update ()
+	
+	[NonSerialized] private int _selectedTeam;
+	
+	private void Update()
 	{
-
-
-		if (CurrentPlayerInfo == null)
+		if (CurrentPlayerInfo == null)	// check ready to be used
 		{
 			NoControllerMenu.SetActive(true);	
 			SelectionMenu.SetActive(false);	
 			return;
 		}
-		else
-		{
-			NoControllerMenu.SetActive(false);	
-			SelectionMenu.SetActive(true);	
-		}
 
-		if (!IsReady) 
-			SelectionText.text = _selectedShoe.ToString();
-
-		else 
-			SelectionText.text = "READY";
-
-		bool changed = false;
-
-		if (Controller.Action1.WasPressed) {
-			if(CustomizerStage != 3)
-				CustomizerStage++;
-		}
-
-		if (Controller.Action2.WasPressed) {
-			if(CustomizerStage != 1)
-				CustomizerStage--;
-		}
+		var prevMenu = _selectionMenu;
+		if (Controller.Action1.WasPressed) _selectionMenu++;
+		if (Controller.Action2.WasPressed) _selectionMenu--;
+		_selectionMenu = Mathf.Clamp(_selectionMenu, 0, MenuIsReadyIndex);
 		
-		//      *******************  STAGES   ************************* 
-
-		if (Controller.LeftBumper.WasPressed)
+		var shift = 0;	// shift item selection
+		if (Controller.LeftBumper.WasPressed)  shift--;
+		if (Controller.RightBumper.WasPressed) shift++;
+		if (shift != 0 || prevMenu != _selectionMenu)
 		{
-			if (CustomizerStage == 1) {
-				_selectedShoe = Shoe.PrevType(_selectedShoe);
-				changed = true;
-			}
-			else if (CustomizerStage == 2)  //      ******************* COLOR
-			{  
-				_selectedTeam = (_selectedTeam - 1) % GameplayManager.Instance.PlayerTeams.Length;
-				changed = true;
-			}
+			switch (_selectionMenu)
+			{
+				case 0:	// shoe selection									
+					TitleText.text = "SELECT SHOE";
+					
+					var nextShoe = Controller.LeftTrigger ? CurrentPlayerInfo.ShoeLeft : CurrentPlayerInfo.ShoeRight;
+					if      (shift > 0) nextShoe = Shoe.NextType(nextShoe);
+					else if (shift < 0) nextShoe = Shoe.PrevType(nextShoe);
 
-		}
-		
-		if (Controller.RightBumper.WasPressed)
-		{
-			if (CustomizerStage == 1) {
-				_selectedShoe = Shoe.NextType(_selectedShoe);
-				changed = true;
-			}
-			else if (CustomizerStage == 2)  //      ******************* COLOR
-			{  
-				_selectedTeam = (_selectedTeam + 1) % GameplayManager.Instance.PlayerTeams.Length;
-				changed = true;			
-			}
-		}
+					// secret feature: hold trigger to change only that shoe :--)
+					if (!Controller.RightTrigger) CurrentPlayerInfo.ShoeLeft = nextShoe;
+					if (!Controller.LeftTrigger) CurrentPlayerInfo.ShoeRight = nextShoe;
 
-		// update the player info
-		if (changed)
-		{
-			CurrentPlayerInfo.ShoeLeft = _selectedShoe;
-			CurrentPlayerInfo.ShoeRight = _selectedShoe;
-
-			CurrentPlayerInfo.Team = GameplayManager.Instance.PlayerTeams[_selectedTeam];
+					SelectionText.text = nextShoe.ToString();
+					break;
+				
+				case 1:	// team selection
+					TitleText.text = "SELECT TEAM";
+					
+					_selectedTeam = Mod(_selectedTeam + shift, GameplayManager.Instance.PlayerTeams.Length);
+					CurrentPlayerInfo.Team = GameplayManager.Instance.PlayerTeams[_selectedTeam];
+					
+					SelectionText.text = CurrentPlayerInfo.Team.Name;
+					break;
+				
+				default:	// final case: player is ready
+					TitleText.text = "PLAYER READY";
+					SelectionText.text = "B: CANCEL";
+					break;
+			}
 			
+			// finally, refresh onscreen player avatar
 			PlayerModel.SetPlayerInfo(CurrentPlayerInfo);
-		}
-
-		if (CustomizerStage == 1)
-		{
-			TitleText.text = "SELECT SHOE";
-		} 
-		else if (CustomizerStage == 2) 
-		{
-			TitleText.text = "SELECT TEAM";
-			SelectionText.text = CurrentPlayerInfo.Team.Name;
-		}
-
-	
-		if (Controller.Action1.WasPressed && CustomizerStage == 3)
-		{
-			IsReady = !IsReady;
 		}
 	}
 }
