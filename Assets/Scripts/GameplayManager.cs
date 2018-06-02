@@ -39,7 +39,7 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject PlayerCustomizationMenu;
     public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCustomizationMenu
-	public Color[] PlayerColorsDefault;
+	public Team[] PlayerTeams;
 
 	private void Start()
 	{
@@ -52,7 +52,7 @@ public class GameplayManager : MonoBehaviour
 			
 			playerInfo.Controller = device;
 			playerInfo.PlayerNum = n;
-			playerInfo.TeamColor = n < PlayerColorsDefault.Length ? PlayerColorsDefault[n] : PlayerColorsDefault[0];
+			playerInfo.Team = n < PlayerTeams.Length ? PlayerTeams[n] : PlayerTeams[PlayerTeams.Length - 1];
 
 			Players.Add(playerInfo);
 			n++;
@@ -277,11 +277,10 @@ public class GameplayManager : MonoBehaviour
 				"Shoe prefab {0} does not have a Shoe component", shoe);
 		}
 
-		for (int i = 0; i < PlayerColorsDefault.Length; i++)
+		for (int i = 0; i < PlayerTeams.Length; i++)
 		{
-			var color = PlayerColorsDefault[i];
-			color.a = 1f;
-			PlayerColorsDefault[i] = color;
+			var team = PlayerTeams[i];
+			team.Color.a = 1f;
 		}
 	}
 }

@@ -48,9 +48,9 @@ public class Player : MonoBehaviour
 		PlayerInfo = playerInfo;
 		Controller = PlayerInfo.Controller;
 
-		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		Head.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 
 		Shoe oldShoe;
 		
@@ -93,6 +93,9 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
+
+		LegLeft.Player = this;
+		LegRight.Player = this;
 
 		if (GameplayManager.Instance == null)
 		{

@@ -1677,14 +1677,6 @@ MonoBehaviour:
   SelectionMenu: {fileID: 1715032765}
   SelectionText: {fileID: 1016629610}
   PlayerModel: {fileID: 831350901}
-  PlayerColors:
-  - {r: 1, g: 0.7941176, b: 0.7941176, a: 1}
-  - {r: 1, g: 0.83823526, b: 0.962069, a: 1}
-  - {r: 0.8308824, g: 0.84604466, b: 1, a: 1}
-  - {r: 0.83823526, g: 0.9732251, b: 1, a: 1}
-  - {r: 0.83691686, g: 1, b: 0.8235294, a: 1}
-  - {r: 0.9865112, g: 1, b: 0.8602941, a: 1}
-  - {r: 1, g: 0.80831647, b: 0.60294116, a: 1}
 --- !u!1 &323299777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2290,14 +2282,6 @@ MonoBehaviour:
   SelectionMenu: {fileID: 1152098254}
   SelectionText: {fileID: 2050754515}
   PlayerModel: {fileID: 514663441}
-  PlayerColors:
-  - {r: 1, g: 0.7941176, b: 0.7941176, a: 1}
-  - {r: 1, g: 0.83823526, b: 0.962069, a: 1}
-  - {r: 0.8308824, g: 0.84604466, b: 1, a: 1}
-  - {r: 0.83823526, g: 0.9732251, b: 1, a: 1}
-  - {r: 0.83691686, g: 1, b: 0.8235294, a: 1}
-  - {r: 0.9865112, g: 1, b: 0.8602941, a: 1}
-  - {r: 1, g: 0.80831647, b: 0.60294116, a: 1}
 --- !u!1 &409465633
 GameObject:
   m_ObjectHideFlags: 0
@@ -6236,11 +6220,15 @@ MonoBehaviour:
   - {fileID: 1259182114}
   - {fileID: 1689661599}
   - {fileID: 406802195}
-  PlayerColorsDefault:
-  - {r: 1, g: 0.8745098, b: 0.8745098, a: 1}
-  - {r: 0.5661765, g: 1, b: 0.98281896, a: 1}
-  - {r: 1, g: 0.8906693, b: 0.453, a: 1}
-  - {r: 0.78630835, g: 0.6397059, b: 1, a: 1}
+  PlayerTeams:
+  - Color: {r: 1, g: 0.875, b: 0.9603448, a: 1}
+    Name: PINK
+  - Color: {r: 0.4852941, g: 1, b: 1, a: 1}
+    Name: BLUE
+  - Color: {r: 1, g: 0.96450305, b: 0.4852941, a: 1}
+    Name: YELLOW
+  - Color: {r: 0.531136, g: 1, b: 0.49264705, a: 1}
+    Name: GREEN
 --- !u!4 &1258160465
 Transform:
   m_ObjectHideFlags: 0
@@ -6366,14 +6354,6 @@ MonoBehaviour:
   SelectionMenu: {fileID: 50854333}
   SelectionText: {fileID: 275610288}
   PlayerModel: {fileID: 509552653}
-  PlayerColors:
-  - {r: 1, g: 0.7941176, b: 0.7941176, a: 1}
-  - {r: 1, g: 0.83823526, b: 0.962069, a: 1}
-  - {r: 0.8308824, g: 0.84604466, b: 1, a: 1}
-  - {r: 0.83823526, g: 0.9732251, b: 1, a: 1}
-  - {r: 0.83691686, g: 1, b: 0.8235294, a: 1}
-  - {r: 0.9865112, g: 1, b: 0.8602941, a: 1}
-  - {r: 1, g: 0.80831647, b: 0.60294116, a: 1}
 --- !u!1 &1266540841
 GameObject:
   m_ObjectHideFlags: 0
@@ -7624,14 +7604,6 @@ MonoBehaviour:
   SelectionMenu: {fileID: 894154856}
   SelectionText: {fileID: 704050535}
   PlayerModel: {fileID: 218631548}
-  PlayerColors:
-  - {r: 1, g: 0.7941176, b: 0.7941176, a: 1}
-  - {r: 1, g: 0.83823526, b: 0.962069, a: 1}
-  - {r: 0.8308824, g: 0.84604466, b: 1, a: 1}
-  - {r: 0.83823526, g: 0.9732251, b: 1, a: 1}
-  - {r: 0.83691686, g: 1, b: 0.8235294, a: 1}
-  - {r: 0.9865112, g: 1, b: 0.8602941, a: 1}
-  - {r: 1, g: 0.80831647, b: 0.60294116, a: 1}
 --- !u!1 &1715032765
 GameObject:
   m_ObjectHideFlags: 0

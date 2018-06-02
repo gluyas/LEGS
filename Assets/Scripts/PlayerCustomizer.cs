@@ -16,13 +16,9 @@ public class PlayerCustomizer : MonoBehaviour
 	public Player PlayerModel;
 
 	[Header("To Customize")]
-	public Color[] PlayerColors;
-
 	[NonSerialized] private ShoeType _selectedShoe;
 
-	[NonSerialized] private Color _selectedColor;
-
-	[NonSerialized] private int i = 0;
+	[NonSerialized] private int _selectedTeam = 0;
 
 	[NonSerialized] public bool IsReady;
 
@@ -37,8 +33,15 @@ public class PlayerCustomizer : MonoBehaviour
 		set
 		{
 			_currentPlayerInfo = value;
+			_selectedTeam = FindIndex(value.Team, GameplayManager.Instance.PlayerTeams);
 			PlayerModel.SetPlayerInfo(value);
 		}
+	}
+
+	private static int FindIndex<T>(T elem, IList<T> list)
+	{
+		for (var i = 0; i < list.Count; i++) if (list[i].Equals(elem)) return i;
+		return 0;
 	}
 	
 	private InputDevice Controller
@@ -74,17 +77,6 @@ public class PlayerCustomizer : MonoBehaviour
 
 		bool changed = false;
 
-		if (CustomizerStage == 1) 
-			TitleText.text = "SELECT SHOE";
-
-		if (CustomizerStage == 2) {
-			TitleText.text = "SELECT COLOR";
-			SelectionText.text = ("" + i);
-		}
-
-
-
-
 		if (Controller.Action1.WasPressed) {
 			if(CustomizerStage != 3)
 				CustomizerStage++;
@@ -94,11 +86,7 @@ public class PlayerCustomizer : MonoBehaviour
 			if(CustomizerStage != 1)
 				CustomizerStage--;
 		}
-
-
-
-
-
+		
 		//      *******************  STAGES   ************************* 
 
 		if (Controller.LeftBumper.WasPressed)
@@ -107,17 +95,10 @@ public class PlayerCustomizer : MonoBehaviour
 				_selectedShoe = Shoe.PrevType(_selectedShoe);
 				changed = true;
 			}
-			if (CustomizerStage == 2) {   //      ******************* COLOR
-				if (i == 0)
-					i = 6;
-				else 
-					i--;
-				SelectionText.text = ("" + i);
-				_selectedColor = PlayerColors [i];
+			else if (CustomizerStage == 2)  //      ******************* COLOR
+			{  
+				_selectedTeam = (_selectedTeam - 1) % GameplayManager.Instance.PlayerTeams.Length;
 				changed = true;
-	//			Debug.Log ("i: " + i);
-	//			Debug.Log("COLOR: " + _selectedColor);
-
 			}
 
 		}
@@ -128,33 +109,35 @@ public class PlayerCustomizer : MonoBehaviour
 				_selectedShoe = Shoe.NextType(_selectedShoe);
 				changed = true;
 			}
-			if (CustomizerStage == 2) {   //      ******************* COLOR
-				if (i == 6)
-					i = 0;
-				else 
-					i++;
-				SelectionText.text = ("" + i);
-				_selectedColor = PlayerColors [i];
-				changed = true;
-//				Debug.Log ("i: " + i);
-//				Debug.Log("COLOR: " + _selectedColor);
+			else if (CustomizerStage == 2)  //      ******************* COLOR
+			{  
+				_selectedTeam = (_selectedTeam + 1) % GameplayManager.Instance.PlayerTeams.Length;
+				changed = true;			
 			}
 		}
-
-
-
-
 
 		// update the player info
 		if (changed)
 		{
 			CurrentPlayerInfo.ShoeLeft = _selectedShoe;
 			CurrentPlayerInfo.ShoeRight = _selectedShoe;
-			if (CustomizerStage == 2)
-				CurrentPlayerInfo.TeamColor = _selectedColor;
+
+			CurrentPlayerInfo.Team = GameplayManager.Instance.PlayerTeams[_selectedTeam];
+			
 			PlayerModel.SetPlayerInfo(CurrentPlayerInfo);
 		}
 
+		if (CustomizerStage == 1)
+		{
+			TitleText.text = "SELECT SHOE";
+		} 
+		else if (CustomizerStage == 2) 
+		{
+			TitleText.text = "SELECT TEAM";
+			SelectionText.text = CurrentPlayerInfo.Team.Name;
+		}
+
+	
 		if (Controller.Action1.WasPressed && CustomizerStage == 3)
 		{
 			IsReady = !IsReady;
