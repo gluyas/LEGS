@@ -1673,8 +1673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NoControllerMenu: {fileID: 1188465379}
-  TitleText: {fileID: 1915115224}
   SelectionMenu: {fileID: 1715032765}
+  TitleText: {fileID: 1915115224}
   SelectionText: {fileID: 1016629610}
   PlayerModel: {fileID: 831350901}
 --- !u!1 &323299777
@@ -2278,8 +2278,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NoControllerMenu: {fileID: 493753050}
-  TitleText: {fileID: 1516971373}
   SelectionMenu: {fileID: 1152098254}
+  TitleText: {fileID: 1516971373}
   SelectionText: {fileID: 2050754515}
   PlayerModel: {fileID: 514663441}
 --- !u!1 &409465633
@@ -6215,6 +6215,7 @@ MonoBehaviour:
   - {fileID: 1516549127332670, guid: 9c447f5419376f347baee9050c1b81df, type: 2}
   - {fileID: 1971190169493354, guid: d576a9860db7bbd418a0a7f27e4e070d, type: 2}
   PlayerCostumes:
+  - {fileID: 11400000, guid: 529aa3eb271038343bd783a97bb4887a, type: 2}
   - {fileID: 11400000, guid: 549fcfd07c6519442b68d397317b985a, type: 2}
   PlayerCustomizationMenu: {fileID: 2071111199}
   PlayerCustomizers:
@@ -6352,8 +6353,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NoControllerMenu: {fileID: 470355173}
-  TitleText: {fileID: 617269973}
   SelectionMenu: {fileID: 50854333}
+  TitleText: {fileID: 617269973}
   SelectionText: {fileID: 275610288}
   PlayerModel: {fileID: 509552653}
 --- !u!1 &1266540841
@@ -7602,8 +7603,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NoControllerMenu: {fileID: 1325658374}
-  TitleText: {fileID: 409465635}
   SelectionMenu: {fileID: 894154856}
+  TitleText: {fileID: 409465635}
   SelectionText: {fileID: 704050535}
   PlayerModel: {fileID: 218631548}
 --- !u!1 &1715032765

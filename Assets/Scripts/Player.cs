@@ -48,19 +48,20 @@ public class Player : MonoBehaviour
 		PlayerInfo = playerInfo;
 		Controller = PlayerInfo.Controller;
 
+		foreach (Transform child in Head.transform)     Destroy(child.gameObject);
+		foreach (Transform child in LegLeft.transform)  Destroy(child.gameObject);
+		foreach (Transform child in LegRight.transform) Destroy(child.gameObject);
+
 		Head.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 
-		Shoe oldShoe;
+		if (playerInfo.Costume.Head != null)     Instantiate(playerInfo.Costume.Head,     Head.transform);
+		if (playerInfo.Costume.LegLeft != null)  Instantiate(playerInfo.Costume.LegLeft,  LegLeft.transform);
+		if (playerInfo.Costume.LegRight != null) Instantiate(playerInfo.Costume.LegRight, LegRight.transform);
 		
-		oldShoe = LegLeft.CurrentShoe;
 		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
-
-		oldShoe = LegRight.CurrentShoe;
 		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
 	}
 
 	public void DealDamage(float damage)
