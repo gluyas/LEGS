@@ -55,13 +55,22 @@ public class Player : MonoBehaviour
 		Head.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
-
-		if (playerInfo.Costume.Head != null)     Instantiate(playerInfo.Costume.Head,     Head.transform);
-		if (playerInfo.Costume.LegLeft != null)  Instantiate(playerInfo.Costume.LegLeft,  LegLeft.transform);
-		if (playerInfo.Costume.LegRight != null) Instantiate(playerInfo.Costume.LegRight, LegRight.transform);
+		
+		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
+		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
+		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
 		
 		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
 		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
+	}
+
+	private void EquipCostumePart(Transform parent, GameObject costume)
+	{
+		if (costume == null) return;
+
+		var obj = Instantiate(costume, parent, true);
+		obj.transform.localPosition = Vector3.zero;
+		obj.transform.localRotation = Quaternion.identity;
 	}
 
 	public void DealDamage(float damage)
