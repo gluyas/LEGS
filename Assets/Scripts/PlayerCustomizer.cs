@@ -25,6 +25,7 @@ public class PlayerCustomizer : MonoBehaviour
 		{
 			_currentPlayerInfo = value;
 			_selectedTeam = FindIndex(value.Team, GameplayManager.Instance.PlayerTeams);
+			_selectedCostume = FindIndex(value.Costume, GameplayManager.Instance.PlayerCostumes);
 			
 			NoControllerMenu.SetActive(false);	
 			SelectionMenu.SetActive(true);
@@ -38,8 +39,8 @@ public class PlayerCustomizer : MonoBehaviour
 		get { return CurrentPlayerInfo.Controller; }
 	}
 
-	private const int MenuIsReadyIndex = 2;
-	private int _selectionMenu;
+	private const int MenuIsReadyIndex = 3;
+	private int _selectionMenu =  -1;
 	public bool IsReady
 	{
 		get { return _selectionMenu >= MenuIsReadyIndex; }
@@ -58,6 +59,7 @@ public class PlayerCustomizer : MonoBehaviour
 	}
 	
 	[NonSerialized] private int _selectedTeam;
+	[NonSerialized] private int _selectedCostume;
 	
 	private void Update()
 	{
@@ -80,7 +82,16 @@ public class PlayerCustomizer : MonoBehaviour
 		{
 			switch (_selectionMenu)
 			{
-				case 0:	// shoe selection									
+				case 0:
+					TitleText.text = "SELECT OUTFIT";
+					
+					_selectedCostume = Mod(_selectedCostume + shift, GameplayManager.Instance.PlayerCostumes.Length);					
+					CurrentPlayerInfo.Costume = GameplayManager.Instance.PlayerCostumes[_selectedCostume];
+					
+					SelectionText.text = CurrentPlayerInfo.Costume.Name;				
+					break;
+				
+				case 1:									
 					TitleText.text = "SELECT SHOE";
 					
 					var nextShoe = Controller.LeftTrigger ? CurrentPlayerInfo.ShoeLeft : CurrentPlayerInfo.ShoeRight;
@@ -94,7 +105,7 @@ public class PlayerCustomizer : MonoBehaviour
 					SelectionText.text = nextShoe.ToString();
 					break;
 				
-				case 1:	// team selection
+				case 2:
 					TitleText.text = "SELECT TEAM";
 					
 					_selectedTeam = Mod(_selectedTeam + shift, GameplayManager.Instance.PlayerTeams.Length);

@@ -50,11 +50,13 @@ public class GameplayManager : MonoBehaviour
 		
 		var n = 0;
 		foreach (var device in InputManager.Devices) {	// set up default player configs
-			var playerInfo = new PlayerInfo();
-			
-			playerInfo.Controller = device;
-			playerInfo.PlayerNum = n;
-			playerInfo.Team = n < PlayerTeams.Length ? PlayerTeams[n] : PlayerTeams[PlayerTeams.Length - 1];
+			var playerInfo = new PlayerInfo
+			{
+				Controller = device,
+				PlayerNum = n,
+				Team = n < PlayerTeams.Length ? PlayerTeams[n] : PlayerTeams[PlayerTeams.Length - 1],
+				Costume = PlayerCostumes[Random.Range(0, PlayerCostumes.Length)],
+			};
 
 			Players.Add(playerInfo);
 			n++;
