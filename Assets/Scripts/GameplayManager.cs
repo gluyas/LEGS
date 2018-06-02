@@ -37,6 +37,8 @@ public class GameplayManager : MonoBehaviour
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
 
+	public Costume[] PlayerCostumes;
+
     public GameObject PlayerCustomizationMenu;
     public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCustomizationMenu
 	public Team[] PlayerTeams;

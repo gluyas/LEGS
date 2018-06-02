@@ -6214,6 +6214,8 @@ MonoBehaviour:
   - {fileID: 1834130666136274, guid: 4345c0c2a4875d6428f24e46f5d2b338, type: 2}
   - {fileID: 1516549127332670, guid: 9c447f5419376f347baee9050c1b81df, type: 2}
   - {fileID: 1971190169493354, guid: d576a9860db7bbd418a0a7f27e4e070d, type: 2}
+  PlayerCostumes:
+  - {fileID: 11400000, guid: 549fcfd07c6519442b68d397317b985a, type: 2}
   PlayerCustomizationMenu: {fileID: 2071111199}
   PlayerCustomizers:
   - {fileID: 314318460}

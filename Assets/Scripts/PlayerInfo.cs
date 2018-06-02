@@ -10,6 +10,7 @@ public class PlayerInfo {
 	public InputDevice Controller;
 	public ShoeType ShoeLeft, ShoeRight;
 	public Team Team;
+	public Costume Costume;
 }
 
 [Serializable]
