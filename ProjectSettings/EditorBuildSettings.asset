@@ -15,5 +15,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Beach.unity
     guid: 3741cf08975f043be97ab9340b6bcb98
   - enabled: 1
+    path: Assets/Scenes/RocketShoeTest.unity
+    guid: a3bda19559c23194494944fc965bc8df
+  - enabled: 1
     path: Assets/Scenes/Levels/Dojo.unity
     guid: 2cbe527ca2f6b4892a85319aded09601
+  - enabled: 1
+    path: Assets/Scenes/Levels/City.unity
+    guid: 7da0989be35e34f03b53636d50817ca0
