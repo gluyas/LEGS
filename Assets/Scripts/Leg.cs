@@ -61,7 +61,7 @@ public class Leg : MonoBehaviour
 	{
 		var player = other.gameObject.GetComponent<Player>();
 		if (player != null) {
-			player.Hp -= Damage;
+			player.DealDamage(Damage);
 		}
 	}
 	
