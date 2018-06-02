@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Clown
+  m_EditorClassIdentifier: 
+  Name: CLOWN
+  Head: {fileID: 1498115329979092, guid: 516b7ca40d48642dbb0db3b73c374ca9, type: 2}
+  LegLeft: {fileID: 1702981254251004, guid: 0041d64cbff2e450ba8300633992e71d, type: 2}
+  LegRight: {fileID: 1860531581512662, guid: 9b9da724fe5ad420fa877f37e6c40751, type: 2}

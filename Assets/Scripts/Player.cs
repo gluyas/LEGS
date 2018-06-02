@@ -48,19 +48,29 @@ public class Player : MonoBehaviour
 		PlayerInfo = playerInfo;
 		Controller = PlayerInfo.Controller;
 
-		Head.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
-		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.TeamColor;
+		foreach (Transform child in Head.transform)     Destroy(child.gameObject);
+		foreach (Transform child in LegLeft.transform)  Destroy(child.gameObject);
+		foreach (Transform child in LegRight.transform) Destroy(child.gameObject);
 
-		Shoe oldShoe;
+		Head.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
+		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		
-		oldShoe = LegLeft.CurrentShoe;
+		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
+		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
+		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
+		
 		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
-
-		oldShoe = LegRight.CurrentShoe;
 		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
-		if (oldShoe != null) Destroy(oldShoe.gameObject);
+	}
+
+	private void EquipCostumePart(Transform parent, GameObject costume)
+	{
+		if (costume == null) return;
+
+		var obj = Instantiate(costume, parent, true);
+		obj.transform.localPosition = Vector3.zero;
+		obj.transform.localRotation = Quaternion.identity;
 	}
 
 	public void DealDamage(float damage)
@@ -93,6 +103,9 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(collider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
+
+		LegLeft.Player = this;
+		LegRight.Player = this;
 
 		if (GameplayManager.Instance == null)
 		{
