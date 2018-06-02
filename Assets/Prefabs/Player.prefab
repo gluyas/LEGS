@@ -354,7 +354,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.42, y: 1.42}
+    oldSize: {x: 1.4032258, y: 1.4032258}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -379,7 +379,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.61, y: 5.15}
+    oldSize: {x: 0.525, y: 5.4}
     newSize: {x: 0.61, y: 5.15}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -404,7 +404,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.61, y: 5.15}
+    oldSize: {x: 0.525, y: 5.4}
     newSize: {x: 0.61, y: 5.15}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -432,16 +432,18 @@ MonoBehaviour:
   LegTorqueMax: 1000
   LegTorqueMin: 300
   LegSmoothAngle: 10
-  AttackChargeTime: 0
+  AttackChargeTime: 1
   AttackChargeThreshold: 0
-  AttackAngleThreshold: 0
-  AttackSpeedMax: 0
-  AttackSpeedMin: 0
-  AttackTorqueMax: 0
-  AttackTorqueMin: 0
-  AttackDamageMax: 0
-  AttackDamageMin: 0
-  AttackRecoveryTime: 0
+  AttackChargeWindUpArc: 30
+  AttackDirectionSensitivity: 30
+  AttackMovementFactorMax: 2
+  AttackMovementFactorMin: 1
+  AttackArcMax: 135
+  AttackArcMin: 45
+  AttackDamageMax: 0.35
+  AttackDamageMin: 0.05
+  AttackRecoveryTimeMax: 0.25
+  AttackRecoveryTimeMin: 0
   LegRight: {fileID: 114785925179879048}
   LegLeft: {fileID: 114955190690370290}
 --- !u!114 &114350133290094702
@@ -470,7 +472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0.1
   ShoePosOffset: {x: 0, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!114 &114955190690370290
@@ -484,7 +485,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0.1
   ShoePosOffset: {x: 0, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!212 &212235746955383250
@@ -521,7 +521,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 16fb7ad3356f64cf3a32eb5456df2c37, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 15b65fbbed8cc4a348b0e002321007bb, type: 3}
   m_Color: {r: 1, g: 0.8745098, b: 0.8745098, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -609,7 +609,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a67f8e69540c64d0b9f5e46e2374fe7c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f0f1a184c2f24994b6df7aead80828a, type: 3}
   m_Color: {r: 1, g: 0.875, b: 0.875, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -653,7 +653,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a67f8e69540c64d0b9f5e46e2374fe7c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f0f1a184c2f24994b6df7aead80828a, type: 3}
   m_Color: {r: 1, g: 0.875, b: 0.875, a: 1}
   m_FlipX: 0
   m_FlipY: 0
