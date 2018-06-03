@@ -84,10 +84,12 @@ public class Leg : MonoBehaviour
 		var player = other.gameObject.GetComponent<Player>();
 		if (player != null)
 		{
-			if (Player.PlayerInfo == null || player.PlayerInfo.Team != this.Player.PlayerInfo.Team)
+			if (player.PlayerInfo == null || this.Player.PlayerInfo == null) return;
+			
+			if (player.PlayerInfo.Team != this.Player.PlayerInfo.Team)
 			{
 				player.DealDamage(AttackDamage);
-        AttackDamage = 0;
+				AttackDamage = 0;
 			}
 		}
 	}
