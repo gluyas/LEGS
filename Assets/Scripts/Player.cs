@@ -63,7 +63,8 @@ public class Player : MonoBehaviour
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
 		PlayerInfo = playerInfo;
-		Controller = PlayerInfo.Controller;
+		Controller = PlayerInfo.Controller;	
+		Start();
 
 		foreach (Transform child in Head.transform)     Destroy(child.gameObject);
 		foreach (Transform child in LegLeft.transform)  Destroy(child.gameObject);
@@ -114,6 +115,15 @@ public class Player : MonoBehaviour
 	{
 		//Head.centerOfMass += HeadMassOffset;
 		
+		LegLeft.Awake();
+		LegLeft.Orientation = -1;
+		LegLeft.Player = this;
+    
+		LegRight.Awake();
+		LegRight.Orientation = 1;
+		LegRight.Player = this;
+
+		
 		{	// ignore self collisions
 			var collider = Head.GetComponent<Collider2D>();
 			Physics2D.IgnoreCollision(collider, LegLeft.Collider);
@@ -121,12 +131,6 @@ public class Player : MonoBehaviour
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
     
-		LegLeft.Orientation = -1;
-    LegLeft.Player = this;
-    
-		LegRight.Orientation = 1;
-		LegRight.Player = this;
-
 		if (GameplayManager.Instance == null)
 		{
 			PlayerId = _playerCount++;
@@ -446,7 +450,7 @@ public class Player : MonoBehaviour
 		}
 	}
 }
-
+ 
 // boilerplate classes
 public class PlayerDamageEvent : UnityEvent<Player, float> {}
 

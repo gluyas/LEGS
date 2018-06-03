@@ -631,26 +631,6 @@ Prefab:
       propertyPath: m_Name
       value: P1
       objectReference: {fileID: 0}
-    - target: {fileID: 233555555330332428, guid: d573a285fb5a8d64f97c0b34ede4d8be,
-        type: 2}
-      propertyPath: m_ConnectedAnchor.x
-      value: 1.0830216
-      objectReference: {fileID: 0}
-    - target: {fileID: 233555555330332428, guid: d573a285fb5a8d64f97c0b34ede4d8be,
-        type: 2}
-      propertyPath: m_ConnectedAnchor.y
-      value: -1.6082171
-      objectReference: {fileID: 0}
-    - target: {fileID: 233111581822647458, guid: d573a285fb5a8d64f97c0b34ede4d8be,
-        type: 2}
-      propertyPath: m_ConnectedAnchor.x
-      value: -1.0830216
-      objectReference: {fileID: 0}
-    - target: {fileID: 233111581822647458, guid: d573a285fb5a8d64f97c0b34ede4d8be,
-        type: 2}
-      propertyPath: m_ConnectedAnchor.y
-      value: -1.6082171
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d573a285fb5a8d64f97c0b34ede4d8be, type: 2}
   m_IsPrefabParent: 0

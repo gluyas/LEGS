@@ -72,9 +72,21 @@ public class Leg : MonoBehaviour
 		CurrentShoe = newShoe;
 		if (CurrentShoe != null)
 		{
+			// check shoe orientation
+			if (CurrentShoe.transform.localScale.x * Orientation < 0)
+			{
+				var scale = CurrentShoe.transform.localScale;
+				scale.x *= -1;
+				CurrentShoe.transform.localScale = scale;
+			}			
 			CurrentShoe.transform.parent = this.transform;
-			CurrentShoe.transform.localPosition = ShoePosOffset;
-			CurrentShoe.transform.localRotation = Quaternion.identity;
+			
+			var offset = ShoePosOffset;
+			offset.x *= Orientation;
+			CurrentShoe.transform.localPosition = offset;
+			
+			CurrentShoe.transform.localRotation = Quaternion.identity;		
+	
 			CurrentShoe.IsEquipped = true;
 		}
 	}
@@ -95,9 +107,9 @@ public class Leg : MonoBehaviour
 	}
 	
 	// Use this for initialization
-	private void Awake()
+	public void Awake()
 	{
-		if (CurrentShoe != null) EquipShoe(CurrentShoe);	// ensure attached shoe is correctly set up
+		if (CurrentShoe != null && !CurrentShoe.IsEquipped) EquipShoe(CurrentShoe);
 		
 		Collider = GetComponent<Collider2D>();
 		Hinge = GetComponent<HingeJoint2D>();

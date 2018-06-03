@@ -472,7 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShoePosOffset: {x: 0, y: -2.27}
+  ShoePosOffset: {x: 0.5, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!114 &114955190690370290
 MonoBehaviour:
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af569edbbde7aa74caf1dc410163478d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShoePosOffset: {x: 0, y: -2.27}
+  ShoePosOffset: {x: 0.5, y: -2.27}
   CurrentShoe: {fileID: 0}
 --- !u!212 &212235746955383250
 SpriteRenderer:
