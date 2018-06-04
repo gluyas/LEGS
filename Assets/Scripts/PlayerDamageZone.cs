@@ -9,7 +9,7 @@ public class PlayerDamageZone : MonoBehaviour {
 		var player = other.GetComponent<Player>();
 		if (player != null)
 		{
-			player.Kill();
+			Player.Kill(null, player);
 		}
 	}
 }

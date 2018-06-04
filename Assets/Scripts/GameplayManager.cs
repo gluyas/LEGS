@@ -125,7 +125,7 @@ public class GameplayManager : MonoBehaviour
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
 		
-		player.OnDeath.AddListener(p => StartCoroutine(RespawnPlayer(p.PlayerInfo, RespawnTime)));
+		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
 		
 		return player;
 	}
