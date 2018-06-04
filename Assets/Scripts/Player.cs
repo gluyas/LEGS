@@ -468,7 +468,7 @@ public class Player : MonoBehaviour
 								Mathf.Lerp(gun.ProjectileSpeedMin, gun.ProjectileSpeedMax, power);
 
 							IgnoreCollisions(gun.GetComponent<Collider2D>());
-							gun.gameObject.layer = LayerMask.NameToLayer("IgnoreLegs");
+							gun.gameObject.layer = LayerMask.NameToLayer("PlayersOnly");
 								
 							gun.Attacker = this;
 						}
