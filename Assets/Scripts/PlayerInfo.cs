@@ -11,6 +11,11 @@ public class PlayerInfo {
 	public ShoeType ShoeLeft, ShoeRight;
 	public Team Team;
 	public Costume Costume;
+
+	[NonSerialized] public int Kills;
+	[NonSerialized] public int Deaths;
+	[NonSerialized] public float DamageDealt;
+	[NonSerialized] public float DamageReceived;
 }
 
 [Serializable]
@@ -18,4 +23,9 @@ public class Team
 {
 	public Color Color;
 	public String Name;
+	
+	[NonSerialized] public int Kills;
+	[NonSerialized] public int Deaths;
+	[NonSerialized] public float DamageDealt;
+	[NonSerialized] public float DamageReceived;
 }

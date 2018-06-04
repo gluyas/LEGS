@@ -101,6 +101,17 @@ public class Player : MonoBehaviour
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
 		
+		if (receiver.PlayerInfo != null)
+		{
+			receiver.PlayerInfo.DamageReceived += damage;
+			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.DamageReceived += damage;
+		}	
+		if (attacker != null && attacker.PlayerInfo != null)
+		{
+			attacker.PlayerInfo.DamageDealt += damage;
+			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
+		}
+		
 		receiver.Hp -= damage;
 		receiver.OnDamageTaken.Invoke(attacker, receiver, damage);
 		if (attacker != null) attacker.OnDamageDealt.Invoke(attacker, receiver, damage);
@@ -117,12 +128,23 @@ public class Player : MonoBehaviour
 		{
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
+
+		if (receiver.PlayerInfo != null)
+		{
+			receiver.PlayerInfo.Deaths += 1;
+			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
+		}	
+		if (attacker != null && attacker.PlayerInfo != null)
+		{
+			attacker.PlayerInfo.Kills += 1;
+			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.Kills += 1;
+		}
+				
+		receiver.OnDeath.Invoke(attacker, receiver);
+		if (attacker != null) attacker.OnKill.Invoke(attacker, receiver);
 		
 		receiver.LegLeft.EquipShoe(null);
 		receiver.LegRight.EquipShoe(null);
-		
-		receiver.OnDeath.Invoke(attacker, receiver);
-		if (attacker != null) attacker.OnKill.Invoke(attacker, receiver);
 		
 		receiver.OnDamageTaken.RemoveAllListeners();
 		receiver.OnDeath.RemoveAllListeners();
