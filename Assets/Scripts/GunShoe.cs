@@ -50,6 +50,7 @@ public class GunShoe : Shoe
 			GetComponent<Renderer>().material.color = ChargeColor.Evaluate(0);
 			
 			Attacker.IgnoreCollisions(GetComponent<Collider2D>(), false);
+			this.gameObject.layer = LayerMask.NameToLayer("Pickups");
 			Attacker = null;
 		}
 	}
