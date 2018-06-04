@@ -152,6 +152,13 @@ public class Player : MonoBehaviour
 
 		return true;
 	}
+
+	public void IgnoreCollisions(Collider2D other, bool ignore = true)
+	{
+		Physics2D.IgnoreCollision(other, Head.GetComponent<Collider2D>(), ignore);
+		Physics2D.IgnoreCollision(other, LegLeft.Collider,  ignore);
+		Physics2D.IgnoreCollision(other, LegRight.Collider, ignore);
+	}
 	
 	private void Start ()
 	{
@@ -444,7 +451,7 @@ public class Player : MonoBehaviour
 						gun.Charge = Mathf.Clamp01(gun.Charge);
 						if (gun.Charge < gun.ChargeThreshold)
 						{
-							// fizzle
+							gun.Charge = 0;
 						}
 						else
 						{
@@ -459,8 +466,10 @@ public class Player : MonoBehaviour
 
 							gun.Rigidbody.velocity += legDirWorldSpace *
 								Mathf.Lerp(gun.ProjectileSpeedMin, gun.ProjectileSpeedMax, power);
+
+							IgnoreCollisions(gun.GetComponent<Collider2D>());
+							gun.Attacker = this;
 						}
-						gun.Charge = 0;
 					}
 					gun.GetComponent<Renderer>().material.color = gun.ChargeColor.Evaluate(gun.Charge);
 					break;

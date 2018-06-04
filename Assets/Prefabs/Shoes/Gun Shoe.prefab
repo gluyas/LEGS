@@ -19,9 +19,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4352847208720602}
+  - component: {fileID: 114804255466313954}
   - component: {fileID: 212135819561536832}
   - component: {fileID: 50058375084772612}
-  - component: {fileID: 114804255466313954}
   - component: {fileID: 60247715147499300}
   m_Layer: 9
   m_Name: Gun Shoe
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1834130666136274}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.3445113, y: 3.2253304, z: 88.522}
+  m_LocalPosition: {x: -1.8, y: 0.43, z: 0}
   m_LocalScale: {x: 0.09645239, y: 0.09175821, z: 0.18351641}
   m_Children: []
   m_Father: {fileID: 0}
@@ -212,6 +212,11 @@ MonoBehaviour:
   ChargeTimeMin: 0.2
   ChargeThreshold: 0.3
   ChargeExponent: 2
+  DamageMax: 0.6
+  DamageMin: 0.15
+  ProjectileSpeedMax: 200
+  ProjectileSpeedMin: 50
+  ProjectileSpeedThreshold: 10
   ChargeColor:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 0, a: 1}
@@ -241,8 +246,6 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  ProjectileSpeedMax: 200
-  ProjectileSpeedMin: 50
 --- !u!212 &212135819561536832
 SpriteRenderer:
   m_ObjectHideFlags: 1
