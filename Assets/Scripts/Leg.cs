@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Leg class should be used more as a container class for leg-specfic details
@@ -16,6 +18,11 @@ public class Leg : MonoBehaviour
 	public bool HasShoe
 	{
 		get { return CurrentShoe != null; }
+	}
+
+	public Vector2 ToePos
+	{
+		get { return this.transform.TransformPoint(ShoePosOffset); }
 	}
 	
 	[NonSerialized] public HingeJoint2D Hinge;
@@ -60,12 +67,29 @@ public class Leg : MonoBehaviour
 			
 		if (CurrentShoe != null)	// swap old shoe with new one
 		{
+			switch (CurrentShoe.Type)	// shoe specific unequip logic
+			{
+				case ShoeType.Gun:
+					Debug.Assert(CurrentShoe is GunShoe);
+					var gun = CurrentShoe as GunShoe;
+
+					gun.Charge = 0;
+					break;
+				
+				case ShoeType.Sticky:
+					Debug.Assert(CurrentShoe is StickyShoe);
+					var sticky = CurrentShoe as StickyShoe;
+					
+					Destroy(sticky.HingeInstance);
+					break;
+			}
+			
 			CurrentShoe.transform.parent = null;
 			if (newShoe != null)
 			{
 				CurrentShoe.transform.position = newShoe.transform.position;
 				CurrentShoe.transform.rotation = newShoe.transform.rotation;
-			}
+			}	
 			CurrentShoe.IsEquipped = false;
 		}
 
@@ -88,6 +112,27 @@ public class Leg : MonoBehaviour
 			CurrentShoe.transform.localRotation = Quaternion.identity;		
 	
 			CurrentShoe.IsEquipped = true;
+			
+			switch (CurrentShoe.Type)
+			{				
+				case ShoeType.Sticky:
+					Debug.Assert(CurrentShoe is StickyShoe);
+					var sticky = CurrentShoe as StickyShoe;
+
+					var hinge = gameObject.AddComponent<HingeJoint2D>();
+					hinge.enableCollision = false;
+					hinge.autoConfigureConnectedAnchor = true;
+					hinge.motor = new JointMotor2D
+					{
+						motorSpeed = 0,
+						maxMotorTorque = sticky.HingeResistance,
+					};
+					hinge.useMotor = true;
+					
+					sticky.HingeInstance = hinge;
+					hinge.enabled = false;
+					break;
+			}
 		}
 	}
 	
@@ -105,7 +150,34 @@ public class Leg : MonoBehaviour
 			}
 		}
 	}
-	
+
+	private void OnCollisionStay2D(Collision2D other)
+	{
+		if (CurrentShoe != null) switch (CurrentShoe.Type)
+		{
+			case ShoeType.Sticky:
+				Debug.Assert(CurrentShoe is StickyShoe);
+				var sticky = CurrentShoe as StickyShoe;
+
+				if (sticky.TryStick && !sticky.IsStuck)
+				{
+					var toePos = ToePos;
+					var nearest = other.contacts
+						.OrderBy(p => Vector2.Distance(toePos, p.point))
+						.First();
+					
+					if (Vector2.Distance(toePos, nearest.point) < sticky.StickRadius)
+					{
+						var hinge = sticky.HingeInstance;
+						hinge.connectedBody = nearest.rigidbody;
+						hinge.anchor = transform.InverseTransformPoint(nearest.point);
+						hinge.enabled = true;
+					}
+				}
+				break;
+		}
+	}
+
 	// Use this for initialization
 	public void Awake()
 	{

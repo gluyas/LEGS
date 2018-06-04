@@ -187,11 +187,10 @@ public class Player : MonoBehaviour
 					if (tryEquipLeft) targetLeg = LegLeft;
 					else              targetLeg = LegRight;
 
-					var targetPos = (Vector2) 
-						(targetLeg.transform.position + targetLeg.transform.rotation * targetLeg.ShoePosOffset);
+					var toePos = targetLeg.ToePos;
 					
 					var closest = availableItems
-						.OrderBy(shoe => Vector2.Distance(shoe.transform.position, targetPos))
+						.OrderBy(shoe => Vector2.Distance(shoe.transform.position, toePos))
 						.First();
 					
 					targetLeg.EquipShoe(closest);
@@ -445,6 +444,22 @@ public class Player : MonoBehaviour
 					}
 					rocket.Fuel = Mathf.Clamp01(rocket.Fuel);
 					rocket.GetComponent<Renderer>().material.color = rocket.FuelLevelColor.Evaluate(rocket.Fuel);
+					break;
+				
+				
+				case ShoeType.Sticky:
+					Debug.Assert(leg.CurrentShoe is StickyShoe);
+					var sticky = leg.CurrentShoe as StickyShoe;
+
+					if (triggerDown)
+					{
+						sticky.TryStick = true;
+					}
+					else if (triggerUp)
+					{
+						sticky.TryStick = false;
+						sticky.HingeInstance.enabled = false;
+					}
 					break;
 			}
 		}
