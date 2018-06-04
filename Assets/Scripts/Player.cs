@@ -382,12 +382,7 @@ public class Player : MonoBehaviour
 			}
 
 			switch (leg.CurrentShoe.Type)
-			{
-				case ShoeType.Debug:
-					leg.CurrentShoe.transform.localEulerAngles = new Vector3(0, 0, triggerVal * 180);
-					break;
-				
-				
+			{				
 				case ShoeType.Gun:
 					Debug.Assert(leg.CurrentShoe is GunShoe);
 					var gun = leg.CurrentShoe as GunShoe;

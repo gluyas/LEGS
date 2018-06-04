@@ -50,7 +50,6 @@ public class Shoe : MonoBehaviour
 [Serializable]
 public enum ShoeType
 {
-	Debug,
 	Gun,
 	Rocket,
 	Sticky,
