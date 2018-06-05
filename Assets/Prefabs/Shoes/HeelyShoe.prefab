@@ -100,8 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 3
+  WheelMaxForce: 300
   WheelRadius: 0.4
-  MaxForce: 500
+  WheelHopRadius: 0.8
 --- !u!212 &212332352960934214
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -535,8 +535,25 @@ public class Player : MonoBehaviour
 					Debug.Assert(leg.CurrentShoe is HeelyShoe);
 					var heely = leg.CurrentShoe as HeelyShoe;
 
-					heely.TryRoll = triggerHeld;
-					
+					if (heely.LastContact.HasValue && triggerHeld)
+					{
+						if (heely.IsTouching || 
+							Vector2.Distance(leg.ToePos, heely.LastContact.Value.point) <= heely.WheelHopRadius)
+						{
+							var contact = heely.LastContact.Value;
+
+							var sign = Mathf.Sign(Vector2.SignedAngle(leg.Rigidbody.velocity, contact.normal));
+							var tangent = new Vector2(
+								sign * contact.normal.y,
+								sign * -contact.normal.x
+							).normalized;
+
+							var force = trigger * heely.WheelMaxForce;
+							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
+						}
+						else heely.LastContact = null;												
+						heely.IsTouching = false;
+					}					
 					break;
 			}
 		}
