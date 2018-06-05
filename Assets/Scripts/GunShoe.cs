@@ -9,7 +9,6 @@ public class GunShoe : Shoe
 	public float ChargeTimeMax;
 	public float ChargeTimeMin;
 	public float ChargeThreshold;
-	public float ChargeExponent;
 	[NonSerialized] public float Charge;
 
 	public float DamageMax;

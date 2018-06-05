@@ -455,8 +455,7 @@ public class Player : MonoBehaviour
 						}
 						else
 						{
-							var power = Mathf.Pow(
-								(gun.Charge - gun.ChargeThreshold) / (1 - gun.ChargeThreshold), gun.ChargeExponent);
+							var power = (gun.Charge - gun.ChargeThreshold) / (1 - gun.ChargeThreshold);
 							
 							leg.EquipShoe(null);	// drop the shoe: send it flying
 							leg.GetComponent<Rigidbody2D>();
