@@ -5,17 +5,22 @@ using UnityEngine;
 
 public class PlayerHud : MonoBehaviour
 {
-	public Player Player;
+	public Player PlayerPortrait;
 	
 	public GameObject BarPrimary;
 	public GameObject BarSecondary;
 
 	public float DecayTimeSecondary;
 	[NonSerialized] public float Secondary;
+
+	[NonSerialized] public Player TargetPlayer;
 	
 	private void Update()
 	{
-		var primary = Mathf.Clamp01(Player.Hp);
+		float primary;
+		if (TargetPlayer == null) primary = 0;
+		else  				      primary = Mathf.Clamp01(TargetPlayer.Hp);
+		
 		BarPrimary.transform.localScale = new Vector2(primary, 1);
 		
 		Secondary = Mathf.Clamp(Secondary - Time.deltaTime / DecayTimeSecondary, primary, 1);

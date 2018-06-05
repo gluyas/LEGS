@@ -33,6 +33,9 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject LevelSelectMenu;
 
+	public GameObject Hud;
+	public PlayerHud[] PlayerHuds;
+
     [Header("Player Variables")]
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
@@ -125,7 +128,8 @@ public class GameplayManager : MonoBehaviour
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
 		
-		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
+		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));	
+		PlayerHuds[player.PlayerInfo.PlayerNum].TargetPlayer = player;
 		
 		return player;
 	}
@@ -263,8 +267,9 @@ public class GameplayManager : MonoBehaviour
 
 	public void StartButton()
 	{
-		StartCoroutine(LoadStage());
 		LevelSelectMenu.SetActive(false);
+		StartCoroutine(LoadStage());
+		Hud.SetActive(true);
 	}
 
 
