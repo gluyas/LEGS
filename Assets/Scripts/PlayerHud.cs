@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHud : MonoBehaviour
 {
-	public Player PlayerPortrait;
+	public Image PlayerPortrait;
 	
-	public GameObject BarPrimary;
-	public GameObject BarSecondary;
+	public Image BarPrimary;
+	public Image BarSecondary;
 
 	public float DecayTimeSecondary;
 	[NonSerialized] public float Secondary;

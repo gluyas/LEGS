@@ -51,23 +51,28 @@ public class GameplayManager : MonoBehaviour
 		Instance = this;
 		DontDestroyOnLoad(this);
 		
-		var n = 0;
+		var numPlayers = 0;
 		foreach (var device in InputManager.Devices) {	// set up default player configs
 			var playerInfo = new PlayerInfo
 			{
 				Controller = device,
-				PlayerNum = n,
-				Team = n < PlayerTeams.Length ? PlayerTeams[n] : PlayerTeams[PlayerTeams.Length - 1],
+				PlayerNum = numPlayers,
+				Team = numPlayers < PlayerTeams.Length ? PlayerTeams[numPlayers] : PlayerTeams[PlayerTeams.Length - 1],
 				Costume = PlayerCostumes[Random.Range(0, PlayerCostumes.Length)],
 			};
 
 			Players.Add(playerInfo);
-			n++;
+			numPlayers++;
 		}
 		
 		for (var i = 0; i < Mathf.Min(Players.Count, PlayerCustomizers.Length); i++)
 		{
 			PlayerCustomizers[i].CurrentPlayerInfo = Players[i];
+		}
+		
+		for (var i = numPlayers; i < PlayerHuds.Length; i++)
+		{
+			PlayerHuds[i].gameObject.SetActive(false);
 		}
 	}
 
@@ -128,8 +133,14 @@ public class GameplayManager : MonoBehaviour
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
 		
-		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));	
-		PlayerHuds[player.PlayerInfo.PlayerNum].TargetPlayer = player;
+		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
+
+		{
+			var hud = PlayerHuds[player.PlayerInfo.PlayerNum];
+			hud.TargetPlayer = player;
+			hud.PlayerPortrait.color = player.PlayerInfo.Team.Color;
+			hud.BarPrimary.color = player.PlayerInfo.Team.Color;
+		}
 		
 		return player;
 	}
