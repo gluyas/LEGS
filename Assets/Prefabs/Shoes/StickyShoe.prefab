@@ -19,12 +19,12 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4529935039384672}
+  - component: {fileID: 114915620815636558}
   - component: {fileID: 212805655312994644}
   - component: {fileID: 50097788834115610}
-  - component: {fileID: 114494774278182888}
   - component: {fileID: 61155844278862634}
   m_Layer: 9
-  m_Name: DebugShoe
+  m_Name: StickyShoe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1971190169493354}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.78, y: 1.3600001, z: -15.16838}
+  m_LocalPosition: {x: 0.384619, y: 5.039451, z: -18.97}
   m_LocalScale: {x: 0.61801, y: 0.309, z: 0.61801}
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,7 +88,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.42, y: 1.42}
   m_EdgeRadius: 0
---- !u!114 &114494774278182888
+--- !u!114 &114915620815636558
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -96,10 +96,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1971190169493354}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4742bdede5c104e409226c9220561ffe, type: 3}
+  m_Script: {fileID: 11500000, guid: f06f8045ad2dce348b05be759ff8321a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 3
+  StickRadius: 0.4
+  HingeResistance: 350
 --- !u!212 &212805655312994644
 SpriteRenderer:
   m_ObjectHideFlags: 1

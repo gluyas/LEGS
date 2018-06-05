@@ -3316,7 +3316,7 @@ MonoBehaviour:
   ShoePrefabs:
   - {fileID: 1834130666136274, guid: 4345c0c2a4875d6428f24e46f5d2b338, type: 2}
   - {fileID: 1516549127332670, guid: 9c447f5419376f347baee9050c1b81df, type: 2}
-  - {fileID: 1971190169493354, guid: d576a9860db7bbd418a0a7f27e4e070d, type: 2}
+  - {fileID: 1971190169493354, guid: 9f004fd341fa59649bf20f96f6ef28b9, type: 2}
   PlayerCostumes:
   - {fileID: 11400000, guid: 529aa3eb271038343bd783a97bb4887a, type: 2}
   - {fileID: 11400000, guid: b287f000975995743b931d14f1d8e807, type: 2}
