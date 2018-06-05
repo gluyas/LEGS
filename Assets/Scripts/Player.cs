@@ -509,6 +509,24 @@ public class Player : MonoBehaviour
 					{
 						sticky.TryStick = false;
 						sticky.HingeInstance.enabled = false;
+						
+						if (sticky.IgnoreCollider != null)
+						{	// check both shoes are sticky and are stuck to same object
+							if (LegLeft.CurrentShoe != null && LegRight.CurrentShoe != null && 
+							    LegLeft.CurrentShoe.Type == LegRight.CurrentShoe.Type)
+							{
+								var left  = LegLeft.CurrentShoe  as StickyShoe;
+								var right = LegRight.CurrentShoe as StickyShoe;
+
+								if (right.IgnoreCollider == left.IgnoreCollider)	// do not re-enable collision
+								{
+									sticky.IgnoreCollider = null;
+									break;
+								}
+							}
+							Physics2D.IgnoreCollision(HeadCollider, sticky.IgnoreCollider, false);
+							sticky.IgnoreCollider = null;
+						}
 					}
 					break;
 			}

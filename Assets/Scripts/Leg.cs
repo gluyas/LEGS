@@ -79,6 +79,12 @@ public class Leg : MonoBehaviour
 				case ShoeType.Sticky:
 					Debug.Assert(CurrentShoe is StickyShoe);
 					var sticky = CurrentShoe as StickyShoe;
+
+					if (sticky.IgnoreCollider != null)	// ensure that collision is re-enabled
+					{
+						Physics2D.IgnoreCollision(Player.HeadCollider, sticky.IgnoreCollider, false);
+						sticky.IgnoreCollider = null;
+					}
 					
 					Destroy(sticky.HingeInstance);
 					break;
@@ -166,6 +172,9 @@ public class Leg : MonoBehaviour
 						hinge.connectedBody = nearest.rigidbody;
 						hinge.anchor = transform.InverseTransformPoint(nearest.point);
 						hinge.enabled = true;
+
+						sticky.IgnoreCollider = nearest.collider;
+						Physics2D.IgnoreCollision(Player.HeadCollider, nearest.collider);
 					}
 				}
 				break;

@@ -14,6 +14,8 @@ public class StickyShoe : Shoe
 		get { return HingeInstance.enabled; }
 	}
 	[NonSerialized] public HingeJoint2D HingeInstance;
+
+	[NonSerialized] public Collider2D IgnoreCollider;
 	
 	private void OnValidate()
 	{
