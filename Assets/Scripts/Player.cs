@@ -61,6 +61,10 @@ public class Player : MonoBehaviour
 	{
 		get { return this.GetComponent<Rigidbody2D>(); }
 	}
+	public Collider2D HeadCollider
+	{
+		get { return this.GetComponent<Collider2D>(); }
+	}
 
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
@@ -155,7 +159,7 @@ public class Player : MonoBehaviour
 
 	public void IgnoreCollisions(Collider2D other, bool ignore = true)
 	{
-		Physics2D.IgnoreCollision(other, Head.GetComponent<Collider2D>(), ignore);
+		Physics2D.IgnoreCollision(other, HeadCollider,      ignore);
 		Physics2D.IgnoreCollision(other, LegLeft.Collider,  ignore);
 		Physics2D.IgnoreCollision(other, LegRight.Collider, ignore);
 	}
@@ -174,9 +178,8 @@ public class Player : MonoBehaviour
 
 		
 		{	// ignore self collisions
-			var collider = Head.GetComponent<Collider2D>();
-			Physics2D.IgnoreCollision(collider, LegLeft.Collider);
-			Physics2D.IgnoreCollision(collider, LegRight.Collider);
+			Physics2D.IgnoreCollision(HeadCollider, LegLeft.Collider);
+			Physics2D.IgnoreCollision(HeadCollider, LegRight.Collider);
 			Physics2D.IgnoreCollision(LegLeft.Collider, LegRight.Collider);
 		}
     
