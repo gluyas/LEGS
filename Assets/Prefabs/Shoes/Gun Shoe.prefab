@@ -211,12 +211,11 @@ MonoBehaviour:
   ChargeTimeMax: 1.2
   ChargeTimeMin: 0.2
   ChargeThreshold: 0.3
-  ChargeExponent: 2
-  DamageMax: 0.6
+  DamageMax: 0.45
   DamageMin: 0.15
   ProjectileSpeedMax: 200
   ProjectileSpeedMin: 50
-  ProjectileSpeedThreshold: 10
+  ProjectileSpeedThreshold: 40
   ChargeColor:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 0, a: 1}
