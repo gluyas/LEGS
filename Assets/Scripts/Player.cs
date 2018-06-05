@@ -529,6 +529,15 @@ public class Player : MonoBehaviour
 						}
 					}
 					break;
+
+				
+				case ShoeType.Heely:
+					Debug.Assert(leg.CurrentShoe is HeelyShoe);
+					var heely = leg.CurrentShoe as HeelyShoe;
+
+					heely.TryRoll = triggerHeld;
+					
+					break;
 			}
 		}
 	}

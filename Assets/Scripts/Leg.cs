@@ -166,7 +166,7 @@ public class Leg : MonoBehaviour
 						.OrderBy(p => Vector2.Distance(toePos, p.point))
 						.First();
 					
-					if (Vector2.Distance(toePos, nearest.point) < sticky.StickRadius)
+					if (Vector2.Distance(toePos, nearest.point) <= sticky.StickRadius)
 					{
 						var hinge = sticky.HingeInstance;
 						hinge.connectedBody = nearest.rigidbody;
@@ -177,6 +177,34 @@ public class Leg : MonoBehaviour
 						Physics2D.IgnoreCollision(Player.HeadCollider, nearest.collider);
 					}
 				}
+				break;
+			
+			
+			case ShoeType.Heely:
+				Debug.Assert(CurrentShoe is HeelyShoe);
+				var heely = CurrentShoe as HeelyShoe;
+
+				if (heely.TryRoll)
+				{
+					var toePos = ToePos;
+					var nearest = other.contacts
+						.OrderBy(p => Vector2.Distance(toePos, p.point))
+						.First();
+					
+					if (Vector2.Distance(toePos, nearest.point) <= heely.WheelRadius)
+					{
+						var velocity = Rigidbody.velocity;
+						var sign = Mathf.Sign(Vector2.SignedAngle(velocity, nearest.normal));
+												
+						var tangent = new Vector2(
+							sign * nearest.normal.y,	
+							sign * -nearest.normal.x	
+						).normalized;
+
+						Rigidbody.AddForceAtPosition(tangent *heely.MaxForce, nearest.point);
+					}
+				}
+
 				break;
 		}
 	}
