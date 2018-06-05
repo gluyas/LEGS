@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HpBar : MonoBehaviour
+public class PlayerHud : MonoBehaviour
 {
 	public Player Player;
 	
