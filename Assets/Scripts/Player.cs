@@ -529,6 +529,45 @@ public class Player : MonoBehaviour
 						}
 					}
 					break;
+
+				
+				case ShoeType.Heely:
+					Debug.Assert(leg.CurrentShoe is HeelyShoe);
+					var heely = leg.CurrentShoe as HeelyShoe;
+
+					if (heely.LastContact.HasValue && triggerHeld)
+					{
+						if (heely.IsTouching || 
+							Vector2.Distance(leg.ToePos, heely.LastContact.Value.point) <= heely.WheelHopRadius)
+						{
+							var contact = heely.LastContact.Value;
+
+							var sign = Mathf.Sign(Vector2.SignedAngle(legDirWorldSpace, contact.normal));
+							var tangent = new Vector2(
+								sign * contact.normal.y,
+								sign * -contact.normal.x
+							).normalized;
+
+							var tangentVelocity = (Vector2) Vector3.Project(leg.Rigidbody.velocity, tangent);
+							var force = heely.WheelForceMax * (1 - Mathf.Pow(
+								Mathf.Clamp01(tangentVelocity.magnitude / heely.WheelSpeedMax / trigger), 
+								heely.WheelForceExponent
+							));							
+							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
+
+							Debug.LogFormat("{0} -> {1}", tangentVelocity.magnitude, force);
+							
+							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
+							leg.Rigidbody.velocity -= onNormal;
+						}
+						else
+						{
+							heely.LastContact = null;
+							leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
+						}												
+						heely.IsTouching = false;
+					}					
+					break;
 			}
 		}
 	}

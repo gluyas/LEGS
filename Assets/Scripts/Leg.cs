@@ -88,6 +88,13 @@ public class Leg : MonoBehaviour
 					
 					Destroy(sticky.HingeInstance);
 					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					Rigidbody.sharedMaterial = heely.OriginalMaterial;
+					break;
 			}
 			
 			CurrentShoe.transform.parent = null;
@@ -138,6 +145,13 @@ public class Leg : MonoBehaviour
 					sticky.HingeInstance = hinge;
 					hinge.enabled = false;
 					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					heely.OriginalMaterial = Rigidbody.sharedMaterial;
+					break;
 			}
 		}
 	}
@@ -166,7 +180,7 @@ public class Leg : MonoBehaviour
 						.OrderBy(p => Vector2.Distance(toePos, p.point))
 						.First();
 					
-					if (Vector2.Distance(toePos, nearest.point) < sticky.StickRadius)
+					if (Vector2.Distance(toePos, nearest.point) <= sticky.StickRadius)
 					{
 						var hinge = sticky.HingeInstance;
 						hinge.connectedBody = nearest.rigidbody;
@@ -175,6 +189,27 @@ public class Leg : MonoBehaviour
 
 						sticky.IgnoreCollider = nearest.collider;
 						Physics2D.IgnoreCollision(Player.HeadCollider, nearest.collider);
+					}
+				}
+				break;
+			
+			
+			case ShoeType.Heely:
+				Debug.Assert(CurrentShoe is HeelyShoe);
+				var heely = CurrentShoe as HeelyShoe;
+
+				{
+					var toePos = ToePos;
+					var nearest = other.contacts
+						.OrderBy(p => Vector2.Distance(toePos, p.point))
+						.First();
+
+					if (Vector2.Distance(toePos, nearest.point) <= heely.WheelRadius)
+					{
+						heely.LastContact = nearest;
+						heely.IsTouching = true;
+						
+						Rigidbody.sharedMaterial = heely.Material;
 					}
 				}
 				break;

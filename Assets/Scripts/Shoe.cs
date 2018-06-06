@@ -53,4 +53,5 @@ public enum ShoeType
 	Gun,
 	Rocket,
 	Sticky,
+	Heely,
 }
