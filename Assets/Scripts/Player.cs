@@ -550,6 +550,9 @@ public class Player : MonoBehaviour
 
 							var force = trigger * heely.WheelMaxForce;
 							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
+
+							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
+							leg.Rigidbody.velocity -= onNormal;
 						}
 						else heely.LastContact = null;												
 						heely.IsTouching = false;
