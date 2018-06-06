@@ -12,6 +12,8 @@ public class PlayerInfo {
 	public Team Team;
 	public Costume Costume;
 
+	[NonSerialized] public Player Instance;
+	
 	[NonSerialized] public int Kills;
 	[NonSerialized] public int Deaths;
 	[NonSerialized] public float DamageDealt;
