@@ -33,6 +33,9 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject LevelSelectMenu;
 
+	public GameObject Hud;
+	public PlayerHud[] PlayerHuds;
+
     [Header("Player Variables")]
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
@@ -48,23 +51,28 @@ public class GameplayManager : MonoBehaviour
 		Instance = this;
 		DontDestroyOnLoad(this);
 		
-		var n = 0;
+		var numPlayers = 0;
 		foreach (var device in InputManager.Devices) {	// set up default player configs
 			var playerInfo = new PlayerInfo
 			{
 				Controller = device,
-				PlayerNum = n,
-				Team = n < PlayerTeams.Length ? PlayerTeams[n] : PlayerTeams[PlayerTeams.Length - 1],
+				PlayerNum = numPlayers,
+				Team = numPlayers < PlayerTeams.Length ? PlayerTeams[numPlayers] : PlayerTeams[PlayerTeams.Length - 1],
 				Costume = PlayerCostumes[Random.Range(0, PlayerCostumes.Length)],
 			};
 
 			Players.Add(playerInfo);
-			n++;
+			numPlayers++;
 		}
 		
 		for (var i = 0; i < Mathf.Min(Players.Count, PlayerCustomizers.Length); i++)
 		{
 			PlayerCustomizers[i].CurrentPlayerInfo = Players[i];
+		}
+		
+		for (var i = numPlayers; i < PlayerHuds.Length; i++)
+		{
+			PlayerHuds[i].gameObject.SetActive(false);
 		}
 	}
 
@@ -82,6 +90,15 @@ public class GameplayManager : MonoBehaviour
 			LevelSelectMenu.SetActive(true);
 			EventSystem.current.SetSelectedGameObject(firstSelected);
 
+			for (var i = 0; i < Players.Count; i++)
+			{
+				var player = Players[i];
+				PlayerHuds[i].BarPrimary.color = player.Team.Color;
+				PlayerHuds[i].PlayerPortrait.color = player.Team.Color;
+				PlayerHuds[i].TargetPlayer = player;
+
+				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
+			}
 		}
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
@@ -124,15 +141,15 @@ public class GameplayManager : MonoBehaviour
 	{	
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
-		
-		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
-		
+
+		playerInfo.Instance = player;
 		return player;
 	}
 
-
 	public IEnumerator RespawnPlayer(PlayerInfo player, float time)
-	{				
+	{
+		player.Instance = null;
+		
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		Vector2 pos;
 		if (spawns.Count == 0) pos = Vector2.zero;
@@ -263,8 +280,9 @@ public class GameplayManager : MonoBehaviour
 
 	public void StartButton()
 	{
-		StartCoroutine(LoadStage());
 		LevelSelectMenu.SetActive(false);
+		StartCoroutine(LoadStage());
+		Hud.SetActive(true);
 	}
 
 
