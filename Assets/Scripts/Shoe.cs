@@ -24,8 +24,22 @@ public class Shoe : MonoBehaviour
 			else  		// set unequipped
 			{
 				Rigidbody.simulated = true;
+				IdleTime = 0;
 			}
 			_isEquipped = value;
+		}
+	}
+
+	[NonSerialized] public float IdleTime;
+
+	protected void FixedUpdate()
+	{
+		if (IsEquipped || GameplayManager.Instance == null) return;
+
+		IdleTime += Time.deltaTime;
+		if (IdleTime >= GameplayManager.Instance.ItemDespawnTime)
+		{
+			Destroy(gameObject);
 		}
 	}
 

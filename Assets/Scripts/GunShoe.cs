@@ -37,8 +37,9 @@ public class GunShoe : Shoe
 	
 	public Gradient ChargeColor;
 
-	private void FixedUpdate()
+	private new void FixedUpdate()
 	{
+		base.FixedUpdate();
 		if (!IsProjectile) return;
 		
 		var velocity = GetComponent<Rigidbody2D>().velocity;

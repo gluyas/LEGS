@@ -18,6 +18,8 @@ public class GameplayManager : MonoBehaviour
 
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
+
+	public float ItemDespawnTime;
 	
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
