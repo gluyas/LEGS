@@ -14,6 +14,9 @@ public class HeelyShoe : Shoe
 
 	[NonSerialized] public ContactPoint2D? LastContact = null;
 	[NonSerialized] public bool IsTouching;
+
+	public PhysicsMaterial2D Material;
+	[NonSerialized] public PhysicsMaterial2D OriginalMaterial;
 	
 	private void OnValidate()
 	{

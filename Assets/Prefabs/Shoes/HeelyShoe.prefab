@@ -105,6 +105,7 @@ MonoBehaviour:
   WheelSpeedMax: 20
   WheelRadius: 0.4
   WheelHopRadius: 0.8
+  Material: {fileID: 6200000, guid: df1dc1e92fa2bfc4794a4e79d5c44f31, type: 2}
 --- !u!212 &212332352960934214
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -88,6 +88,13 @@ public class Leg : MonoBehaviour
 					
 					Destroy(sticky.HingeInstance);
 					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					Rigidbody.sharedMaterial = heely.OriginalMaterial;
+					break;
 			}
 			
 			CurrentShoe.transform.parent = null;
@@ -137,6 +144,13 @@ public class Leg : MonoBehaviour
 					
 					sticky.HingeInstance = hinge;
 					hinge.enabled = false;
+					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					heely.OriginalMaterial = Rigidbody.sharedMaterial;
 					break;
 			}
 		}
@@ -194,6 +208,8 @@ public class Leg : MonoBehaviour
 					{
 						heely.LastContact = nearest;
 						heely.IsTouching = true;
+						
+						Rigidbody.sharedMaterial = heely.Material;
 					}
 				}
 				break;

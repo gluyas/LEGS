@@ -560,7 +560,11 @@ public class Player : MonoBehaviour
 							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
 							leg.Rigidbody.velocity -= onNormal;
 						}
-						else heely.LastContact = null;												
+						else
+						{
+							heely.LastContact = null;
+							leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
+						}												
 						heely.IsTouching = false;
 					}					
 					break;
