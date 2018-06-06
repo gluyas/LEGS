@@ -14,13 +14,13 @@ public class PlayerHud : MonoBehaviour
 	public float DecayTimeSecondary;
 	[NonSerialized] public float Secondary;
 
-	[NonSerialized] public Player TargetPlayer;
+	[NonSerialized] public PlayerInfo TargetPlayer;
 	
 	private void Update()
 	{
 		float primary;
-		if (TargetPlayer == null) primary = 0;
-		else  				      primary = Mathf.Clamp01(TargetPlayer.Hp);
+		if (TargetPlayer.Instance == null) primary = 0;
+		else  				    		   primary = Mathf.Clamp01(TargetPlayer.Instance.Hp);
 		
 		BarPrimary.transform.localScale = new Vector2(primary, 1);
 		

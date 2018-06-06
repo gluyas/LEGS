@@ -90,6 +90,15 @@ public class GameplayManager : MonoBehaviour
 			LevelSelectMenu.SetActive(true);
 			EventSystem.current.SetSelectedGameObject(firstSelected);
 
+			for (var i = 0; i < Players.Count; i++)
+			{
+				var player = Players[i];
+				PlayerHuds[i].BarPrimary.color = player.Team.Color;
+				PlayerHuds[i].PlayerPortrait.color = player.Team.Color;
+				PlayerHuds[i].TargetPlayer = player;
+
+				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
+			}
 		}
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
@@ -132,22 +141,15 @@ public class GameplayManager : MonoBehaviour
 	{	
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
-		
-		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
 
-		{
-			var hud = PlayerHuds[player.PlayerInfo.PlayerNum];
-			hud.TargetPlayer = player;
-			hud.PlayerPortrait.color = player.PlayerInfo.Team.Color;
-			hud.BarPrimary.color = player.PlayerInfo.Team.Color;
-		}
-		
+		playerInfo.Instance = player;
 		return player;
 	}
 
-
 	public IEnumerator RespawnPlayer(PlayerInfo player, float time)
-	{				
+	{
+		player.Instance = null;
+		
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		Vector2 pos;
 		if (spawns.Count == 0) pos = Vector2.zero;
