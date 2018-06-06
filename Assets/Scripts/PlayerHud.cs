@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class PlayerHud : MonoBehaviour
 {
+	public GameObject[] ScoreCounters;
+	public Image[] ScoreCounterFills;
+	
 	public Image PlayerPortrait;
 	
 	public Image BarPrimary;
@@ -26,5 +29,24 @@ public class PlayerHud : MonoBehaviour
 		
 		Secondary = Mathf.Clamp(Secondary - Time.deltaTime / DecayTimeSecondary, primary, 1);
 		BarSecondary.transform.localScale = new Vector2(Secondary, 1);
+	}
+
+	private void OnValidate()
+	{
+		ScoreCounterFills = new Image[ScoreCounters.Length];
+		for (var i = 0; i < ScoreCounters.Length; i++)
+		{
+			ScoreCounterFills[i] = ScoreCounters[i].GetComponentInChildren<Image>();
+		}
+	}
+
+	public void FillScoreCounters(int score, int max, bool reverse = false)
+	{
+		for (var i = 0; i < ScoreCounters.Length; i++)
+		{
+			ScoreCounters[i].SetActive(i < max);
+			if (reverse) ScoreCounterFills[i].enabled = i >= max - score;
+			else         ScoreCounterFills[i].enabled = i <  score;
+		}
 	}
 }

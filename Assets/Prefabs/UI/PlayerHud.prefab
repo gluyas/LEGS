@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 222885497671551850}
   - component: {fileID: 114409737605544802}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 222546227433621194}
   - component: {fileID: 114852929021074638}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -184,7 +184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224286555489270410}
   m_Layer: 5
-  m_Name: Point
+  m_Name: Point (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 222830358578656690}
   - component: {fileID: 114758859482028568}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 222411486343698978}
   - component: {fileID: 114444008218652256}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -397,7 +397,7 @@ GameObject:
   - component: {fileID: 222874861817689530}
   - component: {fileID: 114969977985553820}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 222015695210319652}
   - component: {fileID: 114965427063496498}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 222386484094525148}
   - component: {fileID: 114093797480895074}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -700,8 +700,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d63251111823e04e83d3a81315cedb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreCounters: []
-  ScoreCounterFills: []
+  ScoreCounters:
+  - {fileID: 1262937628507482}
+  - {fileID: 1707775160431790}
+  - {fileID: 1754592723977202}
+  - {fileID: 1686911287384600}
+  - {fileID: 1004848660946128}
+  - {fileID: 1410889431388368}
+  - {fileID: 1602795755482306}
+  ScoreCounterFills:
+  - {fileID: 114082120020481114}
+  - {fileID: 114210838205115408}
+  - {fileID: 114910094186250010}
+  - {fileID: 114877367169505056}
+  - {fileID: 114797201224089224}
+  - {fileID: 114263982666721350}
+  - {fileID: 114780074181693216}
   PlayerPortrait: {fileID: 114780499182317536}
   BarPrimary: {fileID: 114796701122570652}
   BarSecondary: {fileID: 114750571444195872}
