@@ -22,6 +22,8 @@ public class GameplayManager : MonoBehaviour
 	public float ItemSpawnTimeMax;
 	public float ItemSpawnTimeMin;
 	public float ItemDespawnTime;
+	public float ItemDespawnFlickerTime;
+	
 	[NonSerialized] private Transform[] _itemSpawns;
 	
     [NonSerialized] public int LevelSelected;

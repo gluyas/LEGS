@@ -20,11 +20,11 @@ public class Shoe : MonoBehaviour
 			if (value)	// set equipped
 			{
 				Rigidbody.simulated = false;
+				IdleTime = 0;
 			}
 			else  		// set unequipped
 			{
 				Rigidbody.simulated = true;
-				IdleTime = 0;
 			}
 			_isEquipped = value;
 		}
@@ -37,6 +37,12 @@ public class Shoe : MonoBehaviour
 		if (IsEquipped || GameplayManager.Instance == null) return;
 
 		IdleTime += Time.deltaTime;
+		if (IdleTime >= GameplayManager.Instance.ItemDespawnTime - GameplayManager.Instance.ItemDespawnFlickerTime)
+		{
+			var renderer = GetComponent<Renderer>();
+			renderer.enabled = !renderer.enabled;
+		}
+		
 		if (IdleTime >= GameplayManager.Instance.ItemDespawnTime)
 		{
 			Destroy(gameObject);
