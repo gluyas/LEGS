@@ -23,6 +23,7 @@ public class GameplayManager : MonoBehaviour
 	public float ItemSpawnTimeMin;
 	public float ItemDespawnTime;
 	public float ItemDespawnFlickerTime;
+	public float ItemDespawnFlickerDuration;
 	
 	[NonSerialized] private Transform[] _itemSpawns;
 	

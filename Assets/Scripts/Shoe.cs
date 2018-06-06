@@ -20,7 +20,9 @@ public class Shoe : MonoBehaviour
 			if (value)	// set equipped
 			{
 				Rigidbody.simulated = false;
-				IdleTime = 0;
+				GetComponent<Renderer>().enabled = true;
+				_idleTime = 0;
+				_numFlickers = 1;
 			}
 			else  		// set unequipped
 			{
@@ -30,23 +32,38 @@ public class Shoe : MonoBehaviour
 		}
 	}
 
-	[NonSerialized] public float IdleTime;
+	[NonSerialized] private float _idleTime;
+	[NonSerialized] private int _numFlickers = 1;
 
 	protected void FixedUpdate()
 	{
 		if (IsEquipped || GameplayManager.Instance == null) return;
 
-		IdleTime += Time.deltaTime;
-		if (IdleTime >= GameplayManager.Instance.ItemDespawnTime - GameplayManager.Instance.ItemDespawnFlickerTime)
+		var renderer = GetComponent<Renderer>();
+		
+		_idleTime += Time.deltaTime;
+		if (_idleTime >= GameplayManager.Instance.ItemDespawnTime - GameplayManager.Instance.ItemDespawnFlickerTime)
 		{
-			var renderer = GetComponent<Renderer>();
 			renderer.enabled = !renderer.enabled;
+		} 
+		else if (_idleTime >= GameplayManager.Instance.ItemDespawnTime * _numFlickers / (_numFlickers + 1))
+		{
+			_numFlickers += 1;
+			StartCoroutine(FlickerOnce(renderer));
 		}
 		
-		if (IdleTime >= GameplayManager.Instance.ItemDespawnTime)
+		if (_idleTime >= GameplayManager.Instance.ItemDespawnTime)
 		{
 			Destroy(gameObject);
 		}
+	}
+
+	private static IEnumerator FlickerOnce(Renderer renderer)
+	{
+		renderer.enabled = false;
+		yield return new WaitForSeconds(GameplayManager.Instance.ItemDespawnFlickerDuration);
+		
+		renderer.enabled = true;
 	}
 
 	public Rigidbody2D Rigidbody

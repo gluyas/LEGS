@@ -3300,8 +3300,9 @@ MonoBehaviour:
   RespawnTime: 3
   ItemSpawnTimeMax: 3
   ItemSpawnTimeMin: 7
-  ItemDespawnTime: 5
+  ItemDespawnTime: 20
   ItemDespawnFlickerTime: 1.5
+  ItemDespawnFlickerDuration: 0.05
   Levels:
   - Scenes/Dojo
   - 
