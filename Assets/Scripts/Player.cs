@@ -13,11 +13,6 @@ public class Player : MonoBehaviour
 	
 	private static int _playerCount = 0;
 
-	[NonSerialized] public readonly PlayerDamageEvent OnDamageTaken = new PlayerDamageEvent();
-	[NonSerialized] public readonly PlayerDamageEvent OnDamageDealt = new PlayerDamageEvent();
-	[NonSerialized] public readonly PlayerDeathEvent  OnDeath = new PlayerDeathEvent();
-	[NonSerialized] public readonly PlayerDeathEvent  OnKill = new PlayerDeathEvent();
-
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public PlayerInfo PlayerInfo;
 	[NonSerialized] public InputDevice Controller;
@@ -105,16 +100,19 @@ public class Player : MonoBehaviour
 		{
 			receiver.PlayerInfo.DamageReceived += damage;
 			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.DamageReceived += damage;
+			
+			receiver.PlayerInfo.OnDamageTaken.Invoke(
+				attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo, damage);
 		}	
 		if (attacker != null && attacker.PlayerInfo != null)
 		{
 			attacker.PlayerInfo.DamageDealt += damage;
 			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
+			
+			attacker.PlayerInfo.OnDamageDealt.Invoke(attacker.PlayerInfo, receiver.PlayerInfo, damage);
 		}
 		
 		receiver.Hp -= damage;
-		receiver.OnDamageTaken.Invoke(attacker, receiver, damage);
-		if (attacker != null) attacker.OnDamageDealt.Invoke(attacker, receiver, damage);
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
 		return true;
@@ -133,21 +131,20 @@ public class Player : MonoBehaviour
 		{
 			receiver.PlayerInfo.Deaths += 1;
 			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
+			
+			receiver.PlayerInfo.OnDeath.Invoke(attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo);
 		}	
 		if (attacker != null && attacker.PlayerInfo != null)
 		{
 			attacker.PlayerInfo.Kills += 1;
 			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.Kills += 1;
+			
+			attacker.PlayerInfo.OnKill.Invoke(attacker.PlayerInfo, receiver.PlayerInfo);
 		}
-				
-		receiver.OnDeath.Invoke(attacker, receiver);
-		if (attacker != null) attacker.OnKill.Invoke(attacker, receiver);
-		
+
 		receiver.LegLeft.EquipShoe(null);
 		receiver.LegRight.EquipShoe(null);
 		
-		receiver.OnDamageTaken.RemoveAllListeners();
-		receiver.OnDeath.RemoveAllListeners();
 		Destroy(receiver.transform.root.gameObject);
 
 		return true;
@@ -512,8 +509,3 @@ public class Player : MonoBehaviour
 		}
 	}
 }
- 
-// boilerplate classes
-public class PlayerDamageEvent : UnityEvent<Player, Player, float> {}
-
-public class PlayerDeathEvent : UnityEvent<Player, Player> {}

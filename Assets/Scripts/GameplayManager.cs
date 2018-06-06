@@ -96,6 +96,8 @@ public class GameplayManager : MonoBehaviour
 				PlayerHuds[i].BarPrimary.color = player.Team.Color;
 				PlayerHuds[i].PlayerPortrait.color = player.Team.Color;
 				PlayerHuds[i].TargetPlayer = player;
+
+				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
 			}
 		}
 
@@ -139,8 +141,6 @@ public class GameplayManager : MonoBehaviour
 	{	
 		var player = Instantiate(PlayerPrefab, position, Quaternion.identity).GetComponentInChildren<Player>();	
 		player.SetPlayerInfo(playerInfo);
-		
-		player.OnDeath.AddListener((_, died) => StartCoroutine(RespawnPlayer(died.PlayerInfo, RespawnTime)));
 
 		playerInfo.Instance = player;
 		return player;
