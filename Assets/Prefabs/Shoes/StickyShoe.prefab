@@ -23,6 +23,8 @@ GameObject:
   - component: {fileID: 212805655312994644}
   - component: {fileID: 50097788834115610}
   - component: {fileID: 61155844278862634}
+  - component: {fileID: 61387897374939434}
+  - component: {fileID: 66400168847596724}
   m_Layer: 9
   m_Name: StickyShoe
   m_TagString: Untagged
@@ -37,8 +39,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1971190169493354}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.384619, y: 5.039451, z: -18.97}
-  m_LocalScale: {x: 0.61801, y: 0.309, z: 0.61801}
+  m_LocalPosition: {x: -0.91335034, y: 4.889, z: 5.96}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -74,20 +76,93 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_UsedByComposite: 1
+  m_Offset: {x: -0.1931256, y: 0.033744574}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.42, y: 1.42}
+    oldSize: {x: 1.007, y: 0.947}
     newSize: {x: 1.42, y: 1.42}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.42, y: 1.42}
+  m_Size: {x: 0.36983395, y: 0.7637658}
   m_EdgeRadius: 0
+--- !u!61 &61387897374939434
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1971190169493354}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 1
+  m_Offset: {x: -0.019684792, y: -0.21445608}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.007, y: 0.947}
+    newSize: {x: 1.42, y: 1.42}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.7053695, y: 0.3291788}
+  m_EdgeRadius: 0
+--- !u!66 &66400168847596724
+CompositeCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1971190169493354}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_GeometryType: 1
+  m_GenerationType: 0
+  m_EdgeRadius: 0
+  m_ColliderPaths:
+  - m_Collider: {fileID: 61155844278862634}
+    m_ColliderPaths:
+    - - X: -82086
+        Y: 4156274
+      - X: -3780425
+        Y: 4156274
+      - X: -3780425
+        Y: -3481383
+      - X: -82086
+        Y: -3481383
+  - m_Collider: {fileID: 61387897374939434}
+    m_ColliderPaths:
+    - - X: 3329999
+        Y: -498666
+      - X: -3723695
+        Y: -498666
+      - X: -3723695
+        Y: -3790454
+      - X: 3329999
+        Y: -3790454
+  m_CompositePaths:
+    m_Paths:
+    - - {x: 0.3329999, y: -0.0498666}
+      - {x: -0.0082086, y: -0.0498666}
+      - {x: -0.0082086, y: 0.4156274}
+      - {x: -0.37804252, y: 0.4156274}
+      - {x: -0.37804252, y: -0.3481383}
+      - {x: -0.3723695, y: -0.3481383}
+      - {x: -0.3723695, y: -0.3790454}
+      - {x: 0.3329999, y: -0.3790454}
+  m_VertexDistance: 0.0005
 --- !u!114 &114915620815636558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -99,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06f8045ad2dce348b05be759ff8321a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 3
+  Type: 2
   StickRadius: 0.4
   HingeResistance: 350
 --- !u!212 &212805655312994644
@@ -136,10 +211,10 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 16fb7ad3356f64cf3a32eb5456df2c37, type: 3}
-  m_Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a79b942c4238443c289337501fa0f026, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
-  m_FlipY: 1
+  m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.42, y: 1.42}
   m_AdaptiveModeThreshold: 0.5

@@ -79,8 +79,21 @@ public class Leg : MonoBehaviour
 				case ShoeType.Sticky:
 					Debug.Assert(CurrentShoe is StickyShoe);
 					var sticky = CurrentShoe as StickyShoe;
+
+					if (sticky.IgnoreCollider != null)	// ensure that collision is re-enabled
+					{
+						Physics2D.IgnoreCollision(Player.HeadCollider, sticky.IgnoreCollider, false);
+						sticky.IgnoreCollider = null;
+					}
 					
 					Destroy(sticky.HingeInstance);
+					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					Rigidbody.sharedMaterial = heely.OriginalMaterial;
 					break;
 			}
 			
@@ -132,6 +145,13 @@ public class Leg : MonoBehaviour
 					sticky.HingeInstance = hinge;
 					hinge.enabled = false;
 					break;
+				
+				case ShoeType.Heely:
+					Debug.Assert(CurrentShoe is HeelyShoe);
+					var heely = CurrentShoe as HeelyShoe;
+					
+					heely.OriginalMaterial = Rigidbody.sharedMaterial;
+					break;
 			}
 		}
 	}
@@ -160,12 +180,36 @@ public class Leg : MonoBehaviour
 						.OrderBy(p => Vector2.Distance(toePos, p.point))
 						.First();
 					
-					if (Vector2.Distance(toePos, nearest.point) < sticky.StickRadius)
+					if (Vector2.Distance(toePos, nearest.point) <= sticky.StickRadius)
 					{
 						var hinge = sticky.HingeInstance;
 						hinge.connectedBody = nearest.rigidbody;
 						hinge.anchor = transform.InverseTransformPoint(nearest.point);
 						hinge.enabled = true;
+
+						sticky.IgnoreCollider = nearest.collider;
+						Physics2D.IgnoreCollision(Player.HeadCollider, nearest.collider);
+					}
+				}
+				break;
+			
+			
+			case ShoeType.Heely:
+				Debug.Assert(CurrentShoe is HeelyShoe);
+				var heely = CurrentShoe as HeelyShoe;
+
+				{
+					var toePos = ToePos;
+					var nearest = other.contacts
+						.OrderBy(p => Vector2.Distance(toePos, p.point))
+						.First();
+
+					if (Vector2.Distance(toePos, nearest.point) <= heely.WheelRadius)
+					{
+						heely.LastContact = nearest;
+						heely.IsTouching = true;
+						
+						Rigidbody.sharedMaterial = heely.Material;
 					}
 				}
 				break;
