@@ -19,7 +19,10 @@ public class GameplayManager : MonoBehaviour
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
 
+	public float ItemSpawnTimeMax;
+	public float ItemSpawnTimeMin;
 	public float ItemDespawnTime;
+	[NonSerialized] private Transform[] _itemSpawns;
 	
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
@@ -94,7 +97,7 @@ public class GameplayManager : MonoBehaviour
 	// *********************** GAMEPLAY FUNCTIONS **************************
 
 	// ********** LOAD LEVEL
-		
+
 	public IEnumerator LoadStage()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
@@ -105,7 +108,7 @@ public class GameplayManager : MonoBehaviour
 		}
 
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
-		
+
 		foreach (var playerInfo in Players)
 		{
 			Vector2 pos;
@@ -116,9 +119,27 @@ public class GameplayManager : MonoBehaviour
 				spawns.RemoveAt(i);
 			}
 			else pos = Vector2.zero;
-			
+
 			InstantiatePlayer(playerInfo, pos);
 		}
+
+		_itemSpawns = GameObject.FindGameObjectsWithTag("ItemSpawn")
+			.Select(g => g.transform)
+			.ToArray();
+		StartCoroutine(DoItemSpawns());
+	}
+
+	private IEnumerator DoItemSpawns()
+	{
+		var time = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
+		yield return new WaitForSeconds(time);
+
+		var pos = Vector2.zero;
+		if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+
+		Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+		
+		StartCoroutine(DoItemSpawns());
 	}
 
 	

@@ -3298,6 +3298,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RespawnTime: 3
+  ItemSpawnTimeMax: 3
+  ItemSpawnTimeMin: 7
   ItemDespawnTime: 15
   Levels:
   - Scenes/Dojo
