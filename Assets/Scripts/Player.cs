@@ -542,7 +542,7 @@ public class Player : MonoBehaviour
 						{
 							var contact = heely.LastContact.Value;
 
-							var sign = Mathf.Sign(Vector2.SignedAngle(leg.Rigidbody.velocity, contact.normal));
+							var sign = Mathf.Sign(Vector2.SignedAngle(legDirWorldSpace, contact.normal));
 							var tangent = new Vector2(
 								sign * contact.normal.y,
 								sign * -contact.normal.x
