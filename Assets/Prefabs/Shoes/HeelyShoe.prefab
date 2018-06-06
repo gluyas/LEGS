@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1678811357029756}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.384619, y: 5.039451, z: -18.97}
+  m_LocalPosition: {x: 0.38461912, y: 5.039451, z: -18.97}
   m_LocalScale: {x: 0.61801, y: 0.309, z: 0.61801}
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,7 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 3
-  WheelMaxForce: 300
+  WheelForceMax: 200
+  WheelForceExponent: 20
+  WheelSpeedMax: 20
   WheelRadius: 0.4
   WheelHopRadius: 0.8
 --- !u!212 &212332352960934214

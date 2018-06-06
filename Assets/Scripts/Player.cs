@@ -548,9 +548,15 @@ public class Player : MonoBehaviour
 								sign * -contact.normal.x
 							).normalized;
 
-							var force = trigger * heely.WheelMaxForce;
+							var tangentVelocity = (Vector2) Vector3.Project(leg.Rigidbody.velocity, tangent);
+							var force = heely.WheelForceMax * (1 - Mathf.Pow(
+								Mathf.Clamp01(tangentVelocity.magnitude / heely.WheelSpeedMax / trigger), 
+								heely.WheelForceExponent
+							));							
 							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
 
+							Debug.LogFormat("{0} -> {1}", tangentVelocity.magnitude, force);
+							
 							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
 							leg.Rigidbody.velocity -= onNormal;
 						}

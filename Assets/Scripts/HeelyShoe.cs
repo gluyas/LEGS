@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class HeelyShoe : Shoe
 {
-	public float WheelMaxForce;
+	public float WheelForceMax;
+	public float WheelForceExponent;
+	public float WheelSpeedMax;
+	
 	public float WheelRadius;
 	public float WheelHopRadius;
 
