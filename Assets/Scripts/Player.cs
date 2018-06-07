@@ -557,7 +557,13 @@ public class Player : MonoBehaviour
 					Debug.Assert(leg.CurrentShoe is HeelyShoe);
 					var heely = leg.CurrentShoe as HeelyShoe;
 
-					if (heely.LastContact.HasValue && triggerHeld)
+					if (triggerDown) leg.Rigidbody.sharedMaterial = heely.Material;
+					if (triggerUp)
+					{
+						leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
+						heely.LastContact = null;
+					}				
+					else if (heely.LastContact.HasValue && triggerHeld)
 					{
 						if (heely.IsTouching || 
 							Vector2.Distance(leg.ToePos, heely.LastContact.Value.point) <= heely.WheelHopRadius)
@@ -583,10 +589,9 @@ public class Player : MonoBehaviour
 						else
 						{
 							heely.LastContact = null;
-							leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
 						}												
 						heely.IsTouching = false;
-					}					
+					}
 					break;
 			}
 		}

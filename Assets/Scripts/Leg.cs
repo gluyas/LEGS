@@ -208,8 +208,6 @@ public class Leg : MonoBehaviour
 					{
 						heely.LastContact = nearest;
 						heely.IsTouching = true;
-						
-						Rigidbody.sharedMaterial = heely.Material;
 					}
 				}
 				break;
