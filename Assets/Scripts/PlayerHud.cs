@@ -21,14 +21,22 @@ public class PlayerHud : MonoBehaviour
 	
 	private void Update()
 	{
-		float primary;
-		if (_player.Instance == null) primary = 0;
-		else  				    	  primary = Mathf.Clamp01(_player.Instance.Hp);
+		if (_player == null) return;
+
+		if (_player.Instance == null && Secondary <= 0)
+		{
+			var respawn = _player.RespawnTime / GameplayManager.Instance.RespawnTime;
+			BarSecondary.transform.localScale = new Vector2(1 - respawn, 1);
+		}
+		else
+		{
+			var primary = _player.Instance == null ? 0 : Mathf.Clamp01(_player.Instance.Hp);
+			
+			BarPrimary.transform.localScale = new Vector2(primary, 1);
 		
-		BarPrimary.transform.localScale = new Vector2(primary, 1);
-		
-		Secondary = Mathf.Clamp(Secondary - Time.deltaTime / DecayTimeSecondary, primary, 1);
-		BarSecondary.transform.localScale = new Vector2(Secondary, 1);
+			Secondary = Mathf.Clamp(Secondary - Time.deltaTime / DecayTimeSecondary, primary, 1);
+			BarSecondary.transform.localScale = new Vector2(Secondary, 1);
+		}
 	}
 
 	private void OnValidate()

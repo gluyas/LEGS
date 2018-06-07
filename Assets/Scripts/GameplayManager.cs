@@ -18,7 +18,8 @@ public class GameplayManager : MonoBehaviour
 
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
-
+	public float RespawnInvulnerableTime;
+	
 	public int LivesCount;
 
 	public float ItemSpawnTimeMax;
@@ -28,6 +29,7 @@ public class GameplayManager : MonoBehaviour
 	public float ItemDespawnFlickerDuration;
 	
 	[NonSerialized] private Transform[] _itemSpawns;
+	[NonSerialized] private float _itemSpawnTime;
 
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
@@ -47,6 +49,15 @@ public class GameplayManager : MonoBehaviour
 	public GameObject Hud;
 	public PlayerHud[] PlayerHuds;
 
+	public Image[] CountdownSprites;
+	public AnimationCurve CountdownAlpha;
+	public AnimationCurve CountdownScale;
+	public float CountdownScaleFactor;
+	public float CountdownPulseTime;
+
+	public GameObject WinnerSplash;
+	public Image WinnerPortrait;
+
     [Header("Player Variables")]
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
@@ -62,6 +73,7 @@ public class GameplayManager : MonoBehaviour
 	public float ShakeRadiusMax;
 	public float ShakeDurationMax;
 	public float PanRadiusMax;
+	public float PanRadiusYScale;
 
 	[NonSerialized] private Vector3 _cameraPos;
 	[NonSerialized] private Vector3 _cameraFrameOffset;
@@ -103,24 +115,41 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (IsGameRunning)
 		{
-			var camera = Camera.main;
+			{	// camera offset
+				var camera = Camera.main;
 
-			var activePlayers = 0;
-			var playerCenter = Vector3.zero;
-			foreach (var player in Players)
-			{
-				if (player.Instance != null)
+				var activePlayers = 0;
+				var playerCenter = Vector3.zero;
+				foreach (var player in Players)
 				{
-					playerCenter  += player.Instance.transform.position;
-					activePlayers += 1;
+					if (player.Instance != null)
+					{
+						playerCenter += player.Instance.transform.position;
+						activePlayers += 1;
+					}
 				}
-			}
-			if (activePlayers > 0) playerCenter /= activePlayers;
 
-			var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
-			
-			camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
-			_cameraFrameOffset = Vector2.zero;
+				if (activePlayers > 0) playerCenter /= activePlayers;
+
+				var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
+				panOffset.y *= PanRadiusYScale;
+
+				camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
+				_cameraFrameOffset = Vector2.zero;
+			}
+
+			{
+				if (_itemSpawnTime <= 0)
+				{
+					_itemSpawnTime = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
+
+					var pos = Vector2.zero;
+					if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+
+					Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+				}
+				else _itemSpawnTime -= Time.deltaTime;
+			}
 		}
 		else if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
 		{
@@ -174,7 +203,11 @@ public class GameplayManager : MonoBehaviour
 				}
 			}
 
-			if (winner != null) Debug.LogFormat("Team {0} WINS", winner.Team.Name);
+			if (winner != null)
+			{
+				WinnerSplash.SetActive(true);
+				WinnerPortrait.color = winner.Team.Color;
+			}
 		}
 
 		PlayerHuds[receiver.PlayerNum].SetScoreCounters(lives, LivesCount);
@@ -186,7 +219,7 @@ public class GameplayManager : MonoBehaviour
 
 	// ********** LOAD LEVEL
 
-	public IEnumerator LoadStage()
+	public IEnumerator StartGame()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
 		//var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
@@ -194,8 +227,8 @@ public class GameplayManager : MonoBehaviour
 		{
 			yield return null;
 		}
-
-		IsGameRunning = true;
+		
+		WinnerSplash.SetActive(false);
 		
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		foreach (var playerInfo in Players)
@@ -215,25 +248,42 @@ public class GameplayManager : MonoBehaviour
 		_itemSpawns = GameObject.FindGameObjectsWithTag("ItemSpawn")
 			.Select(g => g.transform)
 			.ToArray();
-		StartCoroutine(DoItemSpawns());
 			
 		_cameraPos = Camera.main.transform.position;
+
+		StartCoroutine(Countdown());
 	}
 
-	private IEnumerator DoItemSpawns()
+	public IEnumerator Countdown()
 	{
-		while (IsGameRunning)
+		for (var i = 0; i < CountdownSprites.Length; i++)
 		{
-			var time = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
-			yield return new WaitForSeconds(time);
+			var sprite = CountdownSprites[i];
+			sprite.gameObject.SetActive(true);
+			
+			var initialScale = sprite.transform.localScale;
+			
+			var time = 0f;
+			while (time <= 1)
+			{
+				if (i == CountdownSprites.Length - 1 && time > CountdownPulseTime)
+				{
+					IsGameRunning = true;
+				}
 
-			var pos = Vector2.zero;
-			if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+				var scale = CountdownScale.Evaluate(time) * CountdownScaleFactor;
+				sprite.transform.localScale = initialScale * scale;
 
-			Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+				var color = sprite.color;
+				color.a = CountdownAlpha.Evaluate(time);
+				sprite.color = color;
+				
+				time += Time.deltaTime;
+				yield return new WaitForFixedUpdate();
+			}
+			sprite.gameObject.SetActive(false);
 		}
 	}
-
 	
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
@@ -252,9 +302,17 @@ public class GameplayManager : MonoBehaviour
 		Vector2 pos;
 		if (spawns.Count == 0) pos = Vector2.zero;
 		else 				   pos = spawns[Random.Range(0, spawns.Count)].transform.position;
+
+		while (time > 0)
+		{
+			player.RespawnTime = time;
+			time -= Time.deltaTime;
+			yield return new WaitForFixedUpdate();
+		}
+		player.RespawnTime = 0;
 		
-		yield return new WaitForSeconds(time);
-		InstantiatePlayer(player, pos);
+		var instance = InstantiatePlayer(player, pos);
+		instance.StartCoroutine(instance.Invulnerable(RespawnInvulnerableTime));
 	}
 
 
@@ -301,7 +359,20 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 
+	// *********************** PAUSE MENU **************************
 
+	public void RestartGame()
+	{
+		StopAllCoroutines();
+		StartCoroutine(StartGame());
+	}
+
+	public void ReturnToMenu()
+	{
+		DestroyImmediate(this.gameObject);
+		SceneManager.LoadScene("Scenes/MainMenu");
+	}
+	
     // *********************** UI BUTTONS **************************
     
 
@@ -322,10 +393,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectBeach()
     {
         LevelSelected = 0;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -333,10 +407,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectDojo()
     {
         LevelSelected = 1;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -344,10 +421,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectCity()
     {
         LevelSelected = 2;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -355,10 +435,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectMouth()
     {
         LevelSelected = 3;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -401,7 +484,7 @@ public class GameplayManager : MonoBehaviour
 	public void StartButton()
 	{
 		LevelSelectMenu.SetActive(false);
-		StartCoroutine(LoadStage());
+		StartCoroutine(StartGame());
 		Hud.SetActive(true);
 	}
 

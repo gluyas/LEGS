@@ -78,9 +78,16 @@ public class Player : MonoBehaviour
 		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
 		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
 		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
-		
-		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
-		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
+
+		if (playerInfo.ShoeLeft.HasValue)
+		{
+			LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft.Value));
+		}
+
+		if (playerInfo.ShoeRight.HasValue)
+		{
+			LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight.Value));	
+		}
 	}
 
 	private void EquipCostumePart(Transform parent, GameObject costume)
@@ -92,6 +99,33 @@ public class Player : MonoBehaviour
 		obj.transform.localRotation = Quaternion.identity;
 	}
 
+	public IEnumerator Invulnerable(float time)
+	{
+		Head.gameObject.layer     = LayerMask.NameToLayer("Ignore");
+		LegLeft.gameObject.layer  = LayerMask.NameToLayer("Ignore");
+		LegRight.gameObject.layer = LayerMask.NameToLayer("Ignore");
+
+		var renderers = new List<Renderer>();
+		foreach (var r in Head.GetComponentsInChildren<Renderer>())     renderers.Add(r);
+		foreach (var r in LegLeft.GetComponentsInChildren<Renderer>())  renderers.Add(r);
+		foreach (var r in LegRight.GetComponentsInChildren<Renderer>()) renderers.Add(r);
+
+		var flicker = true;
+		while (time > 0)
+		{
+			foreach (var r in renderers) r.enabled = flicker;
+			time -= Time.deltaTime;
+			flicker = !flicker;
+			yield return new WaitForFixedUpdate();
+		}
+		foreach (var r in renderers) r.enabled = true;
+		
+		Head.gameObject.layer     = LayerMask.NameToLayer("Players");
+		LegLeft.gameObject.layer  = LayerMask.NameToLayer("IgnoreLegs");
+		LegRight.gameObject.layer = LayerMask.NameToLayer("IgnoreLegs");
+
+	}
+
 	public static bool DealDamage(Player attacker, Player receiver, float damage, bool ff = false)
 	{
 		Debug.Assert(receiver != null);
@@ -100,6 +134,15 @@ public class Player : MonoBehaviour
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
 		
+		if (attacker != null && attacker.PlayerInfo != null)
+		{
+			attacker.PlayerInfo.DamageDealt += damage;
+			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
+			
+			attacker.PlayerInfo.OnDamageDealt.Invoke(attacker.PlayerInfo, receiver.PlayerInfo, damage);
+			
+			if (receiver.PlayerInfo != null) receiver.PlayerInfo.LastAttacker = attacker.PlayerInfo;
+		}
 		if (receiver.PlayerInfo != null)
 		{
 			receiver.PlayerInfo.DamageReceived += damage;
@@ -108,14 +151,7 @@ public class Player : MonoBehaviour
 			receiver.PlayerInfo.OnDamageTaken.Invoke(
 				attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo, damage);
 		}	
-		if (attacker != null && attacker.PlayerInfo != null)
-		{
-			attacker.PlayerInfo.DamageDealt += damage;
-			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
-			
-			attacker.PlayerInfo.OnDamageDealt.Invoke(attacker.PlayerInfo, receiver.PlayerInfo, damage);
-		}
-		
+
 		receiver.Hp -= damage;
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
@@ -131,13 +167,6 @@ public class Player : MonoBehaviour
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
 
-		if (receiver.PlayerInfo != null)
-		{
-			receiver.PlayerInfo.Deaths += 1;
-			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
-			
-			receiver.PlayerInfo.OnDeath.Invoke(attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo);
-		}	
 		if (attacker != null && attacker.PlayerInfo != null)
 		{
 			attacker.PlayerInfo.Kills += 1;
@@ -145,13 +174,53 @@ public class Player : MonoBehaviour
 			
 			attacker.PlayerInfo.OnKill.Invoke(attacker.PlayerInfo, receiver.PlayerInfo);
 		}
+		else if (receiver.PlayerInfo != null && receiver.PlayerInfo.LastAttacker != null)	// check last hit
+		{
+			receiver.PlayerInfo.LastAttacker.Kills += 1;
+			if (receiver.PlayerInfo.LastAttacker.Team != null) receiver.PlayerInfo.LastAttacker.Team.Kills += 1;
+			
+			receiver.PlayerInfo.LastAttacker.OnKill.Invoke(receiver.PlayerInfo.LastAttacker, receiver.PlayerInfo);
+		}
+		if (receiver.PlayerInfo != null)
+		{
+			receiver.PlayerInfo.Deaths += 1;
+			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
+			
+			receiver.PlayerInfo.OnDeath.Invoke(attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo);
+			receiver.PlayerInfo.LastAttacker = null;
+		}	
 
-		receiver.LegLeft.EquipShoe(null);
-		receiver.LegRight.EquipShoe(null);
-		
-		Destroy(receiver.transform.root.gameObject);
+		receiver.StartCoroutine(receiver.Despawn(1.5f));
 
 		return true;
+	}
+
+	public IEnumerator Despawn(float time)
+	{
+		LegLeft.EquipShoe(null);
+		LegLeft.Hinge.useMotor = false;
+		
+		LegRight.EquipShoe(null);
+		LegRight.Hinge.useMotor = false;
+		
+		Controller = null;
+		PlayerInfo = null;
+
+		var renderers = new List<Renderer>();
+		foreach (var r in Head.GetComponentsInChildren<Renderer>())     renderers.Add(r);
+		foreach (var r in LegLeft.GetComponentsInChildren<Renderer>())  renderers.Add(r);
+		foreach (var r in LegRight.GetComponentsInChildren<Renderer>()) renderers.Add(r);
+
+		var flicker = true;
+		while (time > 0)
+		{
+			foreach (var r in renderers) r.enabled = flicker;
+			time -= Time.deltaTime;
+			flicker = !flicker;
+			yield return new WaitForFixedUpdate();
+		}
+		
+		Destroy(this.transform.root.gameObject);
 	}
 
 	public void IgnoreCollisions(Collider2D other, bool ignore = true)
@@ -201,13 +270,14 @@ public class Player : MonoBehaviour
 	private void FixedUpdate () 
 	{
 		if (Controller == null) return;
+		if (GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
 		
 		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger,  Controller.LeftBumper);
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
 
 		{	// pick up items
-			var tryEquipLeft  = Controller.LeftBumper && !LegLeft.TryEquip;	// disallow simultaneous equip
-			var tryEquipRight = !tryEquipLeft && Controller.RightBumper && !LegRight.TryEquip;
+			var tryEquipLeft  = Controller.LeftStickButton.WasPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.WasPressed && !LegRight.TryEquip;
 
 			if (tryEquipLeft || tryEquipRight)
 			{
@@ -532,7 +602,13 @@ public class Player : MonoBehaviour
 					Debug.Assert(leg.CurrentShoe is HeelyShoe);
 					var heely = leg.CurrentShoe as HeelyShoe;
 
-					if (heely.LastContact.HasValue && triggerHeld)
+					if (triggerDown) leg.Rigidbody.sharedMaterial = heely.Material;
+					if (triggerUp)
+					{
+						leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
+						heely.LastContact = null;
+					}				
+					else if (heely.LastContact.HasValue && triggerHeld)
 					{
 						if (heely.IsTouching || 
 							Vector2.Distance(leg.ToePos, heely.LastContact.Value.point) <= heely.WheelHopRadius)
@@ -552,18 +628,15 @@ public class Player : MonoBehaviour
 							));							
 							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
 
-							Debug.LogFormat("{0} -> {1}", tangentVelocity.magnitude, force);
-							
 							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
 							leg.Rigidbody.velocity -= onNormal;
 						}
 						else
 						{
 							heely.LastContact = null;
-							leg.Rigidbody.sharedMaterial = heely.OriginalMaterial;
 						}												
 						heely.IsTouching = false;
-					}					
+					}
 					break;
 			}
 		}

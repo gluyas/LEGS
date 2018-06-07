@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+
 [CreateAssetMenu(fileName = "Assets/Prefabs/Costumes/New Costume", menuName = "Player Costume", order = 1)]
+#endif
+
 public class Costume : ScriptableObject
 {
 	public String Name;

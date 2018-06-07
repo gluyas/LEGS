@@ -14,16 +14,18 @@ public class PlayerInfo {
 	
 	public int PlayerNum;
 	public InputDevice Controller;
-	public ShoeType ShoeLeft, ShoeRight;
+	public ShoeType? ShoeLeft, ShoeRight;
 	public Team Team;
 	public Costume Costume;
 
 	[NonSerialized] public Player Instance;
+	[NonSerialized] public float RespawnTime;
 	
 	[NonSerialized] public int Kills;
 	[NonSerialized] public int Deaths;
 	[NonSerialized] public float DamageDealt;
 	[NonSerialized] public float DamageReceived;
+	[NonSerialized] public PlayerInfo LastAttacker;
 }
 
 [Serializable]
