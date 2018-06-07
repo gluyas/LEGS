@@ -18,7 +18,8 @@ public class GameplayManager : MonoBehaviour
 
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
-
+	public float RespawnInvulnerableTime;
+	
 	public int LivesCount;
 
 	public float ItemSpawnTimeMax;
@@ -303,7 +304,9 @@ public class GameplayManager : MonoBehaviour
 		else 				   pos = spawns[Random.Range(0, spawns.Count)].transform.position;
 		
 		yield return new WaitForSeconds(time);
-		InstantiatePlayer(player, pos);
+		
+		var instance = InstantiatePlayer(player, pos);
+		instance.StartCoroutine(instance.Invulnerable(RespawnInvulnerableTime));
 	}
 
 

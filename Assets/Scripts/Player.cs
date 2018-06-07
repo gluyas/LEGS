@@ -99,6 +99,33 @@ public class Player : MonoBehaviour
 		obj.transform.localRotation = Quaternion.identity;
 	}
 
+	public IEnumerator Invulnerable(float time)
+	{
+		Head.gameObject.layer     = LayerMask.NameToLayer("Ignore");
+		LegLeft.gameObject.layer  = LayerMask.NameToLayer("Ignore");
+		LegRight.gameObject.layer = LayerMask.NameToLayer("Ignore");
+
+		var renderers = new List<Renderer>();
+		foreach (var r in Head.GetComponentsInChildren<Renderer>())     renderers.Add(r);
+		foreach (var r in LegLeft.GetComponentsInChildren<Renderer>())  renderers.Add(r);
+		foreach (var r in LegRight.GetComponentsInChildren<Renderer>()) renderers.Add(r);
+
+		var flicker = true;
+		while (time > 0)
+		{
+			foreach (var r in renderers) r.enabled = flicker;
+			time -= Time.deltaTime;
+			flicker = !flicker;
+			yield return new WaitForFixedUpdate();
+		}
+		foreach (var r in renderers) r.enabled = true;
+		
+		Head.gameObject.layer     = LayerMask.NameToLayer("Players");
+		LegLeft.gameObject.layer  = LayerMask.NameToLayer("IgnoreLegs");
+		LegRight.gameObject.layer = LayerMask.NameToLayer("IgnoreLegs");
+
+	}
+
 	public static bool DealDamage(Player attacker, Player receiver, float damage, bool ff = false)
 	{
 		Debug.Assert(receiver != null);
