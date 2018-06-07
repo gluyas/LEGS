@@ -3594,7 +3594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RespawnTime: 3
-  LivesCount: 3
+  LivesCount: 4
   ItemSpawnTimeMax: 3
   ItemSpawnTimeMin: 5
   ItemDespawnTime: 20
@@ -3616,9 +3616,9 @@ MonoBehaviour:
   Hud: {fileID: 690868063}
   PlayerHuds:
   - {fileID: 862981458}
+  - {fileID: 1710972895}
   - {fileID: 856419637}
   - {fileID: 1751804758}
-  - {fileID: 1710972895}
   PlayerPrefab: {fileID: 1835625097594294, guid: 87848bd9e39775c4cb19d7f6b9daab30,
     type: 2}
   ShoePrefabs:
