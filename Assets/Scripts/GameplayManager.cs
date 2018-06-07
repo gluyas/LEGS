@@ -48,6 +48,14 @@ public class GameplayManager : MonoBehaviour
     public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCustomizationMenu
 	public Team[] PlayerTeams;
 
+	[Header("Camera Variables")] 
+	public float FreezeTimeMax;
+	public float ShakeRadiusMax;
+	public float ShakeDurationMax;
+
+	[NonSerialized] private Vector3 _cameraPos;
+	[NonSerialized] private int _cameraShakeCount;
+
 	private void Start()
 	{
 		Instance = this;
@@ -103,6 +111,11 @@ public class GameplayManager : MonoBehaviour
 				hud.SetScoreCounters(LivesCount, LivesCount);
 				
 				player.OnDeath.AddListener(OnPlayerDeath);
+				player.OnDamageDealt.AddListener((a, r, damage) =>
+				{
+					StartCoroutine(CameraFreeze(damage * FreezeTimeMax));
+					StartCoroutine(CameraShake(damage * ShakeRadiusMax, damage * ShakeDurationMax));
+				});
 			}
 		}
 
@@ -208,10 +221,38 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
+	// ***********************  CAMERA  ****************************
 
+	private IEnumerator CameraFreeze(float time)
+	{
+		Time.timeScale = 0;
+		yield return new WaitForSecondsRealtime(time);
+		Time.timeScale = 1;
+	}
 
+	private IEnumerator CameraShake(float maxRadius, float time)
+	{	
+		var camera = Camera.main;
+		if (_cameraShakeCount++ == 0) _cameraPos = camera.transform.position;
+		
+		var radius = maxRadius;
+		var timeLeft = time;	
+		var offset = Vector3.zero;
 
+		while (timeLeft > 0)
+		{
+			camera.transform.position -= offset;
+			offset = Random.insideUnitCircle * maxRadius;
+			camera.transform.position += offset;
 
+			timeLeft -= Time.deltaTime;
+			radius = maxRadius * timeLeft / time;
+			
+			yield return new WaitForFixedUpdate();
+		}
+	
+		if (--_cameraShakeCount == 0) camera.transform.position = _cameraPos;
+	}
 
 
     // *********************** UI BUTTONS **************************

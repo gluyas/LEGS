@@ -3645,6 +3645,9 @@ MonoBehaviour:
     Name: YELLOW
   - Color: {r: 0.531136, g: 1, b: 0.49264705, a: 1}
     Name: GREEN
+  FreezeTimeMax: 0.3
+  ShakeRadiusMax: 1
+  ShakeDurationMax: 0.3
 --- !u!4 &1258160465
 Transform:
   m_ObjectHideFlags: 0
