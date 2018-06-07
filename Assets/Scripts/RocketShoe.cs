@@ -17,8 +17,9 @@ public class RocketShoe : Shoe
 	
 	[NonSerialized] public float Fuel = 1;
 
-	private void FixedUpdate()
+	private new void FixedUpdate()
 	{
+		base.FixedUpdate();
 		if (!IsEquipped)
 		{
 			Fuel += Time.deltaTime / RegenerationTime;

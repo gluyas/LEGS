@@ -20,7 +20,15 @@ public class GameplayManager : MonoBehaviour
 	public float RespawnTime;
 
 	public int LivesCount;
+
+	public float ItemSpawnTimeMax;
+	public float ItemSpawnTimeMin;
+	public float ItemDespawnTime;
+	public float ItemDespawnFlickerTime;
+	public float ItemDespawnFlickerDuration;
 	
+	[NonSerialized] private Transform[] _itemSpawns;
+
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
 	[NonSerialized] public int ModeSelected;
@@ -177,7 +185,7 @@ public class GameplayManager : MonoBehaviour
 	// *********************** GAMEPLAY FUNCTIONS **************************
 
 	// ********** LOAD LEVEL
-		
+
 	public IEnumerator LoadStage()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
@@ -187,8 +195,9 @@ public class GameplayManager : MonoBehaviour
 			yield return null;
 		}
 
-		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
+		IsGameRunning = true;
 		
+		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		foreach (var playerInfo in Players)
 		{
 			Vector2 pos;
@@ -199,12 +208,30 @@ public class GameplayManager : MonoBehaviour
 				spawns.RemoveAt(i);
 			}
 			else pos = Vector2.zero;
-			
+
 			InstantiatePlayer(playerInfo, pos);
 		}
 
+		_itemSpawns = GameObject.FindGameObjectsWithTag("ItemSpawn")
+			.Select(g => g.transform)
+			.ToArray();
+		StartCoroutine(DoItemSpawns());
+			
 		_cameraPos = Camera.main.transform.position;
-		IsGameRunning = true;
+	}
+
+	private IEnumerator DoItemSpawns()
+	{
+		while (IsGameRunning)
+		{
+			var time = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
+			yield return new WaitForSeconds(time);
+
+			var pos = Vector2.zero;
+			if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+
+			Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+		}
 	}
 
 	
@@ -261,7 +288,7 @@ public class GameplayManager : MonoBehaviour
 		var camera = Camera.main;
 	
 		var radius = maxRadius;
-		var timeLeft = time;	
+		var timeLeft = time;
 
 		while (timeLeft > 0)
 		{
