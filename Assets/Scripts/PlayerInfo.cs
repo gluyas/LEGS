@@ -19,6 +19,7 @@ public class PlayerInfo {
 	public Costume Costume;
 
 	[NonSerialized] public Player Instance;
+	[NonSerialized] public float RespawnTime;
 	
 	[NonSerialized] public int Kills;
 	[NonSerialized] public int Deaths;

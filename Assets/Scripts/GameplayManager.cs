@@ -302,8 +302,14 @@ public class GameplayManager : MonoBehaviour
 		Vector2 pos;
 		if (spawns.Count == 0) pos = Vector2.zero;
 		else 				   pos = spawns[Random.Range(0, spawns.Count)].transform.position;
-		
-		yield return new WaitForSeconds(time);
+
+		while (time > 0)
+		{
+			player.RespawnTime = time;
+			time -= Time.deltaTime;
+			yield return new WaitForFixedUpdate();
+		}
+		player.RespawnTime = 0;
 		
 		var instance = InstantiatePlayer(player, pos);
 		instance.StartCoroutine(instance.Invulnerable(RespawnInvulnerableTime));
