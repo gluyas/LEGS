@@ -51,11 +51,13 @@ public class ModeButton : MonoBehaviour, ISelectHandler
         }
 		else if (InputManager.Devices[0].Action2.WasPressed && this.gameObject.name == "Ready")
         {
-            GM.firstSelected = GM.LevelModeMenus[GM.LevelSelected].transform.Find("Mode1").gameObject;
+            //GM.firstSelected = GM.LevelModeMenus[GM.LevelSelected].transform.Find("Mode1").gameObject;
+            GM.firstSelected = GM.LevelModeMenus[GM.LevelSelected].transform.parent.gameObject;
             GM.ReadyMenu.SetActive(false);
-            GM.LevelModeMenus[GM.LevelSelected].SetActive(true);
+            //GM.LevelModeMenus[GM.LevelSelected].SetActive(true);
 
-			GM.LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+            //GM.LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+            GM.LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT LEVEL";
 
             EventSystem.current.SetSelectedGameObject(GM.firstSelected);
             canBack = false;
