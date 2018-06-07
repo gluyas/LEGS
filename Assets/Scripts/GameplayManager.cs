@@ -28,6 +28,7 @@ public class GameplayManager : MonoBehaviour
 	public float ItemDespawnFlickerDuration;
 	
 	[NonSerialized] private Transform[] _itemSpawns;
+	[NonSerialized] private float _itemSpawnTime;
 
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
@@ -104,25 +105,41 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (IsGameRunning)
 		{
-			var camera = Camera.main;
+			{	// camera offset
+				var camera = Camera.main;
 
-			var activePlayers = 0;
-			var playerCenter = Vector3.zero;
-			foreach (var player in Players)
-			{
-				if (player.Instance != null)
+				var activePlayers = 0;
+				var playerCenter = Vector3.zero;
+				foreach (var player in Players)
 				{
-					playerCenter  += player.Instance.transform.position;
-					activePlayers += 1;
+					if (player.Instance != null)
+					{
+						playerCenter += player.Instance.transform.position;
+						activePlayers += 1;
+					}
 				}
-			}
-			if (activePlayers > 0) playerCenter /= activePlayers;
 
-			var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
-			panOffset.y *= PanRadiusYScale;
-			
-			camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
-			_cameraFrameOffset = Vector2.zero;
+				if (activePlayers > 0) playerCenter /= activePlayers;
+
+				var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
+				panOffset.y *= PanRadiusYScale;
+
+				camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
+				_cameraFrameOffset = Vector2.zero;
+			}
+
+			{
+				if (_itemSpawnTime <= 0)
+				{
+					_itemSpawnTime = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
+
+					var pos = Vector2.zero;
+					if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+
+					Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+				}
+				else _itemSpawnTime -= Time.deltaTime;
+			}
 		}
 		else if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
 		{
@@ -217,25 +234,9 @@ public class GameplayManager : MonoBehaviour
 		_itemSpawns = GameObject.FindGameObjectsWithTag("ItemSpawn")
 			.Select(g => g.transform)
 			.ToArray();
-		StartCoroutine(DoItemSpawns());
 			
 		_cameraPos = Camera.main.transform.position;
 	}
-
-	private IEnumerator DoItemSpawns()
-	{
-		while (IsGameRunning)
-		{
-			var time = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
-			yield return new WaitForSeconds(time);
-
-			var pos = Vector2.zero;
-			if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
-
-			Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
-		}
-	}
-
 	
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))
 	{	
