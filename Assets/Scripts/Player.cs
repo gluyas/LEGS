@@ -577,8 +577,6 @@ public class Player : MonoBehaviour
 							));							
 							leg.Rigidbody.AddForceAtPosition(tangent * force, contact.point);
 
-							Debug.LogFormat("{0} -> {1}", tangentVelocity.magnitude, force);
-							
 							var onNormal = (Vector2) Vector3.Project(leg.Rigidbody.velocity, contact.normal);
 							leg.Rigidbody.velocity -= onNormal;
 						}

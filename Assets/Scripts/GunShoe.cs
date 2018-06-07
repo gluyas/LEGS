@@ -46,7 +46,7 @@ public class GunShoe : Shoe
 		if (velocity.magnitude >= ProjectileSpeedThreshold)
 		{
 			Charge = (velocity.magnitude - ProjectileSpeedMin) / (ProjectileSpeedMax - ProjectileSpeedMin);
-#if true
+#if false
 			{	// path tracing
 				Color color;
 				if      (Charge >= 1) color = Color.black;
