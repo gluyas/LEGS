@@ -118,8 +118,9 @@ public class Leg : MonoBehaviour
 			}			
 			CurrentShoe.transform.parent = this.transform;
 			
-			var offset = ShoePosOffset;
+			var offset = (Vector3) ShoePosOffset;
 			offset.x *= Orientation;
+			offset.z = -1;
 			CurrentShoe.transform.localPosition = offset;
 			
 			CurrentShoe.transform.localRotation = Quaternion.identity;		
