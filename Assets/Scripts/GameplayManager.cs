@@ -62,6 +62,7 @@ public class GameplayManager : MonoBehaviour
 	public float ShakeRadiusMax;
 	public float ShakeDurationMax;
 	public float PanRadiusMax;
+	public float PanRadiusYScale;
 
 	[NonSerialized] private Vector3 _cameraPos;
 	[NonSerialized] private Vector3 _cameraFrameOffset;
@@ -118,6 +119,7 @@ public class GameplayManager : MonoBehaviour
 			if (activePlayers > 0) playerCenter /= activePlayers;
 
 			var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
+			panOffset.y *= PanRadiusYScale;
 			
 			camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
 			_cameraFrameOffset = Vector2.zero;
