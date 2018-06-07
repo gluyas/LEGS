@@ -219,7 +219,7 @@ public class GameplayManager : MonoBehaviour
 
 	// ********** LOAD LEVEL
 
-	public IEnumerator LoadStage()
+	public IEnumerator StartGame()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
 		//var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
@@ -359,7 +359,20 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 
+	// *********************** PAUSE MENU **************************
 
+	public void RestartGame()
+	{
+		StopAllCoroutines();
+		StartCoroutine(StartGame());
+	}
+
+	public void ReturnToMenu()
+	{
+		DestroyImmediate(this.gameObject);
+		SceneManager.LoadScene("Scenes/MainMenu");
+	}
+	
     // *********************** UI BUTTONS **************************
     
 
@@ -380,10 +393,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectBeach()
     {
         LevelSelected = 0;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -391,10 +407,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectDojo()
     {
         LevelSelected = 1;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -402,10 +421,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectCity()
     {
         LevelSelected = 2;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -413,10 +435,13 @@ public class GameplayManager : MonoBehaviour
     public void SelectMouth()
     {
         LevelSelected = 3;
-        firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
-        LevelModeMenus[LevelSelected].SetActive(true);
+        //firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+        //LevelModeMenus[LevelSelected].SetActive(true);
+        firstSelected = ReadyMenu.transform.Find("START").gameObject;
+        ReadyMenu.SetActive(true);
 
-		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        //LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+        LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
@@ -459,7 +484,7 @@ public class GameplayManager : MonoBehaviour
 	public void StartButton()
 	{
 		LevelSelectMenu.SetActive(false);
-		StartCoroutine(LoadStage());
+		StartCoroutine(StartGame());
 		Hud.SetActive(true);
 	}
 
