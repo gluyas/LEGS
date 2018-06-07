@@ -39,7 +39,7 @@ public class PlayerCustomizer : MonoBehaviour
 		get { return CurrentPlayerInfo.Controller; }
 	}
 
-	private const int MenuIsReadyIndex = 3;
+	private const int MenuIsReadyIndex = 2;
 	private int _selectionMenu =  -1;
 	public bool IsReady
 	{
@@ -90,13 +90,13 @@ public class PlayerCustomizer : MonoBehaviour
 					
 					SelectionText.text = CurrentPlayerInfo.Costume.Name;				
 					break;
-				
+#if false	// remember to update MenuIsReadyIndex!
 				case 1:									
 					TitleText.text = "SELECT SHOE";
 					
 					var nextShoe = Controller.LeftTrigger ? CurrentPlayerInfo.ShoeLeft : CurrentPlayerInfo.ShoeRight;
-					if      (shift > 0) nextShoe = Shoe.NextType(nextShoe);
-					else if (shift < 0) nextShoe = Shoe.PrevType(nextShoe);
+					if      (shift > 0) nextShoe = Shoe.NextType(nextShoe ?? default(ShoeType));
+					else if (shift < 0) nextShoe = Shoe.PrevType(nextShoe ?? default(ShoeType));
 
 					// secret feature: hold trigger to change only that shoe :--)
 					if (!Controller.RightTrigger) CurrentPlayerInfo.ShoeLeft = nextShoe;
@@ -104,8 +104,11 @@ public class PlayerCustomizer : MonoBehaviour
 
 					SelectionText.text = nextShoe.ToString();
 					break;
-				
+	
 				case 2:
+#else
+				case 1:
+#endif		
 					TitleText.text = "SELECT TEAM";
 					
 					_selectedTeam = Mod(_selectedTeam + shift, GameplayManager.Instance.PlayerTeams.Length);

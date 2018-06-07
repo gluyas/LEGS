@@ -78,9 +78,16 @@ public class Player : MonoBehaviour
 		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
 		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
 		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
-		
-		LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft));
-		LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight));
+
+		if (playerInfo.ShoeLeft.HasValue)
+		{
+			LegLeft.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeLeft.Value));
+		}
+
+		if (playerInfo.ShoeRight.HasValue)
+		{
+			LegRight.EquipShoe(GameplayManager.Instance.InstantiateShoe(playerInfo.ShoeRight.Value));	
+		}
 	}
 
 	private void EquipCostumePart(Transform parent, GameObject costume)

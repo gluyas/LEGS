@@ -14,7 +14,7 @@ public class PlayerInfo {
 	
 	public int PlayerNum;
 	public InputDevice Controller;
-	public ShoeType ShoeLeft, ShoeRight;
+	public ShoeType? ShoeLeft, ShoeRight;
 	public Team Team;
 	public Costume Costume;
 
