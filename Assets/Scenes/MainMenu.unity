@@ -3594,6 +3594,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RespawnTime: 3
+  LivesCount: 3
+  ItemSpawnTimeMax: 3
+  ItemSpawnTimeMin: 5
+  ItemDespawnTime: 20
+  ItemDespawnFlickerTime: 1.5
+  ItemDespawnFlickerDuration: 0.1
   Levels:
   - Scenes/Dojo
   - 
@@ -3644,6 +3650,10 @@ MonoBehaviour:
     Name: YELLOW
   - Color: {r: 0.531136, g: 1, b: 0.49264705, a: 1}
     Name: GREEN
+  FreezeTimeMax: 0.3
+  ShakeRadiusMax: 1
+  ShakeDurationMax: 0.3
+  PanRadiusMax: 0
 --- !u!4 &1258160465
 Transform:
   m_ObjectHideFlags: 0
