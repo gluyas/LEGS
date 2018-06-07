@@ -312,6 +312,12 @@ public class GameplayManager : MonoBehaviour
 		StartCoroutine(StartGame());
 	}
 
+	public void ReturnToMenu()
+	{
+		DestroyImmediate(this.gameObject);
+		SceneManager.LoadScene("Scenes/MainMenu");
+	}
+	
     // *********************** UI BUTTONS **************************
     
 
