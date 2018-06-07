@@ -18,6 +18,8 @@ public class GameplayManager : MonoBehaviour
 
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
+
+	public int LivesCount;
 	
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
@@ -96,13 +98,23 @@ public class GameplayManager : MonoBehaviour
 				var hud = PlayerHuds[i];
 				
 				hud.SetPlayerInfo(player);
+				hud.SetScoreCounters(LivesCount, LivesCount);
 				
-				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
+				player.OnDeath.AddListener(OnPlayerDeath);
 			}
 		}
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
+
+	private void OnPlayerDeath(PlayerInfo attacker, PlayerInfo receiver)
+	{
+		var lives = LivesCount - receiver.Deaths;
+		
+		if (lives >= 0) StartCoroutine(RespawnPlayer(receiver, RespawnTime));
+
+		PlayerHuds[receiver.PlayerNum].SetScoreCounters(lives, LivesCount);
+	}
 
 
 

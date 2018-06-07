@@ -3594,6 +3594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RespawnTime: 3
+  LivesCount: 3
   Levels:
   - Scenes/Dojo
   - 

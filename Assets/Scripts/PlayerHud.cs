@@ -48,7 +48,7 @@ public class PlayerHud : MonoBehaviour
 		foreach (var image in ScoreCounterFills) image.color = player.Team.Color;
 	}
 
-	public void FillScoreCounters(int score, int max, bool reverse = false)
+	public void SetScoreCounters(int score, int max, bool reverse = false)
 	{
 		for (var i = 0; i < ScoreCounters.Length; i++)
 		{
