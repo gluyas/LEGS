@@ -93,10 +93,10 @@ public class GameplayManager : MonoBehaviour
 			for (var i = 0; i < Players.Count; i++)
 			{
 				var player = Players[i];
-				PlayerHuds[i].BarPrimary.color = player.Team.Color;
-				PlayerHuds[i].PlayerPortrait.color = player.Team.Color;
-				PlayerHuds[i].TargetPlayer = player;
-
+				var hud = PlayerHuds[i];
+				
+				hud.SetPlayerInfo(player);
+				
 				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
 			}
 		}

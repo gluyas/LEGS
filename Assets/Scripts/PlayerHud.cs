@@ -17,13 +17,13 @@ public class PlayerHud : MonoBehaviour
 	public float DecayTimeSecondary;
 	[NonSerialized] public float Secondary;
 
-	[NonSerialized] public PlayerInfo TargetPlayer;
+	[NonSerialized] private PlayerInfo _player;
 	
 	private void Update()
 	{
 		float primary;
-		if (TargetPlayer.Instance == null) primary = 0;
-		else  				    		   primary = Mathf.Clamp01(TargetPlayer.Instance.Hp);
+		if (_player.Instance == null) primary = 0;
+		else  				    	  primary = Mathf.Clamp01(_player.Instance.Hp);
 		
 		BarPrimary.transform.localScale = new Vector2(primary, 1);
 		
@@ -38,6 +38,14 @@ public class PlayerHud : MonoBehaviour
 		{
 			ScoreCounterFills[i] = ScoreCounters[i].GetComponentInChildren<Image>();
 		}
+	}
+
+	public void SetPlayerInfo(PlayerInfo player)
+	{
+		_player = player;
+		BarPrimary.color = player.Team.Color;
+		PlayerPortrait.color = player.Team.Color;
+		foreach (var image in ScoreCounterFills) image.color = player.Team.Color;
 	}
 
 	public void FillScoreCounters(int score, int max, bool reverse = false)
