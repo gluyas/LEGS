@@ -21,6 +21,8 @@ public class PlayerHud : MonoBehaviour
 	
 	private void Update()
 	{
+		if (_player == null) return;
+
 		float primary;
 		if (_player.Instance == null) primary = 0;
 		else  				    	  primary = Mathf.Clamp01(_player.Instance.Hp);
