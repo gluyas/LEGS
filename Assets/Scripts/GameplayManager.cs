@@ -48,6 +48,12 @@ public class GameplayManager : MonoBehaviour
 	public GameObject Hud;
 	public PlayerHud[] PlayerHuds;
 
+	public Image[] CountdownSprites;
+	public AnimationCurve CountdownAlpha;
+	public AnimationCurve CountdownScale;
+	public float CountdownScaleFactor;
+	public float CountdownPulseTime;
+
     [Header("Player Variables")]
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
@@ -213,8 +219,6 @@ public class GameplayManager : MonoBehaviour
 		{
 			yield return null;
 		}
-
-		IsGameRunning = true;
 		
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		foreach (var playerInfo in Players)
@@ -236,6 +240,39 @@ public class GameplayManager : MonoBehaviour
 			.ToArray();
 			
 		_cameraPos = Camera.main.transform.position;
+
+		StartCoroutine(Countdown());
+	}
+
+	public IEnumerator Countdown()
+	{
+		for (var i = 0; i < CountdownSprites.Length; i++)
+		{
+			var sprite = CountdownSprites[i];
+			sprite.gameObject.SetActive(true);
+			
+			var initialScale = sprite.transform.localScale;
+			
+			var time = 0f;
+			while (time <= 1)
+			{
+				if (i == CountdownSprites.Length - 1 && time > CountdownPulseTime)
+				{
+					IsGameRunning = true;
+				}
+
+				var scale = CountdownScale.Evaluate(time) * CountdownScaleFactor;
+				sprite.transform.localScale = initialScale * scale;
+
+				var color = sprite.color;
+				color.a = CountdownAlpha.Evaluate(time);
+				sprite.color = color;
+				
+				time += Time.deltaTime;
+				yield return new WaitForFixedUpdate();
+			}
+			sprite.gameObject.SetActive(false);
+		}
 	}
 	
 	public Player InstantiatePlayer(PlayerInfo playerInfo, Vector2 position = default(Vector2))

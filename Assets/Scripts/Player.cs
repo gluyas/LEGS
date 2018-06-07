@@ -243,6 +243,7 @@ public class Player : MonoBehaviour
 	private void FixedUpdate () 
 	{
 		if (Controller == null) return;
+		if (GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
 		
 		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger,  Controller.LeftBumper);
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
