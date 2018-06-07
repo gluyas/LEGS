@@ -24,7 +24,8 @@ public class GameplayManager : MonoBehaviour
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
 	[NonSerialized] public int ModeSelected;
-
+	[NonSerialized] public bool IsGameRunning;
+	
     [Header("Menu Variables")]
     public String[] Levels;
     public GameObject[] LevelModeMenus;
@@ -52,9 +53,10 @@ public class GameplayManager : MonoBehaviour
 	public float FreezeTimeMax;
 	public float ShakeRadiusMax;
 	public float ShakeDurationMax;
+	public float PanRadiusMax;
 
 	[NonSerialized] private Vector3 _cameraPos;
-	[NonSerialized] private int _cameraShakeCount;
+	[NonSerialized] private Vector3 _cameraFrameOffset;
 
 	private void Start()
 	{
@@ -91,7 +93,28 @@ public class GameplayManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
+		if (IsGameRunning)
+		{
+			var camera = Camera.main;
+
+			var activePlayers = 0;
+			var playerCenter = Vector3.zero;
+			foreach (var player in Players)
+			{
+				if (player.Instance != null)
+				{
+					playerCenter  += player.Instance.transform.position;
+					activePlayers += 1;
+				}
+			}
+			if (activePlayers > 0) playerCenter /= activePlayers;
+
+			var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
+			
+			camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
+			_cameraFrameOffset = Vector2.zero;
+		}
+		else if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
 		{
 			foreach (var c in PlayerCustomizers) c.IsReady = false;
 
@@ -179,6 +202,9 @@ public class GameplayManager : MonoBehaviour
 			
 			InstantiatePlayer(playerInfo, pos);
 		}
+
+		_cameraPos = Camera.main.transform.position;
+		IsGameRunning = true;
 	}
 
 	
@@ -233,25 +259,19 @@ public class GameplayManager : MonoBehaviour
 	private IEnumerator CameraShake(float maxRadius, float time)
 	{	
 		var camera = Camera.main;
-		if (_cameraShakeCount++ == 0) _cameraPos = camera.transform.position;
-		
+	
 		var radius = maxRadius;
 		var timeLeft = time;	
-		var offset = Vector3.zero;
 
 		while (timeLeft > 0)
 		{
-			camera.transform.position -= offset;
-			offset = Random.insideUnitCircle * maxRadius;
-			camera.transform.position += offset;
+			_cameraFrameOffset += (Vector3) Random.insideUnitCircle * radius;
 
 			timeLeft -= Time.deltaTime;
 			radius = maxRadius * timeLeft / time;
 			
 			yield return new WaitForFixedUpdate();
 		}
-	
-		if (--_cameraShakeCount == 0) camera.transform.position = _cameraPos;
 	}
 
 

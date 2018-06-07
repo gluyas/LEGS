@@ -3648,6 +3648,7 @@ MonoBehaviour:
   FreezeTimeMax: 0.3
   ShakeRadiusMax: 1
   ShakeDurationMax: 0.3
+  PanRadiusMax: 0.5
 --- !u!4 &1258160465
 Transform:
   m_ObjectHideFlags: 0
