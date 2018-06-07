@@ -146,12 +146,37 @@ public class Player : MonoBehaviour
 			attacker.PlayerInfo.OnKill.Invoke(attacker.PlayerInfo, receiver.PlayerInfo);
 		}
 
-		receiver.LegLeft.EquipShoe(null);
-		receiver.LegRight.EquipShoe(null);
-		
-		Destroy(receiver.transform.root.gameObject);
+		receiver.StartCoroutine(receiver.Despawn(1.5f));
 
 		return true;
+	}
+
+	public IEnumerator Despawn(float time)
+	{
+		LegLeft.EquipShoe(null);
+		LegLeft.Hinge.useMotor = false;
+		
+		LegRight.EquipShoe(null);
+		LegRight.Hinge.useMotor = false;
+		
+		Controller = null;
+		PlayerInfo = null;
+
+		var renderers = new List<Renderer>();
+		foreach (var r in Head.GetComponentsInChildren<Renderer>())     renderers.Add(r);
+		foreach (var r in LegLeft.GetComponentsInChildren<Renderer>())  renderers.Add(r);
+		foreach (var r in LegRight.GetComponentsInChildren<Renderer>()) renderers.Add(r);
+
+		var flicker = true;
+		while (time > 0)
+		{
+			foreach (var r in renderers) r.enabled = flicker;
+			time -= Time.deltaTime;
+			flicker = !flicker;
+			yield return new WaitForFixedUpdate();
+		}
+		
+		Destroy(this.transform.root.gameObject);
 	}
 
 	public void IgnoreCollisions(Collider2D other, bool ignore = true)
