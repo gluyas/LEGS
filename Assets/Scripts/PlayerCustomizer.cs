@@ -29,6 +29,8 @@ public class PlayerCustomizer : MonoBehaviour
 			
 			NoControllerMenu.SetActive(false);	
 			SelectionMenu.SetActive(true);
+
+			SelectionText.color = value.Team.Color;
 			
 			PlayerModel.SetPlayerInfo(value);
 		}
@@ -115,6 +117,7 @@ public class PlayerCustomizer : MonoBehaviour
 					CurrentPlayerInfo.Team = GameplayManager.Instance.PlayerTeams[_selectedTeam];
 					
 					SelectionText.text = CurrentPlayerInfo.Team.Name;
+					SelectionText.color = CurrentPlayerInfo.Team.Color;
 					break;
 				
 				default:	// final case: player is ready
