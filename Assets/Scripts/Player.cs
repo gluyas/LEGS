@@ -276,8 +276,8 @@ public class Player : MonoBehaviour
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
 
 		{	// pick up items
-			var tryEquipLeft  = Controller.LeftStickButton && !LegLeft.TryEquip;	// disallow simultaneous equip
-			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton && !LegRight.TryEquip;
+			var tryEquipLeft  = Controller.LeftStickButton.WasPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.WasPressed && !LegRight.TryEquip;
 
 			if (tryEquipLeft || tryEquipRight)
 			{
