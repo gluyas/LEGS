@@ -205,7 +205,7 @@ public class GameplayManager : MonoBehaviour
 
 	// ********** LOAD LEVEL
 
-	public IEnumerator LoadStage()
+	public IEnumerator StartGame()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
 		//var load = SceneManager.LoadSceneAsync("Scenes/TestArena");
@@ -304,6 +304,13 @@ public class GameplayManager : MonoBehaviour
 		}
 	}
 
+	// *********************** PAUSE MENU **************************
+
+	public void RestartGame()
+	{
+		StopAllCoroutines();
+		StartCoroutine(StartGame());
+	}
 
     // *********************** UI BUTTONS **************************
     
@@ -404,7 +411,7 @@ public class GameplayManager : MonoBehaviour
 	public void StartButton()
 	{
 		LevelSelectMenu.SetActive(false);
-		StartCoroutine(LoadStage());
+		StartCoroutine(StartGame());
 		Hud.SetActive(true);
 	}
 
