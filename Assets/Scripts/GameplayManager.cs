@@ -96,6 +96,8 @@ public class GameplayManager : MonoBehaviour
 			{
 				var player = Players[i];
 				var hud = PlayerHuds[i];
+
+				player.Team.IsActive = true;
 				
 				hud.SetPlayerInfo(player);
 				hud.SetScoreCounters(LivesCount, LivesCount);
@@ -112,6 +114,24 @@ public class GameplayManager : MonoBehaviour
 		var lives = LivesCount - receiver.Deaths;
 		
 		if (lives >= 0) StartCoroutine(RespawnPlayer(receiver, RespawnTime));
+		else
+		{
+			PlayerInfo winner = null;
+			foreach (var player in Players)
+			{
+				if (player.Deaths <= LivesCount)
+				{
+					if (winner == null || winner.Team == player.Team) winner = player;
+					else
+					{
+						winner = null;
+						break;
+					}
+				}
+			}
+
+			if (winner != null) Debug.LogFormat("Team {0} WINS", winner.Team.Name);
+		}
 
 		PlayerHuds[receiver.PlayerNum].SetScoreCounters(lives, LivesCount);
 	}

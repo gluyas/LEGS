@@ -31,7 +31,8 @@ public class Team
 {
 	public Color Color;
 	public String Name;
-	
+
+	[NonSerialized] public bool IsActive;
 	[NonSerialized] public int Kills;
 	[NonSerialized] public int Deaths;
 	[NonSerialized] public float DamageDealt;
