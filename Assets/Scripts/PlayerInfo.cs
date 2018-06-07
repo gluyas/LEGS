@@ -24,6 +24,7 @@ public class PlayerInfo {
 	[NonSerialized] public int Deaths;
 	[NonSerialized] public float DamageDealt;
 	[NonSerialized] public float DamageReceived;
+	[NonSerialized] public PlayerInfo LastAttacker;
 }
 
 [Serializable]

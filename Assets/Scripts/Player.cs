@@ -100,6 +100,15 @@ public class Player : MonoBehaviour
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
 		
+		if (attacker != null && attacker.PlayerInfo != null)
+		{
+			attacker.PlayerInfo.DamageDealt += damage;
+			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
+			
+			attacker.PlayerInfo.OnDamageDealt.Invoke(attacker.PlayerInfo, receiver.PlayerInfo, damage);
+			
+			if (receiver.PlayerInfo != null) receiver.PlayerInfo.LastAttacker = attacker.PlayerInfo;
+		}
 		if (receiver.PlayerInfo != null)
 		{
 			receiver.PlayerInfo.DamageReceived += damage;
@@ -108,14 +117,7 @@ public class Player : MonoBehaviour
 			receiver.PlayerInfo.OnDamageTaken.Invoke(
 				attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo, damage);
 		}	
-		if (attacker != null && attacker.PlayerInfo != null)
-		{
-			attacker.PlayerInfo.DamageDealt += damage;
-			if (attacker.PlayerInfo.Team != null) attacker.PlayerInfo.Team.DamageDealt += damage;
-			
-			attacker.PlayerInfo.OnDamageDealt.Invoke(attacker.PlayerInfo, receiver.PlayerInfo, damage);
-		}
-		
+
 		receiver.Hp -= damage;
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
@@ -131,13 +133,6 @@ public class Player : MonoBehaviour
 			if (attacker.PlayerInfo.Team.Equals(receiver.PlayerInfo.Team)) return false;
 		}
 
-		if (receiver.PlayerInfo != null)
-		{
-			receiver.PlayerInfo.Deaths += 1;
-			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
-			
-			receiver.PlayerInfo.OnDeath.Invoke(attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo);
-		}	
 		if (attacker != null && attacker.PlayerInfo != null)
 		{
 			attacker.PlayerInfo.Kills += 1;
@@ -145,6 +140,21 @@ public class Player : MonoBehaviour
 			
 			attacker.PlayerInfo.OnKill.Invoke(attacker.PlayerInfo, receiver.PlayerInfo);
 		}
+		else if (receiver.PlayerInfo != null && receiver.PlayerInfo.LastAttacker != null)	// check last hit
+		{
+			receiver.PlayerInfo.LastAttacker.Kills += 1;
+			if (receiver.PlayerInfo.LastAttacker.Team != null) receiver.PlayerInfo.LastAttacker.Team.Kills += 1;
+			
+			receiver.PlayerInfo.LastAttacker.OnKill.Invoke(receiver.PlayerInfo.LastAttacker, receiver.PlayerInfo);
+		}
+		if (receiver.PlayerInfo != null)
+		{
+			receiver.PlayerInfo.Deaths += 1;
+			if (receiver.PlayerInfo.Team != null) receiver.PlayerInfo.Team.Deaths += 1;
+			
+			receiver.PlayerInfo.OnDeath.Invoke(attacker != null ? attacker.PlayerInfo : null, receiver.PlayerInfo);
+			receiver.PlayerInfo.LastAttacker = null;
+		}	
 
 		receiver.StartCoroutine(receiver.Despawn(1.5f));
 
