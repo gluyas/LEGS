@@ -18,11 +18,22 @@ public class GameplayManager : MonoBehaviour
 
 	[SerializeField] [Header("Game Settings")]
 	public float RespawnTime;
+
+	public int LivesCount;
+
+	public float ItemSpawnTimeMax;
+	public float ItemSpawnTimeMin;
+	public float ItemDespawnTime;
+	public float ItemDespawnFlickerTime;
+	public float ItemDespawnFlickerDuration;
 	
+	[NonSerialized] private Transform[] _itemSpawns;
+
     [NonSerialized] public int LevelSelected;
 	[NonSerialized] public String LevelName;
 	[NonSerialized] public int ModeSelected;
-
+	[NonSerialized] public bool IsGameRunning;
+	
     [Header("Menu Variables")]
     public String[] Levels;
     public GameObject[] LevelModeMenus;
@@ -45,6 +56,15 @@ public class GameplayManager : MonoBehaviour
     public GameObject PlayerCustomizationMenu;
     public PlayerCustomizer[] PlayerCustomizers;	// these should be contained within PlayerCustomizationMenu
 	public Team[] PlayerTeams;
+
+	[Header("Camera Variables")] 
+	public float FreezeTimeMax;
+	public float ShakeRadiusMax;
+	public float ShakeDurationMax;
+	public float PanRadiusMax;
+
+	[NonSerialized] private Vector3 _cameraPos;
+	[NonSerialized] private Vector3 _cameraFrameOffset;
 
 	private void Start()
 	{
@@ -81,7 +101,28 @@ public class GameplayManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
+		if (IsGameRunning)
+		{
+			var camera = Camera.main;
+
+			var activePlayers = 0;
+			var playerCenter = Vector3.zero;
+			foreach (var player in Players)
+			{
+				if (player.Instance != null)
+				{
+					playerCenter  += player.Instance.transform.position;
+					activePlayers += 1;
+				}
+			}
+			if (activePlayers > 0) playerCenter /= activePlayers;
+
+			var panOffset = Vector3.ClampMagnitude((playerCenter - _cameraPos) / camera.orthographicSize, PanRadiusMax);
+			
+			camera.transform.position = _cameraPos + _cameraFrameOffset + panOffset;
+			_cameraFrameOffset = Vector2.zero;
+		}
+		else if (PlayerCustomizers.All(c => c.IsReady || c.CurrentPlayerInfo == null))
 		{
 			foreach (var c in PlayerCustomizers) c.IsReady = false;
 
@@ -93,23 +134,58 @@ public class GameplayManager : MonoBehaviour
 			for (var i = 0; i < Players.Count; i++)
 			{
 				var player = Players[i];
-				PlayerHuds[i].BarPrimary.color = player.Team.Color;
-				PlayerHuds[i].PlayerPortrait.color = player.Team.Color;
-				PlayerHuds[i].TargetPlayer = player;
+				var hud = PlayerHuds[i];
 
-				player.OnDeath.AddListener((a, r) => StartCoroutine(RespawnPlayer(player, RespawnTime)));
+				player.Team.IsActive = true;
+				
+				hud.SetPlayerInfo(player);
+				hud.SetScoreCounters(LivesCount, LivesCount);
+				
+				player.OnDeath.AddListener(OnPlayerDeath);
+				player.OnDamageDealt.AddListener((a, r, damage) =>
+				{
+					StartCoroutine(CameraFreeze(damage * FreezeTimeMax));
+					StartCoroutine(CameraShake(damage * ShakeRadiusMax, damage * ShakeDurationMax));
+				});
 			}
 		}
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
 
+	private void OnPlayerDeath(PlayerInfo attacker, PlayerInfo receiver)
+	{
+		var lives = LivesCount - receiver.Deaths;
+		
+		if (lives >= 0) StartCoroutine(RespawnPlayer(receiver, RespawnTime));
+		else
+		{
+			PlayerInfo winner = null;
+			foreach (var player in Players)
+			{
+				if (player.Deaths <= LivesCount)
+				{
+					if (winner == null || winner.Team == player.Team) winner = player;
+					else
+					{
+						winner = null;
+						break;
+					}
+				}
+			}
+
+			if (winner != null) Debug.LogFormat("Team {0} WINS", winner.Team.Name);
+		}
+
+		PlayerHuds[receiver.PlayerNum].SetScoreCounters(lives, LivesCount);
+	}
+
 
 
 	// *********************** GAMEPLAY FUNCTIONS **************************
 
 	// ********** LOAD LEVEL
-		
+
 	public IEnumerator LoadStage()
 	{
 		var load = SceneManager.LoadSceneAsync(LevelName);
@@ -119,8 +195,9 @@ public class GameplayManager : MonoBehaviour
 			yield return null;
 		}
 
-		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
+		IsGameRunning = true;
 		
+		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		foreach (var playerInfo in Players)
 		{
 			Vector2 pos;
@@ -131,8 +208,29 @@ public class GameplayManager : MonoBehaviour
 				spawns.RemoveAt(i);
 			}
 			else pos = Vector2.zero;
-			
+
 			InstantiatePlayer(playerInfo, pos);
+		}
+
+		_itemSpawns = GameObject.FindGameObjectsWithTag("ItemSpawn")
+			.Select(g => g.transform)
+			.ToArray();
+		StartCoroutine(DoItemSpawns());
+			
+		_cameraPos = Camera.main.transform.position;
+	}
+
+	private IEnumerator DoItemSpawns()
+	{
+		while (IsGameRunning)
+		{
+			var time = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
+			yield return new WaitForSeconds(time);
+
+			var pos = Vector2.zero;
+			if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+
+			Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
 		}
 	}
 
@@ -176,10 +274,32 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
+	// ***********************  CAMERA  ****************************
 
+	private IEnumerator CameraFreeze(float time)
+	{
+		Time.timeScale = 0;
+		yield return new WaitForSecondsRealtime(time);
+		Time.timeScale = 1;
+	}
 
+	private IEnumerator CameraShake(float maxRadius, float time)
+	{	
+		var camera = Camera.main;
+	
+		var radius = maxRadius;
+		var timeLeft = time;
 
+		while (timeLeft > 0)
+		{
+			_cameraFrameOffset += (Vector3) Random.insideUnitCircle * radius;
 
+			timeLeft -= Time.deltaTime;
+			radius = maxRadius * timeLeft / time;
+			
+			yield return new WaitForFixedUpdate();
+		}
+	}
 
 
     // *********************** UI BUTTONS **************************
