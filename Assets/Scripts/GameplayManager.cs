@@ -54,6 +54,9 @@ public class GameplayManager : MonoBehaviour
 	public float CountdownScaleFactor;
 	public float CountdownPulseTime;
 
+	public GameObject WinnerSplash;
+	public Image WinnerPortrait;
+
     [Header("Player Variables")]
     public GameObject PlayerPrefab;
 	public GameObject[] ShoePrefabs;
@@ -199,7 +202,11 @@ public class GameplayManager : MonoBehaviour
 				}
 			}
 
-			if (winner != null) Debug.LogFormat("Team {0} WINS", winner.Team.Name);
+			if (winner != null)
+			{
+				WinnerSplash.SetActive(true);
+				WinnerPortrait.color = winner.Team.Color;
+			}
 		}
 
 		PlayerHuds[receiver.PlayerNum].SetScoreCounters(lives, LivesCount);
@@ -219,6 +226,8 @@ public class GameplayManager : MonoBehaviour
 		{
 			yield return null;
 		}
+		
+		WinnerSplash.SetActive(false);
 		
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		foreach (var playerInfo in Players)
