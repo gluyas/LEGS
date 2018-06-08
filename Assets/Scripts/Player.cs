@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
 	[NonSerialized] public InputDevice Controller;
 
 	[NonSerialized] public float Hp = 1;
+	[NonSerialized] public bool IsDying;
 
 #if false
 	public float HeadTorqueMax;
@@ -28,6 +29,8 @@ public class Player : MonoBehaviour
 
 	public AudioSource AudioSource;
 
+	public AudioClip AudioDeath;
+	
 	public AudioClip[] AudioImpactBig;
 	public AudioClip[] AudioImpactMedium;
 	public AudioClip[] AudioImpactSmall;
@@ -209,13 +212,16 @@ public class Player : MonoBehaviour
 			receiver.PlayerInfo.LastAttacker = null;
 		}	
 
-		receiver.StartCoroutine(receiver.Despawn(1.5f));
+		if (!receiver.IsDying) receiver.StartCoroutine(receiver.Despawn(1.5f));
 
 		return true;
 	}
 
 	public IEnumerator Despawn(float time)
 	{
+		IsDying = true;
+		AudioSource.PlayOneShot(AudioDeath);
+		
 		LegLeft.EquipShoe(null);
 		LegLeft.Hinge.useMotor = false;
 		

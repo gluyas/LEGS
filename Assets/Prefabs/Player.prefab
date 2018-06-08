@@ -416,6 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioSource: {fileID: 82442305104924764}
+  AudioDeath: {fileID: 8300000, guid: 14bfc789cdf3ad84abefdea0b01accd7, type: 3}
   AudioImpactBig:
   - {fileID: 8300000, guid: 6ad30577ecb8adb4fac2467c97fc3c92, type: 3}
   - {fileID: 8300000, guid: 594770953d15ad8439407ae67ea1504a, type: 3}
