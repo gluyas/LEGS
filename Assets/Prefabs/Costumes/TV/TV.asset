@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
-  m_Name: Pinwheel
+  m_Name: TV
   m_EditorClassIdentifier: 
-  Name: PINWHEEL
-  Head: {fileID: 1907706436412916, guid: c200f3f3fe3354805af7e501d934d0ba, type: 2}
-  LegLeft: {fileID: 1183780529382248, guid: b6e3c1338cd9c4761be89d60be43b499, type: 2}
-  LegRight: {fileID: 1183780529382248, guid: b6e3c1338cd9c4761be89d60be43b499, type: 2}
+  Name: MIKE
+  Head: {fileID: 1292508069217332, guid: a0e015c12314b43708ac3a994af21c94, type: 2}
+  LegLeft: {fileID: 0}
+  LegRight: {fileID: 0}
