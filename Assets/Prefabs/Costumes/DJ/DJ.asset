@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: DJ
+  m_EditorClassIdentifier: 
+  Name: DJ KHALEG
+  Head: {fileID: 1765925805853778, guid: 382347973995f499db72e7d50905d6f8, type: 2}
+  LegLeft: {fileID: 0}
+  LegRight: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: a1873709523bd4f19bc5d6b9ee0b1514, type: 3}

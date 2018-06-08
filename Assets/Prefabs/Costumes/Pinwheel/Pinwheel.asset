@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Pinwheel
   m_EditorClassIdentifier: 
   Name: PINWHEEL
-  Head: {fileID: 1238106272871064, guid: dce608e10651d40d7bb32e1778b62651, type: 2}
-  LegLeft: {fileID: 0}
-  LegRight: {fileID: 0}
+  Head: {fileID: 1907706436412916, guid: c200f3f3fe3354805af7e501d934d0ba, type: 2}
+  LegLeft: {fileID: 1183780529382248, guid: b6e3c1338cd9c4761be89d60be43b499, type: 2}
+  LegRight: {fileID: 1183780529382248, guid: b6e3c1338cd9c4761be89d60be43b499, type: 2}
+  Portrait: {fileID: 21300000, guid: e5b4a3a78e890478692e33d166f38ade, type: 3}

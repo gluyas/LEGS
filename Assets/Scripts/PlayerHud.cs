@@ -8,7 +8,8 @@ public class PlayerHud : MonoBehaviour
 {
 	public GameObject[] ScoreCounters;
 	public Image[] ScoreCounterFills;
-	
+
+	public Image PlayerPortraitFill;
 	public Image PlayerPortrait;
 	
 	public Image BarPrimary;
@@ -52,7 +53,10 @@ public class PlayerHud : MonoBehaviour
 	{
 		_player = player;
 		BarPrimary.color = player.Team.Color;
-		PlayerPortrait.color = player.Team.Color;
+		PlayerPortraitFill.color = player.Team.Color;
+
+		if (player.Costume.Portrait != null) PlayerPortrait.sprite = player.Costume.Portrait;
+		
 		foreach (var image in ScoreCounterFills) image.color = player.Team.Color;
 	}
 

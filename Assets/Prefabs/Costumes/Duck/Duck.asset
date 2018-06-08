@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Duck
+  m_EditorClassIdentifier: 
+  Name: DONALD
+  Head: {fileID: 1622052687029812, guid: 93d40fa87c7d84e23841212084205821, type: 2}
+  LegLeft: {fileID: 0}
+  LegRight: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: dfbf7da60037749439cb3c8ec74c54de, type: 3}

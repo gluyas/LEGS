@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Moon
+  m_EditorClassIdentifier: 
+  Name: HELMET
+  Head: {fileID: 1354851309278408, guid: 4031231a330c340228d3e42b0f94a16f, type: 2}
+  LegLeft: {fileID: 0}
+  LegRight: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: 690c8896e5a6048de8dcd8a04bd6cd50, type: 3}

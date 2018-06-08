@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Clockwork
+  m_EditorClassIdentifier: 
+  Name: MILK MAN
+  Head: {fileID: 1833469451283856, guid: 447d380fc86bf4c389421b4c7cd8ba9a, type: 2}
+  LegLeft: {fileID: 1920435132762656, guid: e568c8c6482614192805f29f832c779c, type: 2}
+  LegRight: {fileID: 1920435132762656, guid: e568c8c6482614192805f29f832c779c, type: 2}
+  Portrait: {fileID: 21300000, guid: afd6866faf90b4fce90a0fb77675df75, type: 3}

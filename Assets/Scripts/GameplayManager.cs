@@ -17,6 +17,9 @@ public class GameplayManager : MonoBehaviour
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
 	[SerializeField] [Header("Game Settings")]
+	public AudioSource MusicSource;
+	public AudioClip[] MusicTracks;
+	
 	public float RespawnTime;
 	public float RespawnInvulnerableTime;
 	
@@ -46,6 +49,8 @@ public class GameplayManager : MonoBehaviour
     public GameObject ReadyMenu;
 
     public GameObject LevelSelectMenu;
+
+	public GameObject PauseMenu;
 
 	public GameObject Hud;
 	public PlayerHud[] PlayerHuds;
@@ -91,7 +96,7 @@ public class GameplayManager : MonoBehaviour
 				Controller = device,
 				PlayerNum = numPlayers,
 				Team = numPlayers < PlayerTeams.Length ? PlayerTeams[numPlayers] : PlayerTeams[PlayerTeams.Length - 1],
-				Costume = PlayerCostumes[Random.Range(0, PlayerCostumes.Length)],
+				Costume = PlayerCostumes.RandomElement(),
 			};
 
 			Players.Add(playerInfo);
@@ -116,6 +121,21 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (IsGameRunning)
 		{
+			if (InputManager.Devices.Any((device) => device.CommandWasPressed)) 
+			{
+				if (!PauseMenu.activeInHierarchy) 
+				{
+					firstSelected = PauseMenu.transform.Find ("Resume").gameObject;
+					Time.timeScale = 0;
+					PauseMenu.SetActive (true);
+					EventSystem.current.SetSelectedGameObject (firstSelected);
+				} 
+				else 
+				{
+					ResumeGame ();
+				}
+			}
+
 			{	// camera offset
 				var camera = Camera.main;
 
@@ -145,9 +165,9 @@ public class GameplayManager : MonoBehaviour
 					_itemSpawnTime = Random.Range(ItemSpawnTimeMin, ItemSpawnTimeMax);
 
 					var pos = Vector2.zero;
-					if (_itemSpawns.Length > 0) pos = _itemSpawns[Random.Range(0, _itemSpawns.Length)].position;
+					if (_itemSpawns.Length > 0) pos = _itemSpawns.RandomElement().position;
 
-					Instantiate(ShoePrefabs[Random.Range(0, ShoePrefabs.Length)], pos, Quaternion.identity);
+					Instantiate(ShoePrefabs.RandomElement(), pos, Quaternion.identity);
 				}
 				else _itemSpawnTime -= Time.deltaTime;
 			}
@@ -179,6 +199,7 @@ public class GameplayManager : MonoBehaviour
 				});
 			}
 		}
+			
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
@@ -267,9 +288,11 @@ public class GameplayManager : MonoBehaviour
 			var time = 0f;
 			while (time <= 1)
 			{
-				if (i == CountdownSprites.Length - 1 && time > CountdownPulseTime)
+				if (i == CountdownSprites.Length - 1 && !IsGameRunning && time > CountdownPulseTime)
 				{
 					IsGameRunning = true;
+					MusicSource.clip = MusicTracks.RandomElement();
+					MusicSource.Play();
 				}
 
 				var scale = CountdownScale.Evaluate(time) * CountdownScaleFactor;
@@ -282,6 +305,7 @@ public class GameplayManager : MonoBehaviour
 				time += Time.deltaTime;
 				yield return new WaitForFixedUpdate();
 			}
+			sprite.transform.localScale = initialScale;
 			sprite.gameObject.SetActive(false);
 		}
 	}
@@ -302,7 +326,7 @@ public class GameplayManager : MonoBehaviour
 		var spawns = GameObject.FindGameObjectsWithTag("Spawn").ToList();
 		Vector2 pos;
 		if (spawns.Count == 0) pos = Vector2.zero;
-		else 				   pos = spawns[Random.Range(0, spawns.Count)].transform.position;
+		else 				   pos = spawns.RandomElement().transform.position;
 
 		while (time > 0)
 		{
@@ -362,16 +386,27 @@ public class GameplayManager : MonoBehaviour
 
 	// *********************** PAUSE MENU **************************
 
+	public void ResumeGame ()
+	{
+		Time.timeScale = 1;
+		PauseMenu.SetActive (false);
+	}
+
 	public void RestartGame()
 	{
 		StopAllCoroutines();
 		StartCoroutine(StartGame());
+		PauseMenu.SetActive (false);
+		Time.timeScale = 1;
+		IsGameRunning = false;
 	}
 
 	public void ReturnToMenu()
 	{
-		DestroyImmediate(this.gameObject);
+		StopAllCoroutines();
+		Destroy (this.gameObject);
 		SceneManager.LoadScene("Scenes/MainMenu");
+		Time.timeScale = 1;
 	}
 	
     // *********************** UI BUTTONS **************************

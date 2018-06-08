@@ -175,6 +175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  AudioShotBig: {fileID: 8300000, guid: 51366a7c80125074ca5d53b62eb44424, type: 3}
+  AudioShotSmall: {fileID: 8300000, guid: 4441d806fe619834b94c22d8fb8e8c44, type: 3}
+  AudioShotBigThreshold: 0.8
   KnockbackForceMax: 150
   KnockbackForceMin: 50
   ChargeTimeMax: 1.2

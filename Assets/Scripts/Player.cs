@@ -13,11 +13,14 @@ public class Player : MonoBehaviour
 	
 	private static int _playerCount = 0;
 
+	public bool IsMenuPlayer;
+	
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public PlayerInfo PlayerInfo;
 	[NonSerialized] public InputDevice Controller;
 
 	[NonSerialized] public float Hp = 1;
+	[NonSerialized] public bool IsDying;
 
 #if false
 	public float HeadTorqueMax;
@@ -26,6 +29,21 @@ public class Player : MonoBehaviour
 	public Vector2 HeadMassOffset;
 #endif
 
+	public AudioSource AudioSource;
+
+	public AudioClip AudioDeath;
+	
+	public AudioClip[] AudioImpactBig;
+	public AudioClip[] AudioImpactMedium;
+	public AudioClip[] AudioImpactSmall;
+
+	public float AudioImpactSmallThreshold;
+	public float AudioImpactBigThreshold;
+
+	public AudioClip AudioKickSmall;
+	public AudioClip AudioKickBig;
+	public float AudioKickThreshold;
+	
 	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
@@ -63,6 +81,8 @@ public class Player : MonoBehaviour
 
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
+		var paint = playerInfo.Costume.name == "TUI";	// special treatment just for you...
+		
 		PlayerInfo = playerInfo;
 		Controller = PlayerInfo.Controller;	
 		Start();
@@ -75,9 +95,9 @@ public class Player : MonoBehaviour
 		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		
-		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
-		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
-		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
+		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head,     paint);
+		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft,  paint);
+		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight, paint);
 
 		if (playerInfo.ShoeLeft.HasValue)
 		{
@@ -90,13 +110,18 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	private void EquipCostumePart(Transform parent, GameObject costume)
+	private void EquipCostumePart(Transform parent, GameObject costume, bool paint = false)
 	{
 		if (costume == null) return;
 
 		var obj = Instantiate(costume, parent, true);
 		obj.transform.localPosition = Vector3.zero;
 		obj.transform.localRotation = Quaternion.identity;
+
+		if (paint)
+		{
+			obj.GetComponentInChildren<SpriteRenderer>().color = PlayerInfo.Team.Color;
+		}
 	}
 
 	public IEnumerator Invulnerable(float time)
@@ -153,6 +178,16 @@ public class Player : MonoBehaviour
 		}	
 
 		receiver.Hp -= damage;
+		if (damage > 0) {
+			AudioClip impact;
+			if (damage > receiver.AudioImpactSmallThreshold)
+			{
+				if (damage > receiver.AudioImpactBigThreshold) impact = receiver.AudioImpactBig.RandomElement();
+				else                                           impact = receiver.AudioImpactMedium.RandomElement();
+			}
+			else                                               impact = receiver.AudioImpactSmall.RandomElement();
+			receiver.AudioSource.PlayOneShot(impact);
+		}
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
 		return true;
@@ -190,13 +225,16 @@ public class Player : MonoBehaviour
 			receiver.PlayerInfo.LastAttacker = null;
 		}	
 
-		receiver.StartCoroutine(receiver.Despawn(1.5f));
+		if (!receiver.IsDying) receiver.StartCoroutine(receiver.Despawn(1.5f));
 
 		return true;
 	}
 
 	public IEnumerator Despawn(float time)
 	{
+		IsDying = true;
+		AudioSource.PlayOneShot(AudioDeath);
+		
 		LegLeft.EquipShoe(null);
 		LegLeft.Hinge.useMotor = false;
 		
@@ -270,14 +308,14 @@ public class Player : MonoBehaviour
 	private void FixedUpdate () 
 	{
 		if (Controller == null) return;
-		if (GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
+		if (!IsMenuPlayer && GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
 		
 		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger,  Controller.LeftBumper);
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
 
 		{	// pick up items
-			var tryEquipLeft  = Controller.LeftStickButton.WasPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
-			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.WasPressed && !LegRight.TryEquip;
+			var tryEquipLeft  = Controller.LeftStickButton.IsPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.IsPressed && !LegRight.TryEquip;
 
 			if (tryEquipLeft || tryEquipRight)
 			{
@@ -317,8 +355,8 @@ public class Player : MonoBehaviour
 				}
 			}
 			// only reset hold status to false here: allow player to pre-emptively hold equip button
-			if (!Controller.LeftBumper)  LegLeft.TryEquip  = false;
-			if (!Controller.RightBumper) LegRight.TryEquip = false;
+			if (!Controller.LeftStickButton.IsPressed)  LegLeft.TryEquip  = false;
+			if (!Controller.RightStickButton.IsPressed) LegRight.TryEquip = false;
 		}
 
 #if false
@@ -426,6 +464,9 @@ public class Player : MonoBehaviour
 					leg.AttackRecovery = Mathf.Lerp(AttackRecoveryTimeMin, AttackRecoveryTimeMax, leg.AttackCharge);
 				
 					leg.AttackButtonHeld = bumper.IsPressed;
+					
+					if (leg.AttackCharge > AudioKickThreshold) AudioSource.PlayOneShot(AudioKickBig);
+					else 									   AudioSource.PlayOneShot(AudioKickSmall);
 				}
 			}
 
@@ -532,7 +573,10 @@ public class Player : MonoBehaviour
 
 							IgnoreCollisions(gun.GetComponent<Collider2D>());
 							gun.gameObject.layer = LayerMask.NameToLayer("PlayersOnly");
-								
+							
+							if (power > gun.AudioShotBigThreshold) AudioSource.PlayOneShot(gun.AudioShotBig);
+							else                                   AudioSource.PlayOneShot(gun.AudioShotSmall);
+							
 							gun.Attacker = this;
 						}
 					}

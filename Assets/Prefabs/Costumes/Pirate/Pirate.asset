@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a97c13546b2fda4884eaf145543a7e9, type: 3}
+  m_Name: Pirate
+  m_EditorClassIdentifier: 
+  Name: YARR
+  Head: {fileID: 1986893810664726, guid: 561500d95ace54668b3916fb35c78e59, type: 2}
+  LegLeft: {fileID: 1921936248417238, guid: b0222356a9205481882a20237e5689e1, type: 2}
+  LegRight: {fileID: 1634084517596858, guid: f8b0f76dac0bc47ee957ef4a47c3bd7d, type: 2}
+  Portrait: {fileID: 21300000, guid: 04dbb14820d4b451ebcc7a08eb8448fc, type: 3}
