@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
 	[NonSerialized] public InputDevice Controller;
 
 	[NonSerialized] public float Hp = 1;
+	[NonSerialized] public bool IsDying;
 
 #if false
 	public float HeadTorqueMax;
@@ -26,6 +27,21 @@ public class Player : MonoBehaviour
 	public Vector2 HeadMassOffset;
 #endif
 
+	public AudioSource AudioSource;
+
+	public AudioClip AudioDeath;
+	
+	public AudioClip[] AudioImpactBig;
+	public AudioClip[] AudioImpactMedium;
+	public AudioClip[] AudioImpactSmall;
+
+	public float AudioImpactSmallThreshold;
+	public float AudioImpactBigThreshold;
+
+	public AudioClip AudioKickSmall;
+	public AudioClip AudioKickBig;
+	public float AudioKickThreshold;
+	
 	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
@@ -153,6 +169,16 @@ public class Player : MonoBehaviour
 		}	
 
 		receiver.Hp -= damage;
+		if (damage > 0) {
+			AudioClip impact;
+			if (damage > receiver.AudioImpactSmallThreshold)
+			{
+				if (damage > receiver.AudioImpactBigThreshold) impact = receiver.AudioImpactBig.RandomElement();
+				else                                           impact = receiver.AudioImpactMedium.RandomElement();
+			}
+			else                                               impact = receiver.AudioImpactSmall.RandomElement();
+			receiver.AudioSource.PlayOneShot(impact);
+		}
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
 		return true;
@@ -190,13 +216,16 @@ public class Player : MonoBehaviour
 			receiver.PlayerInfo.LastAttacker = null;
 		}	
 
-		receiver.StartCoroutine(receiver.Despawn(1.5f));
+		if (!receiver.IsDying) receiver.StartCoroutine(receiver.Despawn(1.5f));
 
 		return true;
 	}
 
 	public IEnumerator Despawn(float time)
 	{
+		IsDying = true;
+		AudioSource.PlayOneShot(AudioDeath);
+		
 		LegLeft.EquipShoe(null);
 		LegLeft.Hinge.useMotor = false;
 		
@@ -426,6 +455,9 @@ public class Player : MonoBehaviour
 					leg.AttackRecovery = Mathf.Lerp(AttackRecoveryTimeMin, AttackRecoveryTimeMax, leg.AttackCharge);
 				
 					leg.AttackButtonHeld = bumper.IsPressed;
+					
+					if (leg.AttackCharge > AudioKickThreshold) AudioSource.PlayOneShot(AudioKickBig);
+					else 									   AudioSource.PlayOneShot(AudioKickSmall);
 				}
 			}
 
@@ -532,7 +564,10 @@ public class Player : MonoBehaviour
 
 							IgnoreCollisions(gun.GetComponent<Collider2D>());
 							gun.gameObject.layer = LayerMask.NameToLayer("PlayersOnly");
-								
+							
+							if (power > gun.AudioShotBigThreshold) AudioSource.PlayOneShot(gun.AudioShotBig);
+							else                                   AudioSource.PlayOneShot(gun.AudioShotSmall);
+							
 							gun.Attacker = this;
 						}
 					}

@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class GunShoe : Shoe
 {
+	public AudioClip AudioShotBig;
+	public AudioClip AudioShotSmall;
+	public float AudioShotBigThreshold;
+	
 	public float KnockbackForceMax;
 	public float KnockbackForceMin;
 
