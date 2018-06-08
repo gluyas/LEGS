@@ -26,6 +26,15 @@ public class Player : MonoBehaviour
 	public Vector2 HeadMassOffset;
 #endif
 
+	public AudioSource AudioSource;
+
+	public AudioClip[] AudioImpactBig;
+	public AudioClip[] AudioImpactMedium;
+	public AudioClip[] AudioImpactSmall;
+
+	public float AudioImpactSmallThreshold;
+	public float AudioImpactBigThreshold;
+
 	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
@@ -153,6 +162,16 @@ public class Player : MonoBehaviour
 		}	
 
 		receiver.Hp -= damage;
+		if (damage > 0) {
+			AudioClip impact;
+			if (damage > receiver.AudioImpactSmallThreshold)
+			{
+				if (damage > receiver.AudioImpactBigThreshold) impact = receiver.AudioImpactBig.RandomElement();
+				else                                           impact = receiver.AudioImpactMedium.RandomElement();
+			}
+			else                                               impact = receiver.AudioImpactSmall.RandomElement();
+			receiver.AudioSource.PlayOneShot(impact);
+		}
 
 		if (receiver.Hp <= 0) Kill(attacker, receiver, ff);
 		return true;
