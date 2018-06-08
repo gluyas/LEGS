@@ -305,8 +305,8 @@ public class Player : MonoBehaviour
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
 
 		{	// pick up items
-			var tryEquipLeft  = Controller.LeftStickButton.WasPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
-			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.WasPressed && !LegRight.TryEquip;
+			var tryEquipLeft  = Controller.LeftStickButton.IsPressed && !LegLeft.TryEquip;	// disallow simultaneous equip
+			var tryEquipRight = !tryEquipLeft && Controller.RightStickButton.IsPressed && !LegRight.TryEquip;
 
 			if (tryEquipLeft || tryEquipRight)
 			{
@@ -346,8 +346,8 @@ public class Player : MonoBehaviour
 				}
 			}
 			// only reset hold status to false here: allow player to pre-emptively hold equip button
-			if (!Controller.LeftBumper)  LegLeft.TryEquip  = false;
-			if (!Controller.RightBumper) LegRight.TryEquip = false;
+			if (!Controller.LeftStickButton.IsPressed)  LegLeft.TryEquip  = false;
+			if (!Controller.RightStickButton.IsPressed) LegRight.TryEquip = false;
 		}
 
 #if false
