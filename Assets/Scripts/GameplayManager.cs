@@ -41,6 +41,7 @@ public class GameplayManager : MonoBehaviour
     public GameObject[] LevelModeMenus;
 
     public GameObject MainMenu;
+	public GameObject PlayerMenu;
     public GameObject firstSelected;
     public GameObject ReadyMenu;
 
@@ -445,6 +446,20 @@ public class GameplayManager : MonoBehaviour
 
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
+
+	public void SelectMoon()
+	{
+		LevelSelected = 4;
+		//firstSelected = LevelModeMenus[LevelSelected].transform.Find("Mode1").gameObject;
+		//LevelModeMenus[LevelSelected].SetActive(true);
+		firstSelected = ReadyMenu.transform.Find("START").gameObject;
+		ReadyMenu.SetActive(true);
+
+		//LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "SELECT MODE";
+		LevelSelectMenu.transform.Find("LevelTitle").gameObject.GetComponent<Text>().text = "";
+
+		EventSystem.current.SetSelectedGameObject(firstSelected);
+	}
 
     // ********** MODE SELECT
 
