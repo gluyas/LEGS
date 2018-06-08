@@ -47,6 +47,8 @@ public class GameplayManager : MonoBehaviour
 
     public GameObject LevelSelectMenu;
 
+	public GameObject PauseMenu;
+
 	public GameObject Hud;
 	public PlayerHud[] PlayerHuds;
 
@@ -116,6 +118,21 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (IsGameRunning)
 		{
+			if (InputManager.Devices.Any((device) => device.CommandWasPressed)) 
+			{
+				if (!PauseMenu.activeInHierarchy) 
+				{
+					firstSelected = PauseMenu.transform.Find ("Resume").gameObject;
+					Time.timeScale = 0;
+					PauseMenu.SetActive (true);
+					EventSystem.current.SetSelectedGameObject (firstSelected);
+				} 
+				else 
+				{
+					ResumeGame ();
+				}
+			}
+
 			{	// camera offset
 				var camera = Camera.main;
 
@@ -179,6 +196,7 @@ public class GameplayManager : MonoBehaviour
 				});
 			}
 		}
+			
 
         //Debug.Log(EventSystem.current.currentSelectedGameObject);
     }
@@ -282,6 +300,7 @@ public class GameplayManager : MonoBehaviour
 				time += Time.deltaTime;
 				yield return new WaitForFixedUpdate();
 			}
+			sprite.transform.localScale = initialScale;
 			sprite.gameObject.SetActive(false);
 		}
 	}
@@ -362,16 +381,27 @@ public class GameplayManager : MonoBehaviour
 
 	// *********************** PAUSE MENU **************************
 
+	public void ResumeGame ()
+	{
+		Time.timeScale = 1;
+		PauseMenu.SetActive (false);
+	}
+
 	public void RestartGame()
 	{
 		StopAllCoroutines();
 		StartCoroutine(StartGame());
+		PauseMenu.SetActive (false);
+		Time.timeScale = 1;
+		IsGameRunning = false;
 	}
 
 	public void ReturnToMenu()
 	{
-		DestroyImmediate(this.gameObject);
+		StopAllCoroutines();
+		Destroy (this.gameObject);
 		SceneManager.LoadScene("Scenes/MainMenu");
+		Time.timeScale = 1;
 	}
 	
     // *********************** UI BUTTONS **************************
