@@ -5741,8 +5741,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c6100756fef06d041a7c7493da94c9e3, type: 3}
   - {fileID: 8300000, guid: e00dcb088f8ac6d4f80211202aa1aa17, type: 3}
   RespawnTime: 4
-  RespawnInvulnerableTime: 2
-  LivesCount: 4
+  RespawnInvulnerableTime: 3
+  LivesCount: 3
   ItemSpawnTimeMax: 3
   ItemSpawnTimeMin: 5
   ItemDespawnTime: 20
@@ -5869,9 +5869,9 @@ MonoBehaviour:
     Name: YELLOW
   - Color: {r: 0.531136, g: 1, b: 0.49264705, a: 1}
     Name: GREEN
-  FreezeTimeMax: 0.3
-  ShakeRadiusMax: 1
-  ShakeDurationMax: 0.3
+  FreezeTimeMax: 0.4
+  ShakeRadiusMax: 1.5
+  ShakeDurationMax: 0.4
   PanRadiusMax: 0.45
   PanRadiusYScale: 0
 --- !u!4 &1258160465
