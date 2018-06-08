@@ -79,6 +79,8 @@ public class Player : MonoBehaviour
 
 	public void SetPlayerInfo(PlayerInfo playerInfo)
 	{
+		var paint = playerInfo.Costume.name == "TUI";	// special treatment just for you...
+		
 		PlayerInfo = playerInfo;
 		Controller = PlayerInfo.Controller;	
 		Start();
@@ -91,9 +93,9 @@ public class Player : MonoBehaviour
 		LegLeft.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		LegRight.GetComponent<SpriteRenderer>().color = playerInfo.Team.Color;
 		
-		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head);
-		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft);
-		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight);
+		EquipCostumePart(Head.transform, 	 playerInfo.Costume.Head,     paint);
+		EquipCostumePart(LegLeft.transform,  playerInfo.Costume.LegLeft,  paint);
+		EquipCostumePart(LegRight.transform, playerInfo.Costume.LegRight, paint);
 
 		if (playerInfo.ShoeLeft.HasValue)
 		{
@@ -106,13 +108,18 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	private void EquipCostumePart(Transform parent, GameObject costume)
+	private void EquipCostumePart(Transform parent, GameObject costume, bool paint = false)
 	{
 		if (costume == null) return;
 
 		var obj = Instantiate(costume, parent, true);
 		obj.transform.localPosition = Vector3.zero;
 		obj.transform.localRotation = Quaternion.identity;
+
+		if (paint)
+		{
+			obj.GetComponentInChildren<SpriteRenderer>().color = PlayerInfo.Team.Color;
+		}
 	}
 
 	public IEnumerator Invulnerable(float time)
