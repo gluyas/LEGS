@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
 	
 	private static int _playerCount = 0;
 
+	public bool IsMenuPlayer;
+	
 	[NonSerialized] public int PlayerId;
 	[NonSerialized] public PlayerInfo PlayerInfo;
 	[NonSerialized] public InputDevice Controller;
@@ -306,7 +308,7 @@ public class Player : MonoBehaviour
 	private void FixedUpdate () 
 	{
 		if (Controller == null) return;
-		if (GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
+		if (!IsMenuPlayer && GameplayManager.Instance != null && !GameplayManager.Instance.IsGameRunning) return;
 		
 		UpdateLeg(LegLeft,  Controller.LeftStick.Vector,  Controller.LeftTrigger,  Controller.LeftBumper);
 		UpdateLeg(LegRight, Controller.RightStick.Vector, Controller.RightTrigger, Controller.RightBumper);	
