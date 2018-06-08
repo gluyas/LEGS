@@ -38,6 +38,10 @@ public class Player : MonoBehaviour
 	public float AudioImpactSmallThreshold;
 	public float AudioImpactBigThreshold;
 
+	public AudioClip AudioKickSmall;
+	public AudioClip AudioKickBig;
+	public float AudioKickThreshold;
+	
 	public Collider2D[] ItemPickupZones;
 	
 	public float LegSpeedMax;
@@ -451,6 +455,9 @@ public class Player : MonoBehaviour
 					leg.AttackRecovery = Mathf.Lerp(AttackRecoveryTimeMin, AttackRecoveryTimeMax, leg.AttackCharge);
 				
 					leg.AttackButtonHeld = bumper.IsPressed;
+					
+					if (leg.AttackCharge > AudioKickThreshold) AudioSource.PlayOneShot(AudioKickBig);
+					else 									   AudioSource.PlayOneShot(AudioKickSmall);
 				}
 			}
 

@@ -431,6 +431,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9ca0a39bbb6149f4f9d7e98f3cafadd7, type: 3}
   AudioImpactSmallThreshold: 0.2
   AudioImpactBigThreshold: 0.4
+  AudioKickSmall: {fileID: 8300000, guid: 173a180d80f4066468e47b1e819b091f, type: 3}
+  AudioKickBig: {fileID: 8300000, guid: 63008f44a36c4554ba12ac0ee86bcb3c, type: 3}
+  AudioKickThreshold: 0.3
   ItemPickupZones:
   - {fileID: 58940843451768204}
   - {fileID: 58147948080354548}
