@@ -551,7 +551,10 @@ public class Player : MonoBehaviour
 
 							IgnoreCollisions(gun.GetComponent<Collider2D>());
 							gun.gameObject.layer = LayerMask.NameToLayer("PlayersOnly");
-								
+							
+							if (power > gun.AudioShotBigThreshold) AudioSource.PlayOneShot(gun.AudioShotBig);
+							else                                   AudioSource.PlayOneShot(gun.AudioShotSmall);
+							
 							gun.Attacker = this;
 						}
 					}
