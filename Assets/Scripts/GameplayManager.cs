@@ -17,6 +17,9 @@ public class GameplayManager : MonoBehaviour
 	[NonSerialized] public List<PlayerInfo> Players = new List<PlayerInfo>();
 
 	[SerializeField] [Header("Game Settings")]
+	public AudioSource MusicSource;
+	public AudioClip[] MusicTracks;
+	
 	public float RespawnTime;
 	public float RespawnInvulnerableTime;
 	
@@ -267,9 +270,11 @@ public class GameplayManager : MonoBehaviour
 			var time = 0f;
 			while (time <= 1)
 			{
-				if (i == CountdownSprites.Length - 1 && time > CountdownPulseTime)
+				if (i == CountdownSprites.Length - 1 && !IsGameRunning && time > CountdownPulseTime)
 				{
 					IsGameRunning = true;
+					MusicSource.clip = MusicTracks.RandomElement();
+					MusicSource.Play();
 				}
 
 				var scale = CountdownScale.Evaluate(time) * CountdownScaleFactor;
