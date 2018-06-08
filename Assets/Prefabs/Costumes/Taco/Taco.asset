@@ -15,3 +15,4 @@ MonoBehaviour:
   Head: {fileID: 1495027956316464, guid: 608c4531a9c794595a8c894cb22c7513, type: 2}
   LegLeft: {fileID: 0}
   LegRight: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: da00f611c72744565b17c6cdf89c5bcb, type: 3}

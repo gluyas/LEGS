@@ -16,4 +16,6 @@ public class Costume : ScriptableObject
 	public GameObject Head;
 	public GameObject LegLeft;
 	public GameObject LegRight;
+
+	public Sprite Portrait;
 }
