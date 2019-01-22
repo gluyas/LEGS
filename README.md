@@ -1,3 +1,5 @@
+[![legs trailer img link](https://i.imgur.com/1FYoGea.png)](https://vimeo.com/274425173)
+Trailer video: https://vimeo.com/274425173
 # LEGS Prototype
 
 Archive of the LEGS prototype sources, including commit history. Many commits will appear empty as the game's art assets and various other files have been removed from all source revisions. Licensed under MIT license.
